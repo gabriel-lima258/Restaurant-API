@@ -4,27 +4,19 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Restaurant {
+public class PaymentMethod {
 
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String name;
-    @Column(nullable = false)
-    private String shippingFee;
+    private String description;
 
     @ManyToOne
-    @JoinColumn(name = "kitchen_id")
-    private Kitchen kitchen;
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<PaymentMethod> paymentMethods = new ArrayList<>();
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
 }

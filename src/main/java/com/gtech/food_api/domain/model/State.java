@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Restaurant {
+public class State {
 
     @EqualsAndHashCode.Include
     @Id
@@ -18,13 +18,7 @@ public class Restaurant {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private String shippingFee;
 
-    @ManyToOne
-    @JoinColumn(name = "kitchen_id")
-    private Kitchen kitchen;
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<PaymentMethod> paymentMethods = new ArrayList<>();
+    @OneToMany(mappedBy = "state")
+    private List<City> cities = new ArrayList<>();
 }
