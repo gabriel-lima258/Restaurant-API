@@ -19,6 +19,6 @@ public class State {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "state")
-    private List<City> cities = new ArrayList<>();
+//    @OneToMany(mappedBy = "state")
+//    private List<City> cities = new ArrayList<>();
 }
