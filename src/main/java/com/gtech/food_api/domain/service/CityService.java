@@ -13,6 +13,7 @@ import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +36,8 @@ public class CityService {
 
     @Transactional(readOnly = true)
     public City findById(Long id){
-        City entity = cityRepository.findById(id).orElseThrow(()
+        return cityRepository.findById(id).orElseThrow(()
                 -> new CityNotFoundException(String.format("City with id %s does not exist", id)));
-        return entity;
     }
 
     @Transactional
@@ -71,13 +71,13 @@ public class CityService {
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public void delete(Long id){
+    public void delete(Long id) {
         if (!cityRepository.existsById(id)) {
             throw new CityNotFoundException(String.format("City with id %s does not exist", id));
         }
         try {
             cityRepository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
+        }  catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format("City with id %s cannot be deleted because it is in use", id));
         }
     }

@@ -26,9 +26,8 @@ public class KitchenService {
 
     @Transactional(readOnly = true)
     public Kitchen findById(Long id){
-        Kitchen entity = kitchenRepository.findById(id).orElseThrow(()
+        return kitchenRepository.findById(id).orElseThrow(()
                 -> new KitchenNotFoundException(String.format("Kitchen with id %s does not exist", id)));
-        return entity;
     }
 
     @Transactional

@@ -1,14 +1,20 @@
 package com.gtech.food_api.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
+import org.apache.el.util.ReflectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -47,5 +53,29 @@ public class RestaurantController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         restaurantService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
+        Restaurant restaurant = restaurantService.findById(id);
+        merge(fields, restaurant);
+        restaurantService.update(id, restaurant);
+        return ResponseEntity.ok().build();
+    }
+
+    private void merge(Map<String, Object> fields, Restaurant restaurantDestination) {
+        // usando jackson para converter o map para objeto restaurant
+        ObjectMapper mapper = new ObjectMapper();
+        Restaurant restaurantSource = mapper.convertValue(fields, Restaurant.class);
+
+        fields.forEach((nameField, valueField) -> {
+            // atributo da classe, busca o nome atributo
+            Field field = ReflectionUtils.findField(Restaurant.class, nameField);
+            field.setAccessible(true); // torna o atributo privado acessivel
+            // buscando valor da propriedade
+            Object valueObject = ReflectionUtils.getField(field, restaurantSource);
+            // pegue o nameField e atualize a entidade inserindo o value do filed convertido pelo mapper
+            ReflectionUtils.setField(field, restaurantDestination, valueObject);
+        });
     }
 }

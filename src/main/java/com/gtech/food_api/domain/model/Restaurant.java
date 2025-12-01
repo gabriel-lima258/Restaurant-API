@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Restaurant {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private String shippingFee;
+    private BigDecimal shippingFee;
 
     @ManyToOne
     @JoinColumn(name = "kitchen_id")
