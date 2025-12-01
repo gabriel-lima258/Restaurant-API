@@ -9,10 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
+public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, RestaurantRepositoryQueries {
 
     // find restaurants by shipping fee range
     List<Restaurant> findByShippingFeeBetween(BigDecimal min, BigDecimal max);
+
+    // search by name is implemented on META-INF/orm.xml
+    List<Restaurant> searchByName(String name);
 
     // find first restaurant by name
     Optional<Restaurant> findFirstByNameContaining(String name);
