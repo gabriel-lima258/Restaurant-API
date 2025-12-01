@@ -2,14 +2,17 @@ package com.gtech.food_api.domain.repository;
 
 import com.gtech.food_api.domain.model.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+// JPASpecification permite passar filtros para dentro de metodos, exemplo: findAll(withFreeFee)
 @Repository
-public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, RestaurantRepositoryQueries {
+public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, RestaurantRepositoryQueries,
+        JpaSpecificationExecutor<Restaurant> {
 
     // find restaurants by shipping fee range
     List<Restaurant> findByShippingFeeBetween(BigDecimal min, BigDecimal max);

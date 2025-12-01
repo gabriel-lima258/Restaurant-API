@@ -1,10 +1,13 @@
 package com.gtech.food_api.infrastructure.repository;
 
 import com.gtech.food_api.domain.model.Restaurant;
+import com.gtech.food_api.domain.repository.RestaurantRepository;
 import com.gtech.food_api.domain.repository.RestaurantRepositoryQueries;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -12,12 +15,18 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gtech.food_api.infrastructure.repository.specification.RestaurantFreeFeeSpec.withFreeFee;
+import static com.gtech.food_api.infrastructure.repository.specification.RestaurantFreeFeeSpec.withSimiliarName;
+
 // classe customizada para implementar a interface por métodos JPA, vantagem -> usar codigo java e codigo dinamico
 @Repository
 public class RestaurantRepositoryImpl implements RestaurantRepositoryQueries {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired @Lazy // instancia somente quando for preciso, evita dependencia circular
+    private RestaurantRepository restaurantRepository;
 
     // usando o criteria api para fazer a query complexas e dinamicas
     @Override
@@ -50,5 +59,10 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryQueries {
         // criando a query com o criteria
         var query = entityManager.createQuery(criteria);
         return query.getResultList(); // retorna uma lista de Restaurant com as queries
+    }
+
+    @Override
+    public List<Restaurant> findWithFreeFee(String name) {
+        return restaurantRepository.findAll(withFreeFee().and(withSimiliarName(name)));
     }
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface RestaurantRepositoryQueries {
 
     List<Restaurant> find(String name, BigDecimal minShippingFee, BigDecimal maxShippingFee);
+
+    List<Restaurant> findWithFreeFee(String name);
 }
