@@ -11,7 +11,7 @@ import java.util.Optional;
 
 // JPASpecification permite passar filtros para dentro de metodos, exemplo: findAll(withFreeFee)
 @Repository
-public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, RestaurantRepositoryQueries,
+public interface RestaurantRepository extends CustomJpaRepository<Restaurant, Long>, RestaurantRepositoryQueries,
         JpaSpecificationExecutor<Restaurant> {
 
     // find restaurants by shipping fee range
