@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,15 @@ public class Restaurant {
     private String name;
     @Column(nullable = false)
     private BigDecimal shippingFee;
+
+    @JsonIgnore
+    @CreationTimestamp // data e hora atual
+    @Column(nullable = false, updatable = false, columnDefinition = "datetime")
+    private LocalDateTime createdAt;
+    @JsonIgnore
+    @UpdateTimestamp
+    @Column(nullable = false, columnDefinition = "datetime")
+    private LocalDateTime updatedAt;
 
     @JsonIgnore
     @Embedded // indica que address é um objeto de restaurant
