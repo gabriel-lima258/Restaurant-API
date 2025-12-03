@@ -1,5 +1,6 @@
 package com.gtech.food_api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,7 @@ public class State {
     @Column(nullable = false)
     private String name;
 
-//    @OneToMany(mappedBy = "state")
-//    private List<City> cities = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "state")
+    private List<City> cities = new ArrayList<>();
 }

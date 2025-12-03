@@ -5,7 +5,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Optional;
 
-// repositorio customizado para criar metodos genericos nossos no jpa
+// repositorio customizado para criar metodos genericos nossos no jpa e usar em outros repositorios
 @NoRepositoryBean
 public interface CustomJpaRepository<T, ID> extends JpaRepository<T, ID> {
 

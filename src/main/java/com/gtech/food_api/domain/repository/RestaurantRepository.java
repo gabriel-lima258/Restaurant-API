@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-// JPASpecification permite passar filtros para dentro de metodos, exemplo: findAll(withFreeFee)
+// JPASpecification permite passar filtros para dentro de metodos, exemplo: findAll(findWithFreeFee)
 @Repository
 public interface RestaurantRepository extends CustomJpaRepository<Restaurant, Long>, RestaurantRepositoryQueries,
         JpaSpecificationExecutor<Restaurant> {

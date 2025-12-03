@@ -1,5 +1,6 @@
 package com.gtech.food_api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,10 +23,19 @@ public class Restaurant {
     @Column(nullable = false)
     private BigDecimal shippingFee;
 
+    @JsonIgnore
+    @Embedded // indica que address é um objeto de restaurant
+    private Address address;
+
     @ManyToOne
     @JoinColumn(name = "kitchen_id")
     private Kitchen kitchen;
 
-    @OneToMany(mappedBy = "restaurant")
+    @JsonIgnore // ignorando o relacionamento payment ao buscar o restaurant
+    @ManyToMany
+    @JoinTable(name = "restaurant_payment_method",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "payment_method_id")
+    )
     private List<PaymentMethod> paymentMethods = new ArrayList<>();
 }

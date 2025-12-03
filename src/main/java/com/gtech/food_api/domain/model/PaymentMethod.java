@@ -15,8 +15,4 @@ public class PaymentMethod {
     private Long id;
     @Column(nullable = false)
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private Restaurant restaurant;
 }
