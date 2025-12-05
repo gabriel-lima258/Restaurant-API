@@ -30,11 +30,6 @@ public class CityService {
         return cityRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public City findById(Long id){
-        return findOrFail(id);
-    }
-
     @Transactional
     public City save(City city) {
         // Busca o estado pelo service para evitar duplicação de código
@@ -71,6 +66,7 @@ public class CityService {
         }
     }
 
+    @Transactional(readOnly = true)
     public City findOrFail(Long cityId) {
         return cityRepository.findById(cityId).orElseThrow(()
                 -> new ResourceNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, cityId)));

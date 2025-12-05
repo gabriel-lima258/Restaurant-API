@@ -26,7 +26,7 @@ public class KitchenController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Kitchen> findById(@PathVariable Long id) {
-        Kitchen entity = kitchenService.findById(id);
+        Kitchen entity = kitchenService.findOrFail(id);
         return ResponseEntity.ok().body(entity);
     }
 

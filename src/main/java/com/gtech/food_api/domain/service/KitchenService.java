@@ -26,11 +26,6 @@ public class KitchenService {
         return kitchenRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public Kitchen findById(Long id){
-        return findOrFail(id);
-    }
-
     @Transactional
     public Kitchen save(Kitchen kitchen) {
         return kitchenRepository.save(kitchen);
@@ -55,6 +50,7 @@ public class KitchenService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Kitchen findOrFail(Long kitchenId) {
         return kitchenRepository.findById(kitchenId).orElseThrow(()
                 -> new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, kitchenId)));

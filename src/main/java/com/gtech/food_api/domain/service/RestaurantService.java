@@ -30,11 +30,6 @@ public class RestaurantService {
         return restaurantRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public Restaurant findById(Long id){
-        return findOrFail(id);
-    }
-
     @Transactional
     public Restaurant save(Restaurant restaurant) {
         Long kitchenId = restaurant.getKitchen().getId();
@@ -69,6 +64,7 @@ public class RestaurantService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Restaurant findOrFail(Long restaurantId) {
         return restaurantRepository.findById(restaurantId).orElseThrow(()
                 -> new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, restaurantId)));

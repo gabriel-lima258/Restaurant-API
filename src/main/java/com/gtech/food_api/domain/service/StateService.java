@@ -26,11 +26,6 @@ public class StateService {
         return stateRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public State findById(Long id){
-        return findOrFail(id);
-    }
-
     @Transactional
     public State save(State state) {
         return stateRepository.save(state);
@@ -55,6 +50,7 @@ public class StateService {
         }
     }
 
+    @Transactional(readOnly = true)
     public State findOrFail(Long stateId) {
         return stateRepository.findById(stateId).orElseThrow(()
                 -> new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, stateId)));

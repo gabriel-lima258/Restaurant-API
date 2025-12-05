@@ -31,7 +31,7 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> findById(@PathVariable Long id) {
-        Restaurant entity = restaurantService.findById(id);
+        Restaurant entity = restaurantService.findOrFail(id);
         return ResponseEntity.ok().body(entity);
     }
 
@@ -57,7 +57,7 @@ public class RestaurantController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
-        Restaurant restaurant = restaurantService.findById(id);
+        Restaurant restaurant = restaurantService.findOrFail(id);
         merge(fields, restaurant);
         restaurantService.update(id, restaurant);
         return ResponseEntity.ok().build();

@@ -25,7 +25,7 @@ public class StateController {
 
     @GetMapping("/{id}")
     public ResponseEntity<State> findById(@PathVariable Long id) {
-        State entity = stateService.findById(id);
+        State entity = stateService.findOrFail(id);
         return ResponseEntity.ok().body(entity);
     }
 

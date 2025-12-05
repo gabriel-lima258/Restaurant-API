@@ -25,7 +25,7 @@ public class CityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<City> findById(@PathVariable Long id) {
-        City entity = cityService.findById(id);
+        City entity = cityService.findOrFail(id);
         return ResponseEntity.ok().body(entity);
     }
 
