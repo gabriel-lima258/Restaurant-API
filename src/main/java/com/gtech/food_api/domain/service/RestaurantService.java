@@ -2,11 +2,9 @@ package com.gtech.food_api.domain.service;
 
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.Restaurant;
-import com.gtech.food_api.domain.repository.KitchenRepository;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -20,13 +18,12 @@ public class RestaurantService {
 
     private static final String RESTAURANT_NOT_FOUND_MESSAGE = "Restaurant with id %d does not exist";
     private static final String RESTAURANT_IN_USE_MESSAGE = "Restaurant with id %d cannot be deleted because it is in use";
-    private static final String KITCHEN_NOT_FOUND_MESSAGE = "Kitchen with id %d does not exist";
 
     @Autowired
     private RestaurantRepository restaurantRepository;
 
     @Autowired
-    private KitchenRepository kitchenRepository;
+    private KitchenService kitchenService;
 
     @Transactional(readOnly = true)
     public List<Restaurant> listAll(){
@@ -35,42 +32,29 @@ public class RestaurantService {
 
     @Transactional(readOnly = true)
     public Restaurant findById(Long id){
-        Restaurant entity = restaurantRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, id)));
-        return entity;
+        return findOrFail(id);
     }
 
     @Transactional
     public Restaurant save(Restaurant restaurant) {
-        Restaurant entity = new Restaurant();
-        entity.setName(restaurant.getName());
-        entity.setShippingFee(restaurant.getShippingFee());
-
-        Kitchen kitchen = kitchenRepository.findById(restaurant.getKitchen().getId()).orElseThrow(
-                () -> new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, restaurant.getKitchen().getId()))
-        );
-        entity.setKitchen(kitchen);
-
-        return restaurantRepository.save(entity);
+        Long kitchenId = restaurant.getKitchen().getId();
+        Kitchen kitchen = kitchenService.findOrFail(kitchenId);
+        restaurant.setKitchen(kitchen);
+        return restaurantRepository.save(restaurant);
     }
 
     @Transactional
     public Restaurant update(Long id, Restaurant restaurant) {
-        try {
-            Restaurant entity = findById(id);
-            entity.setName(restaurant.getName());
-            entity.setShippingFee(restaurant.getShippingFee());
+        Restaurant entity = findOrFail(id);
+        entity.setName(restaurant.getName());
+        entity.setShippingFee(restaurant.getShippingFee());
 
-            Kitchen kitchen = kitchenRepository.findById(restaurant.getKitchen().getId()).orElseThrow(
-                    () -> new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, restaurant.getKitchen().getId()))
-            );
+        Long kitchenId = restaurant.getKitchen().getId();
+        Kitchen kitchen = kitchenService.findOrFail(kitchenId);
 
-            entity.setKitchen(kitchen);
+        entity.setKitchen(kitchen);
 
-            return restaurantRepository.save(entity);
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, id));
-        }
+        return restaurantRepository.save(entity);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -83,5 +67,10 @@ public class RestaurantService {
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(RESTAURANT_IN_USE_MESSAGE, id));
         }
+    }
+
+    public Restaurant findOrFail(Long restaurantId) {
+        return restaurantRepository.findById(restaurantId).orElseThrow(()
+                -> new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, restaurantId)));
     }
 }

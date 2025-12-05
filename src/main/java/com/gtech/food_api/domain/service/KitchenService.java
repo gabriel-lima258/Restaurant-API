@@ -4,7 +4,6 @@ import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.repository.KitchenRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -29,27 +28,19 @@ public class KitchenService {
 
     @Transactional(readOnly = true)
     public Kitchen findById(Long id){
-        return kitchenRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, id)));
+        return findOrFail(id);
     }
 
     @Transactional
     public Kitchen save(Kitchen kitchen) {
-        Kitchen entity = new Kitchen();
-        entity.setName(kitchen.getName());
-        kitchenRepository.save(entity);
-        return kitchenRepository.save(entity);
+        return kitchenRepository.save(kitchen);
     }
 
     @Transactional
     public Kitchen update(Long id, Kitchen kitchen) {
-        try {
-            Kitchen entity = findById(id);
-            entity.setName(kitchen.getName());
-            return kitchenRepository.save(entity);
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, id));
-        }
+        Kitchen entity = findOrFail(id);
+        entity.setName(kitchen.getName());
+        return kitchenRepository.save(entity);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -62,5 +53,10 @@ public class KitchenService {
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(KITCHEN_IN_USE_MESSAGE, id));
         }
+    }
+
+    public Kitchen findOrFail(Long kitchenId) {
+        return kitchenRepository.findById(kitchenId).orElseThrow(()
+                -> new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, kitchenId)));
     }
 }

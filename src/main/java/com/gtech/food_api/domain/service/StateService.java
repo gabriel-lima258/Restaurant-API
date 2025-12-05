@@ -4,7 +4,6 @@ import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.repository.StateRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -29,28 +28,19 @@ public class StateService {
 
     @Transactional(readOnly = true)
     public State findById(Long id){
-        State entity = stateRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, id)));
-        return entity;
+        return findOrFail(id);
     }
 
     @Transactional
     public State save(State state) {
-        State entity = new State();
-        entity.setName(state.getName());
-
-        return stateRepository.save(entity);
+        return stateRepository.save(state);
     }
 
     @Transactional
     public State update(Long id, State state) {
-        try {
-            State entity = findById(id);
-            entity.setName(state.getName());
-            return stateRepository.save(entity);
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, id));
-        }
+        State entity = findOrFail(id);
+        entity.setName(state.getName());
+        return stateRepository.save(entity);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -63,5 +53,10 @@ public class StateService {
         } catch (DataIntegrityViolationException e) {   
             throw new EntityInUseException(String.format(STATE_IN_USE_MESSAGE, id));
         }
+    }
+
+    public State findOrFail(Long stateId) {
+        return stateRepository.findById(stateId).orElseThrow(()
+                -> new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, stateId)));
     }
 }
