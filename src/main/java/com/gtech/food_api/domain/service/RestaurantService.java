@@ -5,8 +5,7 @@ import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.repository.KitchenRepository;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
-import com.gtech.food_api.domain.service.exceptions.KitchenNotFoundException;
-import com.gtech.food_api.domain.service.exceptions.RestaurantNotFoundException;
+import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,7 +32,7 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public Restaurant findById(Long id){
         Restaurant entity = restaurantRepository.findById(id).orElseThrow(()
-                -> new RestaurantNotFoundException(String.format("Restaurant with id %s does not exist", id)));
+                -> new ResourceNotFoundException(String.format("Restaurant with id %s does not exist", id)));
         return entity;
     }
 
@@ -44,7 +43,7 @@ public class RestaurantService {
         entity.setShippingFee(restaurant.getShippingFee());
 
         Kitchen kitchen = kitchenRepository.findById(restaurant.getKitchen().getId()).orElseThrow(
-                () -> new KitchenNotFoundException(String.format("Kitchen with id %s does not exist", restaurant.getKitchen().getId()))
+                () -> new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", restaurant.getKitchen().getId()))
         );
         entity.setKitchen(kitchen);
 
@@ -59,21 +58,21 @@ public class RestaurantService {
             entity.setShippingFee(restaurant.getShippingFee());
 
             Kitchen kitchen = kitchenRepository.findById(restaurant.getKitchen().getId()).orElseThrow(
-                    () -> new KitchenNotFoundException(String.format("Kitchen with id %s does not exist", restaurant.getKitchen().getId()))
+                    () -> new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", restaurant.getKitchen().getId()))
             );
 
             entity.setKitchen(kitchen);
 
             return restaurantRepository.save(entity);
         } catch (EntityNotFoundException e) {
-            throw new RestaurantNotFoundException(String.format("Restaurant with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format("Restaurant with id %s does not exist", id));
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id){
         if (!restaurantRepository.existsById(id)) {
-            throw new RestaurantNotFoundException(String.format("Restaurant with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format("Restaurant with id %s does not exist", id));
         }
         try {
             restaurantRepository.deleteById(id);

@@ -3,7 +3,7 @@ package com.gtech.food_api.domain.service;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.repository.KitchenRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
-import com.gtech.food_api.domain.service.exceptions.KitchenNotFoundException;
+import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,7 +27,7 @@ public class KitchenService {
     @Transactional(readOnly = true)
     public Kitchen findById(Long id){
         return kitchenRepository.findById(id).orElseThrow(()
-                -> new KitchenNotFoundException(String.format("Kitchen with id %s does not exist", id)));
+                -> new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", id)));
     }
 
     @Transactional
@@ -45,14 +45,14 @@ public class KitchenService {
             entity.setName(kitchen.getName());
             return kitchenRepository.save(entity);
         } catch (EntityNotFoundException e) {
-            throw new KitchenNotFoundException(String.format("Kitchen with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", id));
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id){
         if (!kitchenRepository.existsById(id)) {
-            throw new KitchenNotFoundException(String.format("Kitchen with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", id));
         }
         try {
             kitchenRepository.deleteById(id);

@@ -3,7 +3,7 @@ package com.gtech.food_api.domain.service;
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.repository.StateRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
-import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
+import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,7 +27,7 @@ public class StateService {
     @Transactional(readOnly = true)
     public State findById(Long id){
         State entity = stateRepository.findById(id).orElseThrow(()
-                -> new StateNotFoundException(String.format("State with id %s does not exist", id)));
+                -> new ResourceNotFoundException(String.format("State with id %s does not exist", id)));
         return entity;
     }
 
@@ -46,14 +46,14 @@ public class StateService {
             entity.setName(state.getName());
             return stateRepository.save(entity);
         } catch (EntityNotFoundException e) {
-            throw new StateNotFoundException(String.format("State with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format("State with id %s does not exist", id));
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id){
         if (!stateRepository.existsById(id)) {
-            throw new StateNotFoundException(String.format("State with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format("State with id %s does not exist", id));
         }
         try {
             stateRepository.deleteById(id);
