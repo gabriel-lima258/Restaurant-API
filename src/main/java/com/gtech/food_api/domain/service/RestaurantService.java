@@ -18,9 +18,9 @@ import java.util.List;
 @Service
 public class RestaurantService {
 
-    private static final String RESTAURANT_NOT_FOUND_MESSAGE = "Restaurant with id %s does not exist";
-    private static final String RESTAURANT_IN_USE_MESSAGE = "Restaurant with id %s cannot be deleted because it is in use";
-    private static final String KITCHEN_NOT_FOUND_MESSAGE = "Kitchen with id %s does not exist";
+    private static final String RESTAURANT_NOT_FOUND_MESSAGE = "Restaurant with id %d does not exist";
+    private static final String RESTAURANT_IN_USE_MESSAGE = "Restaurant with id %d cannot be deleted because it is in use";
+    private static final String KITCHEN_NOT_FOUND_MESSAGE = "Kitchen with id %d does not exist";
 
     @Autowired
     private RestaurantRepository restaurantRepository;

@@ -16,8 +16,8 @@ import java.util.List;
 @Service
 public class StateService {
 
-    private static final String STATE_NOT_FOUND_MESSAGE = "State with id %s does not exist";
-    private static final String STATE_IN_USE_MESSAGE = "State with id %s cannot be deleted because it is in use";
+    private static final String STATE_NOT_FOUND_MESSAGE = "State with id %d does not exist";
+    private static final String STATE_IN_USE_MESSAGE = "State with id %d cannot be deleted because it is in use";
 
     @Autowired
     private StateRepository stateRepository;
