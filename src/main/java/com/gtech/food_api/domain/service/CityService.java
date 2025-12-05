@@ -18,6 +18,10 @@ import java.util.List;
 @Service
 public class CityService {
 
+    private static final String CITY_NOT_FOUND_MESSAGE = "City with id %s does not exist";
+    private static final String CITY_IN_USE_MESSAGE = "City with id %s cannot be deleted because it is in use";
+    private static final String STATE_NOT_FOUND_MESSAGE = "State with id %s does not exist";
+
     @Autowired
     private CityRepository cityRepository;
 
@@ -32,7 +36,7 @@ public class CityService {
     @Transactional(readOnly = true)
     public City findById(Long id){
         return cityRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(String.format("City with id %s does not exist", id)));
+                -> new ResourceNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, id)));
     }
 
     @Transactional
@@ -41,7 +45,7 @@ public class CityService {
         entity.setName(city.getName());
 
         State state = stateRepository.findById(city.getState().getId()).orElseThrow(
-                () -> new ResourceNotFoundException(String.format("State with id %s does not exist", city.getState().getId()))
+                () -> new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, city.getState().getId()))
         );
 
         entity.setState(state);
@@ -55,25 +59,25 @@ public class CityService {
             entity.setName(city.getName());
 
             State state = stateRepository.findById(city.getState().getId()).orElseThrow(
-                    () -> new ResourceNotFoundException(String.format("State with id %s does not exist", city.getState().getId()))
+                    () -> new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, city.getState().getId()))
             );
 
             entity.setState(state);
             return cityRepository.save(entity);
         } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(String.format("City with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, id));
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!cityRepository.existsById(id)) {
-            throw new ResourceNotFoundException(String.format("City with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, id));
         }
         try {
             cityRepository.deleteById(id);
         }  catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("City with id %s cannot be deleted because it is in use", id));
+            throw new EntityInUseException(String.format(CITY_IN_USE_MESSAGE, id));
         }
     }
 }

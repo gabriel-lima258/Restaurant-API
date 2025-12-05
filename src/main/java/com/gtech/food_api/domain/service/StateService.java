@@ -16,6 +16,9 @@ import java.util.List;
 @Service
 public class StateService {
 
+    private static final String STATE_NOT_FOUND_MESSAGE = "State with id %s does not exist";
+    private static final String STATE_IN_USE_MESSAGE = "State with id %s cannot be deleted because it is in use";
+
     @Autowired
     private StateRepository stateRepository;
 
@@ -27,7 +30,7 @@ public class StateService {
     @Transactional(readOnly = true)
     public State findById(Long id){
         State entity = stateRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(String.format("State with id %s does not exist", id)));
+                -> new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, id)));
         return entity;
     }
 
@@ -46,19 +49,19 @@ public class StateService {
             entity.setName(state.getName());
             return stateRepository.save(entity);
         } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(String.format("State with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, id));
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id){
         if (!stateRepository.existsById(id)) {
-            throw new ResourceNotFoundException(String.format("State with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, id));
         }
         try {
             stateRepository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("State with id %s cannot be deleted because it is in use", id));
+        } catch (DataIntegrityViolationException e) {   
+            throw new EntityInUseException(String.format(STATE_IN_USE_MESSAGE, id));
         }
     }
 }

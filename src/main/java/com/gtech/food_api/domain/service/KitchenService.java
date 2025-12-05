@@ -16,6 +16,9 @@ import java.util.List;
 @Service
 public class KitchenService {
 
+    private static final String KITCHEN_NOT_FOUND_MESSAGE = "Kitchen with id %s does not exist";
+    private static final String KITCHEN_IN_USE_MESSAGE = "Kitchen with id %s cannot be deleted because it is in use";
+
     @Autowired
     private KitchenRepository kitchenRepository;
 
@@ -27,7 +30,7 @@ public class KitchenService {
     @Transactional(readOnly = true)
     public Kitchen findById(Long id){
         return kitchenRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", id)));
+                -> new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, id)));
     }
 
     @Transactional
@@ -45,19 +48,19 @@ public class KitchenService {
             entity.setName(kitchen.getName());
             return kitchenRepository.save(entity);
         } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, id));
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id){
         if (!kitchenRepository.existsById(id)) {
-            throw new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, id));
         }
         try {
             kitchenRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("Kitchen with id %s cannot be deleted because it is in use", id));
+            throw new EntityInUseException(String.format(KITCHEN_IN_USE_MESSAGE, id));
         }
     }
 }

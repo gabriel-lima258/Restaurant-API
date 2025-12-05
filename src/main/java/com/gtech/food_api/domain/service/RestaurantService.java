@@ -18,6 +18,10 @@ import java.util.List;
 @Service
 public class RestaurantService {
 
+    private static final String RESTAURANT_NOT_FOUND_MESSAGE = "Restaurant with id %s does not exist";
+    private static final String RESTAURANT_IN_USE_MESSAGE = "Restaurant with id %s cannot be deleted because it is in use";
+    private static final String KITCHEN_NOT_FOUND_MESSAGE = "Kitchen with id %s does not exist";
+
     @Autowired
     private RestaurantRepository restaurantRepository;
 
@@ -32,7 +36,7 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public Restaurant findById(Long id){
         Restaurant entity = restaurantRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException(String.format("Restaurant with id %s does not exist", id)));
+                -> new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, id)));
         return entity;
     }
 
@@ -43,7 +47,7 @@ public class RestaurantService {
         entity.setShippingFee(restaurant.getShippingFee());
 
         Kitchen kitchen = kitchenRepository.findById(restaurant.getKitchen().getId()).orElseThrow(
-                () -> new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", restaurant.getKitchen().getId()))
+                () -> new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, restaurant.getKitchen().getId()))
         );
         entity.setKitchen(kitchen);
 
@@ -58,26 +62,26 @@ public class RestaurantService {
             entity.setShippingFee(restaurant.getShippingFee());
 
             Kitchen kitchen = kitchenRepository.findById(restaurant.getKitchen().getId()).orElseThrow(
-                    () -> new ResourceNotFoundException(String.format("Kitchen with id %s does not exist", restaurant.getKitchen().getId()))
+                    () -> new ResourceNotFoundException(String.format(KITCHEN_NOT_FOUND_MESSAGE, restaurant.getKitchen().getId()))
             );
 
             entity.setKitchen(kitchen);
 
             return restaurantRepository.save(entity);
         } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(String.format("Restaurant with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, id));
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id){
         if (!restaurantRepository.existsById(id)) {
-            throw new ResourceNotFoundException(String.format("Restaurant with id %s does not exist", id));
+            throw new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, id));
         }
         try {
             restaurantRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("Restaurant with id %s cannot be deleted because it is in use", id));
+            throw new EntityInUseException(String.format(RESTAURANT_IN_USE_MESSAGE, id));
         }
     }
 }
