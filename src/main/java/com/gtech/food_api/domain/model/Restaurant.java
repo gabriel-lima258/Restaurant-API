@@ -1,6 +1,7 @@
 package com.gtech.food_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,15 +40,19 @@ public class Restaurant {
     @Embedded // indica que address é um objeto de restaurant
     private Address address;
 
-    @ManyToOne
+    @ManyToOne // por padrão é eager loading, busca no banco mesmo sem precisar
     @JoinColumn(name = "kitchen_id")
     private Kitchen kitchen;
 
     @JsonIgnore // ignorando o relacionamento payment ao buscar o restaurant
-    @ManyToMany
+    @ManyToMany // por padrão é lazy loading, busca no banco por demanda
     @JoinTable(name = "restaurant_payment_method",
             joinColumns = @JoinColumn(name = "restaurant_id"),
             inverseJoinColumns = @JoinColumn(name = "payment_method_id")
     )
     private List<PaymentMethod> paymentMethods = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "restaurant")
+    List<Product> products = new ArrayList<>();
 }

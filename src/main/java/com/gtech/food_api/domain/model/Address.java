@@ -1,9 +1,6 @@
 package com.gtech.food_api.domain.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 // classe de componente de restaurant, ao inves de criar todos os atributos diretamente na classe Restaurant
@@ -22,7 +19,7 @@ public class Address {
     private String complement;
     @Column(name = "address_neighborhood")
     private String neighborhood;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     private City city;
 }
