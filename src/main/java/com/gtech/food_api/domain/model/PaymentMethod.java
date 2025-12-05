@@ -1,5 +1,10 @@
 package com.gtech.food_api.domain.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,4 +20,9 @@ public class PaymentMethod {
     private Long id;
     @Column(nullable = false)
     private String description;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "paymentMethod")
+    private List<Order> orders = new ArrayList<>();
+    
 }

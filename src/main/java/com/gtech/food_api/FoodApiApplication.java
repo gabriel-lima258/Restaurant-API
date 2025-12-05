@@ -1,9 +1,10 @@
 package com.gtech.food_api;
 
-import com.gtech.food_api.infrastructure.repository.specification.CustomJpaRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import com.gtech.food_api.infra.repository.specification.CustomJpaRepositoryImpl;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class) // definindo nosso jpa como default

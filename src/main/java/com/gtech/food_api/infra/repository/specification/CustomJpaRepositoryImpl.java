@@ -1,4 +1,4 @@
-package com.gtech.food_api.infrastructure.repository.specification;
+package com.gtech.food_api.infra.repository.specification;
 
 import com.gtech.food_api.domain.repository.CustomJpaRepository;
 import jakarta.persistence.EntityManager;

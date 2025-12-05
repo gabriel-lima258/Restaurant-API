@@ -1,4 +1,4 @@
-package com.gtech.food_api.infrastructure.repository;
+package com.gtech.food_api.infra.repository;
 
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import static com.gtech.food_api.infra.repository.specification.RestaurantFreeFeeSpec.withFreeFee;
+import static com.gtech.food_api.infra.repository.specification.RestaurantFreeFeeSpec.withSimiliarName;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.gtech.food_api.infrastructure.repository.specification.RestaurantFreeFeeSpec.withFreeFee;
-import static com.gtech.food_api.infrastructure.repository.specification.RestaurantFreeFeeSpec.withSimiliarName;
 
 // classe customizada para implementar a interface por métodos JPA, vantagem -> usar codigo java e codigo dinamico
 @Repository
