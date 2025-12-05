@@ -9,15 +9,15 @@ import lombok.Data;
 @Embeddable // embeddable = atributo de outra entidade incorporada
 public class Address {
 
-    @Column(name = "address_cep")
+    @Column(name = "address_cep", nullable = false)
     private String cep;
-    @Column(name = "address_public_place")
+    @Column(name = "address_public_place", nullable = false)
     private String publicPlace;
-    @Column(name = "address_number")
+    @Column(name = "address_number", nullable = false)
     private String number;
     @Column(name = "address_complement")
     private String complement;
-    @Column(name = "address_neighborhood")
+    @Column(name = "address_neighborhood", nullable = false)
     private String neighborhood;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")

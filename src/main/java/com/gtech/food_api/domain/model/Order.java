@@ -52,15 +52,15 @@ public class Order {
     private OrderStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "user_client_id")
+    @JoinColumn(name = "client_id")
     private User client;
 
     @ManyToOne
-    @JoinColumn(name = "restaurant_order_id")
+    @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
     @ManyToOne
-    @JoinColumn(name = "payment_method_order_id")
+    @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
     @JsonIgnore

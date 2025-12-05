@@ -17,6 +17,9 @@ delete from restaurant;
 delete from restaurant_payment_method;
 delete from `user`;
 delete from group_user;
+delete from order_item;
+delete from `order`;
+
 
 set foreign_key_checks = 1;
 
