@@ -1,7 +1,6 @@
 package com.gtech.food_api.api.controller;
 
 import com.gtech.food_api.domain.model.Kitchen;
-import com.gtech.food_api.domain.repository.KitchenRepository;
 import com.gtech.food_api.domain.service.KitchenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

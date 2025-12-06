@@ -3,9 +3,10 @@ package com.gtech.food_api.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
-import org.apache.el.util.ReflectionUtil;
+import com.gtech.food_api.domain.service.exceptions.BusinessException;
+import com.gtech.food_api.domain.service.exceptions.KitchenNotFoundException;
+import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +38,25 @@ public class RestaurantController {
 
     @PostMapping
     public ResponseEntity<Restaurant> save(@RequestBody Restaurant restaurant) {
-        Restaurant entity = restaurantService.save(restaurant);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(restaurant.getId()).toUri();
-        return ResponseEntity.created(uri).body(entity);
+        try {
+            Restaurant entity = restaurantService.save(restaurant);
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(restaurant.getId()).toUri();
+            return ResponseEntity.created(uri).body(entity);
+        } catch (KitchenNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
-        Restaurant entity = restaurantService.update(id, restaurant);
-        return ResponseEntity.ok().body(entity);
+        Restaurant entity = restaurantService.findOrFail(id);
+        try {
+            restaurantService.update(id, restaurant);
+            return ResponseEntity.ok().body(entity);
+        } catch (KitchenNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
     }
 
     @DeleteMapping("/{id}")

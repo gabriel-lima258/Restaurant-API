@@ -3,11 +3,10 @@ package com.gtech.food_api.domain.service;
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.repository.StateRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
-import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
+import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.List;
 @Service
 public class StateService {
 
-    private static final String STATE_NOT_FOUND_MESSAGE = "State with id %d does not exist";
     private static final String STATE_IN_USE_MESSAGE = "State with id %d cannot be deleted because it is in use";
 
     @Autowired
@@ -38,13 +36,15 @@ public class StateService {
         return stateRepository.save(entity);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional
     public void delete(Long id){
         if (!stateRepository.existsById(id)) {
-            throw new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, id));
+            throw new StateNotFoundException(id);
         }
         try {
             stateRepository.deleteById(id);
+            // flush força a violação de FK ainda dentro da transação
+            stateRepository.flush();
         } catch (DataIntegrityViolationException e) {   
             throw new EntityInUseException(String.format(STATE_IN_USE_MESSAGE, id));
         }
@@ -53,6 +53,6 @@ public class StateService {
     @Transactional(readOnly = true)
     public State findOrFail(Long stateId) {
         return stateRepository.findById(stateId).orElseThrow(()
-                -> new ResourceNotFoundException(String.format(STATE_NOT_FOUND_MESSAGE, stateId)));
+                -> new StateNotFoundException(stateId));
     }
 }

@@ -3,12 +3,11 @@ package com.gtech.food_api.domain.service;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.repository.CityRepository;
-import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
+import com.gtech.food_api.domain.service.exceptions.CityNotFoundException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.List;
 @Service
 public class CityService {
 
-    private static final String CITY_NOT_FOUND_MESSAGE = "City with id %d does not exist";
     private static final String CITY_IN_USE_MESSAGE = "City with id %d cannot be deleted because it is in use";
     
     @Autowired
@@ -54,13 +52,15 @@ public class CityService {
         return cityRepository.save(entity);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional
     public void delete(Long id) {
         if (!cityRepository.existsById(id)) {
-            throw new ResourceNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, id));
+            throw new CityNotFoundException(id);
         }
         try {
             cityRepository.deleteById(id);
+            // flush força a violação de FK ainda dentro da transação
+            cityRepository.flush();
         }  catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(CITY_IN_USE_MESSAGE, id));
         }
@@ -69,6 +69,6 @@ public class CityService {
     @Transactional(readOnly = true)
     public City findOrFail(Long cityId) {
         return cityRepository.findById(cityId).orElseThrow(()
-                -> new ResourceNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, cityId)));
+                -> new CityNotFoundException(cityId));
     }
 }

@@ -4,11 +4,10 @@ import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
-import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
+import com.gtech.food_api.domain.service.exceptions.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.List;
 @Service
 public class RestaurantService {
 
-    private static final String RESTAURANT_NOT_FOUND_MESSAGE = "Restaurant with id %d does not exist";
     private static final String RESTAURANT_IN_USE_MESSAGE = "Restaurant with id %d cannot be deleted because it is in use";
 
     @Autowired
@@ -52,13 +50,15 @@ public class RestaurantService {
         return restaurantRepository.save(entity);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional
     public void delete(Long id){
-        if (!restaurantRepository.existsById(id)) {
-            throw new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, id));
-        }
+            if (!restaurantRepository.existsById(id)) {
+                throw new RestaurantNotFoundException(id);
+            }
         try {
             restaurantRepository.deleteById(id);
+            // flush força a violação de FK ainda dentro da transação
+            restaurantRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(RESTAURANT_IN_USE_MESSAGE, id));
         }
@@ -67,6 +67,6 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public Restaurant findOrFail(Long restaurantId) {
         return restaurantRepository.findById(restaurantId).orElseThrow(()
-                -> new ResourceNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, restaurantId)));
+                -> new RestaurantNotFoundException(restaurantId));
     }
 }

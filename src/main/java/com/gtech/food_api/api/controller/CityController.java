@@ -2,6 +2,8 @@ package com.gtech.food_api.api.controller;
 
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.service.CityService;
+import com.gtech.food_api.domain.service.exceptions.BusinessException;
+import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,16 +33,26 @@ public class CityController {
 
     @PostMapping
     public ResponseEntity<City> save(@RequestBody City state) {
-        City entity = cityService.save(state);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(state.getId()).toUri();
-        return ResponseEntity.created(uri).body(entity);
+        try {
+            City entity = cityService.save(state);
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(state.getId()).toUri();
+            return ResponseEntity.created(uri).body(entity);
+        } catch (StateNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<City> update(@PathVariable Long id, @RequestBody City state) {
-        City entity = cityService.update(id, state);
-        return ResponseEntity.ok().body(entity);
+        // city existe?
+        City entity = cityService.findOrFail(id);
+        try {
+            cityService.update(id, state); // existe, atualiza
+            return ResponseEntity.ok().body(entity);
+        } catch (StateNotFoundException e) { // existe, mas state id não existe
+            throw new BusinessException(e.getMessage(), e);
+        }
     }
 
     @DeleteMapping("/{id}")

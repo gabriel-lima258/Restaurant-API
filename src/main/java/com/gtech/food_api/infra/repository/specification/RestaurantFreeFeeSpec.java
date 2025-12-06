@@ -1,10 +1,6 @@
 package com.gtech.food_api.infra.repository.specification;
 
 import com.gtech.food_api.domain.model.Restaurant;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
