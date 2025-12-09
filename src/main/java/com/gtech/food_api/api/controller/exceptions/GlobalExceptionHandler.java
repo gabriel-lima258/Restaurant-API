@@ -1,10 +1,13 @@
 package com.gtech.food_api.api.controller.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 
+import java.util.List;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -82,9 +85,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // pega a causa raiz da exceção
         Throwable rootCause = ExceptionUtils.getRootCause(ex);
 
+        // verifica se o erro é de formato invalido
         if (rootCause instanceof InvalidFormatException) {
             return handleInvalidFormat((InvalidFormatException) rootCause, headers, status, request);
-        }
+        // verifica se o erro é de propriedade nao encontrada
+        } else if (rootCause instanceof PropertyBindingException) {
+            return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
+        } 
 
         ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
         String detail = "The request body is not valid. Fix the sintax and try again.";
@@ -98,9 +105,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         // ex: "restaurant.kitchen.id"
-        String path = ex.getPath().stream()
-        .map(ref -> ref.getFieldName())
-        .collect(Collectors.joining("."));
+        String path = joinPath(ex.getPath());
 
         ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
         String detail = String.format("Property field '%s' has an invalid value '%s'. Expected type: %s, fix and try again.", 
@@ -113,6 +118,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, body, headers, status, request);
     }
 
+    // classe para tratar erro de binding de propriedade no JSON body
+    private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        String path = joinPath(ex.getPath());
+
+        ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
+
+        String detail = String.format("Property field '%s' does not exist. Fix or remove the property and try again.", path);
+        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail).build();
+
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
     // classe auxiliar para criar o body da resposta
     public ExceptionsDTO.ExceptionsDTOBuilder createBuilder(HttpStatus status, ExceptionType type, String detail) {
         return ExceptionsDTO.builder()
@@ -120,6 +137,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .title(type.getTitle())
                 .status(status.value())
                 .detail(detail);
+    }
+
+    private String joinPath(List<Reference> path) {
+        return path.stream()
+        .map(Reference::getFieldName)
+        .collect(Collectors.joining("."));
     }
 
 }
