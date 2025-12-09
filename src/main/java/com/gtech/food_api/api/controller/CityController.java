@@ -1,15 +1,20 @@
 package com.gtech.food_api.api.controller;
 
+import com.gtech.food_api.api.controller.exceptions.ControllerExceptionsDTO;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
+import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -59,5 +64,15 @@ public class CityController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         cityService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handleEntityNotFound(EntityNotFoundException ex) {
+        ControllerExceptionsDTO exceptions = ControllerExceptionsDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .message(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptions);
     }
 }

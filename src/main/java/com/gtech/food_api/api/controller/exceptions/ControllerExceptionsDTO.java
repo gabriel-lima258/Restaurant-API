@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class ControllerExceptions {
+public class
+ControllerExceptionsDTO {
 
     private LocalDateTime timestamp;
     private String message;
