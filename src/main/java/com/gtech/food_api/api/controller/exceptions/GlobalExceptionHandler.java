@@ -1,12 +1,18 @@
 package com.gtech.food_api.api.controller.exceptions;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
+
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -70,6 +76,43 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
+    // sobreescreve erro de body nao legivel (json invalido)
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        // pega a causa raiz da exceção
+        Throwable rootCause = ExceptionUtils.getRootCause(ex);
+
+        if (rootCause instanceof InvalidFormatException) {
+            return handleInvalidFormat((InvalidFormatException) rootCause, headers, status, request);
+        }
+
+        ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
+        String detail = "The request body is not valid. Fix the sintax and try again.";
+
+        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail).build();
+
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    // classe para tratar erro de preenchimento de valores invalidos do body
+    private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        // ex: "restaurant.kitchen.id"
+        String path = ex.getPath().stream()
+        .map(ref -> ref.getFieldName())
+        .collect(Collectors.joining("."));
+
+        ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
+        String detail = String.format("Property field '%s' has an invalid value '%s'. Expected type: %s, fix and try again.", 
+        path, // field name
+        ex.getValue(), // value invalid
+        ex.getTargetType().getSimpleName()); // expected type
+
+        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail).build();
+
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
     // classe auxiliar para criar o body da resposta
     public ExceptionsDTO.ExceptionsDTOBuilder createBuilder(HttpStatus status, ExceptionType type, String detail) {
         return ExceptionsDTO.builder()
@@ -78,4 +121,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(status.value())
                 .detail(detail);
     }
+
 }
