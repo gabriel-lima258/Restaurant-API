@@ -6,6 +6,7 @@ import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import java.util.stream.Collectors;
@@ -21,16 +22,36 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 // ResponseEntityException Handler para tratar os erros padroes do Spring
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    public static final String ERROR_MESSAGE = "Occured an unexpected internal error, try again, if the problem persists, contact the support.";
+
+    // classe para tratar erro geral do sistema
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ExceptionType type = ExceptionType.SYSTEM_ERROR;
+        String detail = ERROR_MESSAGE;
+
+        // Importante colocar o printStackTrace (pelo menos por enquanto, que não estamos
+        // fazendo logging) para mostrar a stacktrace no console
+        // Se não fizer isso, você não vai ver a stacktrace de exceptions que seriam importantes
+        // para você durante, especialmente na fase de desenvolvimento
+        ex.printStackTrace();
+
+        ExceptionsDTO body = createBuilder(status, type, detail).build();
+        return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException ex, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
-        ExceptionType type = ExceptionType.ENTITY_NOT_FOUND; // enum para identificar o tipo de erro criada, cria Uri e title
+        ExceptionType type = ExceptionType.RESOURCE_NOT_FOUND; // enum para identificar o tipo de erro criada, cria Uri e title
         String detail = ex.getMessage();
 
         ExceptionsDTO body = createBuilder(status, type, detail).build();
@@ -56,25 +77,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionType type = ExceptionType.ENTITY_IN_USE;
         String detail = ex.getMessage();
 
-        ExceptionsDTO body = createBuilder(status, type, detail).build();
+        ExceptionsDTO body = createBuilder(status, type, detail)
+        .userMessage(detail)
+        .build();
 
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
     }
 
-    // sobreescreve o metodo padrao para custumizar o body da resposta
+    // classe para sobreescrever o padrão, caso seja null ou string devolver padrão da Spring
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
 
         // Criar um corpo padrão de erro quando o Spring não fornece nenhum body
         if (body == null) {
             body = ExceptionsDTO.builder()
+                    .timestamp(LocalDateTime.now())
                     .title(((HttpStatus) statusCode).getReasonPhrase() ) // mensagem padrao do spring error
                     .status(statusCode.value())
+                    .userMessage(ERROR_MESSAGE)
                     .build();
         } else if (body instanceof String) { // Converter mensagens de erro em texto puro (String) para o DTO padrão da API
             body = ExceptionsDTO.builder()
+                    .timestamp(LocalDateTime.now())
                     .title((String) body)
                     .status(statusCode.value())
+                    .userMessage(ERROR_MESSAGE)
                     .build();
         }
 
@@ -115,19 +142,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ex.getValue(), // value invalid
         ex.getTargetType().getSimpleName()); // expected type
 
-        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail).build();
+        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail)
+        .userMessage(ERROR_MESSAGE)
+        .build();
 
         return handleExceptionInternal(ex, body, headers, status, request);
     }
 
-    // classe para tratar erro de binding de propriedade no JSON body
+    // classe para tratar erro de binding de propriedade no JSON body, ex: "restaurant" = { "carro" : "123" }
     private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         String path = joinPath(ex.getPath());
 
         ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
 
         String detail = String.format("Property field '%s' does not exist. Fix or remove the property and try again.", path);
-        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail).build();
+        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail)
+        .userMessage(ERROR_MESSAGE)
+        .build();
 
         return handleExceptionInternal(ex, body, headers, status, request);
     }
@@ -157,13 +188,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, body, headers, status, request);
     }
 
-    // classe auxiliar para criar o body da resposta
+    // classe para tratar erro de endpoint nao encontrado, ex: "http://localhost:8080/carro121
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
+            HttpStatusCode status, WebRequest request) {
+
+        ExceptionType type = ExceptionType.RESOURCE_NOT_FOUND;
+        String detail = String.format("The resource '%s' that was tried to be accessed does not exist.", ex.getRequestURL());
+        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail)
+        .userMessage(detail)
+        .build();
+
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+    
+    // classe auxiliar para criar o body da resposta error
     public ExceptionsDTO.ExceptionsDTOBuilder createBuilder(HttpStatus status, ExceptionType type, String detail) {
         return ExceptionsDTO.builder()
                 .type(type.getUri()) // uri do tipo de erro, ex: "https://foodapi.com.br/entity-not-found"
                 .title(type.getTitle()) // titulo do tipo de erro, ex: "Entity not found"
                 .status(status.value()) // status do erro, ex: 404
-                .detail(detail); // detalhe do erro, ex: "Entity with id 1 not found"
+                .detail(detail) // detalhe do erro, ex: "Entity with id 1 not found"
+                .timestamp(LocalDateTime.now()); // timestamp do erro, ex: "2025-01-01T00:00:00Z"
     }
 
     // classe auxiliar para concatenar o path da exceção
