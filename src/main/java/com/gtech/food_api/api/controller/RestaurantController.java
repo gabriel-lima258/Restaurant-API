@@ -8,6 +8,7 @@ import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.KitchenNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<Restaurant> save(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> save(@Valid @RequestBody Restaurant restaurant) {
         try {
             Restaurant entity = restaurantService.save(restaurant);
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

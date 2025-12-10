@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -106,6 +108,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        ExceptionType type = ExceptionType.INVALID_DATA;
+        String detail = "One or more fields are invalid. Fill in the correct data and try again.";
+
+        // bindingResult armazena os erros de validacao
+        BindingResult bindingResult = ex.getBindingResult();
+
+        List<ExceptionsDTO.Field> fields = bindingResult
+        .getFieldErrors() // lista de erros de validacao
+        .stream() // stream para percorrer a lista de erros
+        .map(fieldError -> ExceptionsDTO.Field.builder() // map para converter o erro de validacao em um DTO
+            .name(fieldError.getField()) // nome do campo que deu erro
+            .userMessage(fieldError.getDefaultMessage()) // detalhe do erro para o usuario final
+        .build()) // converter o erro de validacao em um DTO
+        .collect(Collectors.toList()); // converter a lista de erros de validacao em uma lista de DTOs
+
+        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail)
+        .userMessage(detail)
+        .fields(fields)
+        .build();
+
+        return handleExceptionInternal(ex, body, headers, status, request);
     }
 
     // sobreescreve erro de body nao legivel (json invalido)
