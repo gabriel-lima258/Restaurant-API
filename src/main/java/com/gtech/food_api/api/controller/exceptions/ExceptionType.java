@@ -7,7 +7,8 @@ public enum ExceptionType {
     ENTITY_NOT_FOUND("resource-not-found", "Resource not found"),
     ENTITY_IN_USE("entity-in-use", "Entity in use"),
     BUSINESS_BAD_REQUEST("bad-request", "Violated constraints"),
-    MESSAGE_NOT_READABLE("message-not-readable", "Message not readable");
+    MESSAGE_NOT_READABLE("message-not-readable", "Message not readable"),
+    INVALID_PATH_VARIABLE("invalid-path-variable", "Invalid path variable");
 
     private String uri;
     private String title;

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,6 +20,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 // ResponseEntityException Handler para tratar os erros padroes do Spring
@@ -91,7 +93,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // verifica se o erro é de propriedade nao encontrada
         } else if (rootCause instanceof PropertyBindingException) {
             return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
-        } 
+        }
 
         ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
         String detail = "The request body is not valid. Fix the sintax and try again.";
@@ -130,15 +132,42 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, body, headers, status, request);
     }
 
+    // classe mãe para tratar erro de tipo de argumento path variable nao compativel
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
+            HttpStatusCode status, WebRequest request) {
+        if (ex instanceof MethodArgumentTypeMismatchException) {
+            return handleMethodArgumentTypeMismatch((MethodArgumentTypeMismatchException) ex, headers, status, request);
+        }
+
+        return super.handleTypeMismatch(ex, headers, status, request);
+    }
+
+    // classe para tratar erro de tipo de argumento nao compativel
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        String path = ex.getName(); // nome do parametro que causou o erro, ex: "id"
+        ExceptionType type = ExceptionType.INVALID_PATH_VARIABLE;
+        String detail = String.format("The url path '%s' has an invalid value '%s'. Fix and insert a valid value with type %s.", 
+        path, 
+        ex.getValue(), 
+        ex.getRequiredType().getSimpleName());
+
+        ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail).build();
+
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
     // classe auxiliar para criar o body da resposta
     public ExceptionsDTO.ExceptionsDTOBuilder createBuilder(HttpStatus status, ExceptionType type, String detail) {
         return ExceptionsDTO.builder()
-                .type(type.getUri())
-                .title(type.getTitle())
-                .status(status.value())
-                .detail(detail);
+                .type(type.getUri()) // uri do tipo de erro, ex: "https://foodapi.com.br/entity-not-found"
+                .title(type.getTitle()) // titulo do tipo de erro, ex: "Entity not found"
+                .status(status.value()) // status do erro, ex: 404
+                .detail(detail); // detalhe do erro, ex: "Entity with id 1 not found"
     }
 
+    // classe auxiliar para concatenar o path da exceção
+    // concatena o path da exceção, ex: "restaurant.id" para "restaurant.id.name"
     private String joinPath(List<Reference> path) {
         return path.stream()
         .map(Reference::getFieldName)
