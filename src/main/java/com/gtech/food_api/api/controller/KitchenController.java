@@ -2,6 +2,9 @@ package com.gtech.food_api.api.controller;
 
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.service.KitchenService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +33,7 @@ public class KitchenController {
     }
 
     @PostMapping
-    public ResponseEntity<Kitchen> save(@RequestBody Kitchen kitchen) {
+    public ResponseEntity<Kitchen> save(@RequestBody @Valid Kitchen kitchen) {
         Kitchen entity = kitchenService.save(kitchen);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(kitchen.getId()).toUri();
@@ -38,7 +41,7 @@ public class KitchenController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Kitchen> update(@PathVariable Long id, @RequestBody Kitchen kitchen) {
+    public ResponseEntity<Kitchen> update(@PathVariable Long id, @RequestBody @Valid Kitchen kitchen) {
         Kitchen entity = kitchenService.update(id, kitchen);
         return ResponseEntity.ok().body(entity);
     }

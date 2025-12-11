@@ -4,6 +4,9 @@ import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +35,7 @@ public class CityController {
     }
 
     @PostMapping
-    public ResponseEntity<City> save(@RequestBody City state) {
+    public ResponseEntity<City> save(@RequestBody @Valid City state) {
         try {
             City entity = cityService.save(state);
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -44,7 +47,7 @@ public class CityController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<City> update(@PathVariable Long id, @RequestBody City state) {
+    public ResponseEntity<City> update(@PathVariable Long id, @RequestBody @Valid City state) {
         // city existe?
         City entity = cityService.findOrFail(id);
         try {

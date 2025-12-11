@@ -2,6 +2,9 @@ package com.gtech.food_api.api.controller;
 
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.service.StateService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +33,7 @@ public class StateController {
     }
 
     @PostMapping
-    public ResponseEntity<State> save(@RequestBody State state) {
+    public ResponseEntity<State> save(@RequestBody @Valid State state) {
         State entity = stateService.save(state);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(state.getId()).toUri();
@@ -38,7 +41,7 @@ public class StateController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<State> update(@PathVariable Long id, @RequestBody State state) {
+    public ResponseEntity<State> update(@PathVariable Long id, @RequestBody @Valid State state) {
         State entity = stateService.update(id, state);
         return ResponseEntity.ok().body(entity);
     }

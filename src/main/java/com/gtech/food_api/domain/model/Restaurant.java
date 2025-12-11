@@ -1,9 +1,15 @@
 package com.gtech.food_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gtech.food_api.Groups;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.groups.ConvertGroup;
+import jakarta.validation.groups.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,8 +30,11 @@ public class Restaurant {
     private Long id;
     @Column(nullable = false)
 
-    @NotNull
+    @NotBlank
     private String name;
+
+    @NotNull
+    @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal shippingFee;
 
@@ -42,6 +51,9 @@ public class Restaurant {
     @Embedded // indica que address é um objeto de restaurant
     private Address address;
 
+    @Valid // validacao em cascata, valida a kitchen do restaurant
+    @ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
+    @NotNull
     @ManyToOne // por padrão é eager loading, busca no banco mesmo sem precisar
     @JoinColumn(name = "kitchen_id")
     private Kitchen kitchen;

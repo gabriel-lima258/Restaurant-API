@@ -43,8 +43,10 @@ public class RestaurantController {
         return ResponseEntity.ok().body(entity);
     }
 
+    // @Validated(Groups.RegisterRestaurant.class) serve para especificar qual grupo de validação deve ser aplicado
+    // @Valid por padrao é o grupo default, o que pode ser um problema se a classe tiver outros grupos de validação
     @PostMapping
-    public ResponseEntity<Restaurant> save(@Valid @RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> save(@RequestBody @Valid Restaurant restaurant) {
         try {
             Restaurant entity = restaurantService.save(restaurant);
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -56,7 +58,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant) {
         Restaurant entity = restaurantService.findOrFail(id);
         try {
             restaurantService.update(id, restaurant);
