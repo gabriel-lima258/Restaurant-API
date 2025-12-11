@@ -2,6 +2,7 @@ package com.gtech.food_api.api.controller;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gtech.food_api.core.validation.ValidationException;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -30,6 +33,9 @@ public class RestaurantController {
 
     @Autowired
     private RestaurantService restaurantService;
+
+    @Autowired
+    private SmartValidator validator;
 
     @GetMapping
     public ResponseEntity<List<Restaurant>> listAll(){
@@ -75,29 +81,42 @@ public class RestaurantController {
     }
 
     /**
-     * Endpoint para atualização parcial de um restaurante.
-     * Permite atualizar apenas campos específicos enviados no corpo da requisição,
-     * sem precisar enviar o objeto completo.
+     * Atualização parcial de restaurante (PATCH).
+     * Atualiza apenas os campos enviados no Map, mantendo os demais inalterados.
      * 
-     * @param id Identificador do restaurante a ser atualizado
-     * @param fields Map contendo os campos e valores a serem atualizados (ex: {"name": "Novo Nome", "freightFee": 5.50})
-     * @param request Objeto HttpServletRequest necessário para tratamento de erros de deserialização
-     * @return ResponseEntity com status 200 (OK) após atualização bem-sucedida
+     * @param id ID do restaurante
+     * @param fields Campos a atualizar (ex: {"name": "Novo Nome", "freightFee": 5.50})
+     * @param request HttpServletRequest para tratamento de erros
+     * @return ResponseEntity 200 OK
      */
     @PatchMapping("/{id}")
     public ResponseEntity<?> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields, HttpServletRequest request) {
-        // Busca o restaurante existente no banco de dados ou lança exceção se não encontrado
-        Restaurant restaurant = restaurantService.findOrFail(id);
+        // Busca restaurante existente
+        Restaurant currentRestaurant = restaurantService.findOrFail(id);
         
-        // Faz o merge dos campos recebidos com o objeto existente
-        // Esta operação atualiza apenas os campos especificados no Map, mantendo os demais inalterados
-        merge(fields, restaurant, request);
+        // Mescla campos do Map com o objeto existente
+        merge(fields, currentRestaurant, request);
+
+        // Valida o objeto após merge
+        validate(currentRestaurant, "restaurant");
         
-        // Persiste as alterações no banco de dados
-        restaurantService.update(id, restaurant);
+        // Salva alterações
+        restaurantService.update(id, currentRestaurant);
         
-        // Retorna resposta HTTP 200 (OK) indicando sucesso na operação
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Valida o objeto Restaurant usando SmartValidator.
+     * Lança ValidationException se houver erros de validação.
+     */
+    private void validate(Restaurant restaurant, String objectName) {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant, objectName);
+        validator.validate(restaurant, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
     }
 
     /**
@@ -135,7 +154,7 @@ public class RestaurantController {
             // Este objeto serve como fonte dos valores já convertidos e validados pelo Jackson
             Restaurant restaurantSource = mapper.convertValue(fields, Restaurant.class);
 
-            // Itera sobre cada campo recebido no Map para atualizar o objeto destino
+            // Atualiza cada campo no objeto destino usando Reflection
             fields.forEach((nameField, valueField) -> {
                 // Usa Reflection para encontrar o Field (atributo) na classe Restaurant
                 // pelo nome do campo recebido no Map
