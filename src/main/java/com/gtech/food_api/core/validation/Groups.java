@@ -1,4 +1,4 @@
-package com.gtech.food_api;
+package com.gtech.food_api.core.validation;
 
 // classes de constantes para grupos de validação nas entidades
 public interface Groups {

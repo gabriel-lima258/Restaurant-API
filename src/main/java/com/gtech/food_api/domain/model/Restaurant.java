@@ -1,7 +1,8 @@
 package com.gtech.food_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gtech.food_api.Groups;
+import com.gtech.food_api.core.validation.Groups;
+import com.gtech.food_api.core.validation.Multiple;
 
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -33,8 +34,9 @@ public class Restaurant {
     @NotBlank
     private String name;
 
+    @Multiple(number = 5)
     @NotNull
-    @PositiveOrZero
+    //@PositiveOrZero
     @Column(nullable = false)
     private BigDecimal shippingFee;
 

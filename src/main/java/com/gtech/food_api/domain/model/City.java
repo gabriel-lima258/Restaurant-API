@@ -1,6 +1,6 @@
 package com.gtech.food_api.domain.model;
 
-import com.gtech.food_api.Groups;
+import com.gtech.food_api.core.validation.Groups;
 
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
