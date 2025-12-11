@@ -2,7 +2,7 @@ package com.gtech.food_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gtech.food_api.core.validation.Groups;
-import com.gtech.food_api.core.validation.Multiple;
+import com.gtech.food_api.core.validation.ValueZeroIncludedDescription;
 
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -20,6 +20,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Validação aplicada: Se shippingFee = 0, então o name DEVE conter "Free shipping".
+ * Caso contrário, a validação falhará ao salvar/atualizar o restaurante.
+ */
+@ValueZeroIncludedDescription(valueField = "shippingFee", descriptionField = "name", requiredDescription = "Free shipping")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
@@ -34,9 +40,9 @@ public class Restaurant {
     @NotBlank
     private String name;
 
-    @Multiple(number = 5)
+    // @Multiple(number = 5)
     @NotNull
-    //@PositiveOrZero
+    @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal shippingFee;
 
@@ -50,7 +56,7 @@ public class Restaurant {
     private LocalDateTime updatedAt;
 
     @JsonIgnore
-    @Embedded // indica que address é um objeto de restaurant
+    @Embedded // indica que address é um atributo de outra entidade incorporada
     private Address address;
 
     @Valid // validacao em cascata, valida a kitchen do restaurant
