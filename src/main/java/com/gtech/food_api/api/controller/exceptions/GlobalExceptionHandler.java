@@ -12,7 +12,10 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -32,6 +35,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     public static final String ERROR_MESSAGE = "Occured an unexpected internal error, try again, if the problem persists, contact the support.";
+
+    @Autowired
+    private MessageSource messageSource; // para buscar as mensagens de erro no arquivo messages.properties
 
     // classe para tratar erro geral do sistema
     @ExceptionHandler(Exception.class)
@@ -123,10 +129,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         List<ExceptionsDTO.Field> fields = bindingResult
         .getFieldErrors() // lista de erros de validacao
         .stream() // stream para percorrer a lista de erros
-        .map(fieldError -> ExceptionsDTO.Field.builder() // map para converter o erro de validacao em um DTO
-            .name(fieldError.getField()) // nome do campo que deu erro
-            .userMessage(fieldError.getDefaultMessage()) // detalhe do erro para o usuario final
-        .build()) // converter o erro de validacao em um DTO
+        .map(fieldError -> {
+            // LocaleContextHolder.getLocale() pega a localizacao do usuario, para buscar a mensagem de erro no arquivo messages.properties
+            String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+            return ExceptionsDTO.Field.builder() // map para converter o erro de validacao em um DTO
+                .name(fieldError.getField()) // nome do campo que deu erro
+                .userMessage(message) // detalhe do erro para o usuario final
+                .build(); // converter o erro de validacao em um DTO
+        })
         .collect(Collectors.toList()); // converter a lista de erros de validacao em uma lista de DTOs
 
         ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail)
