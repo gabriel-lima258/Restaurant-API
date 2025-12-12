@@ -1,6 +1,5 @@
 package com.gtech.food_api.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gtech.food_api.core.validation.Groups;
 
 import jakarta.persistence.*;
@@ -27,7 +26,6 @@ public class State {
     @Column(nullable = false)
     private String name;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "state")
     private List<City> cities = new ArrayList<>();
 }

@@ -19,6 +19,7 @@ public class Address {
     private String complement;
     @Column(name = "address_neighborhood")
     private String neighborhood;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     private City city;

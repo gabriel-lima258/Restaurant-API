@@ -1,6 +1,5 @@
 package com.gtech.food_api.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gtech.food_api.core.validation.Groups;
 import com.gtech.food_api.core.validation.ValueZeroIncludedDescription;
 
@@ -46,16 +45,14 @@ public class Restaurant {
     @Column(nullable = false)
     private BigDecimal shippingFee;
 
-    @JsonIgnore
     @CreationTimestamp // data e hora atual
     @Column(nullable = false, updatable = false, columnDefinition = "datetime")
     private LocalDateTime createdAt;
-    @JsonIgnore
+
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime updatedAt;
 
-    @JsonIgnore
     @Embedded // indica que address é um atributo de outra entidade incorporada
     private Address address;
 
@@ -66,7 +63,6 @@ public class Restaurant {
     @JoinColumn(name = "kitchen_id")
     private Kitchen kitchen;
 
-    @JsonIgnore // ignorando o relacionamento payment ao buscar o restaurant
     @ManyToMany // por padrão é lazy loading, busca no banco por demanda
     @JoinTable(name = "restaurant_payment_method",
             joinColumns = @JoinColumn(name = "restaurant_id"),
@@ -74,11 +70,9 @@ public class Restaurant {
     )
     private List<PaymentMethod> paymentMethods = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurant")
     List<Product> products = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurant")
     private List<Order> orders = new ArrayList<>();
 }

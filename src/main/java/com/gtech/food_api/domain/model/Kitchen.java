@@ -1,6 +1,5 @@
 package com.gtech.food_api.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gtech.food_api.core.validation.Groups;
 
 import jakarta.persistence.*;
@@ -28,7 +27,6 @@ public class Kitchen {
     @Column(nullable = false)
     private String name;
 
-    @JsonIgnore // ignorando a serialização do atributo restaurants para evitar loop infinito na busca
     @OneToMany(mappedBy = "kitchen")
     private List<Restaurant> restaurants = new ArrayList<>();
 }
