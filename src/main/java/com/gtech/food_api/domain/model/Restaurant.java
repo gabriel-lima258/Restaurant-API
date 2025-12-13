@@ -1,22 +1,15 @@
 package com.gtech.food_api.domain.model;
 
-import com.gtech.food_api.core.validation.Groups;
 import com.gtech.food_api.core.validation.ValueZeroIncludedDescription;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.groups.ConvertGroup;
-import jakarta.validation.groups.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,29 +29,26 @@ public class Restaurant {
     private Long id;
     @Column(nullable = false)
 
-    @NotBlank
     private String name;
 
     // @Multiple(number = 5)
-    @NotNull
-    @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal shippingFee;
 
-    @CreationTimestamp // data e hora atual
+    // offsetDateTime é a data e hora atual com timezone UTC (GMT+0), universalmente aceito
+    @CreationTimestamp
     @Column(nullable = false, updatable = false, columnDefinition = "datetime")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @Embedded // indica que address é um atributo de outra entidade incorporada
     private Address address;
 
-    @Valid // validacao em cascata, valida a kitchen do restaurant
-    @ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
-    @NotNull
+    //@Valid validacao em cascata, valida a kitchen do restaurant
+    //@ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
     @ManyToOne // por padrão é eager loading, busca no banco mesmo sem precisar
     @JoinColumn(name = "kitchen_id")
     private Kitchen kitchen;

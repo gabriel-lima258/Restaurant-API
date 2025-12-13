@@ -7,6 +7,14 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.util.Optional;
 
+/**
+ * Implementação do CustomJpaRepository
+ * 
+ * Como funciona:
+ * - @extends SimpleJpaRepository: extende a classe SimpleJpaRepository
+ * - @implements CustomJpaRepository: implementa a interface CustomJpaRepository
+ * - searchFirst: busca o primeiro resultado da consulta
+ */
 public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> implements CustomJpaRepository<T, ID> {
 
     private EntityManager entityManager;

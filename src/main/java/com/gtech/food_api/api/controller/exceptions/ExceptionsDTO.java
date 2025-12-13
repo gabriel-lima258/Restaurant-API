@@ -1,6 +1,6 @@
 package com.gtech.food_api.api.controller.exceptions;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,7 +18,7 @@ ExceptionsDTO {
     private String title; // titulo do erro, ex: "Entity not found"
     private String detail; // detalhe do erro, ex: "Entity with id 1 not found"
     private String userMessage; // mensagem para o usuario final, mais amigavel e facil de entender
-    private LocalDateTime timestamp; // timestamp do erro, ex: "2025-01-01T00:00:00Z"
+    private OffsetDateTime timestamp; // timestamp do erro, ex: "2025-01-01T00:00:00Z"
     private List<Field> fields; // lista de campos que deram erro
 
     @Getter

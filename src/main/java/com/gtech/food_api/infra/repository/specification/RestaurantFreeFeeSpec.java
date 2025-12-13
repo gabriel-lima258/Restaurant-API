@@ -5,8 +5,16 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 
-// factory de specification
-// specification é um padrão de projeto para filtros reutilizaveis, que comunica com JPA
+/**
+ * Factory de specification para Restaurant com frete grátis
+ * 
+ * Como funciona:
+ * - withFreeFee: cria um predicate de free shipping
+ * - withSimiliarName: cria um predicate de similar name
+ * 
+ * Exemplo de uso:
+ * List<Restaurant> restaurants = restaurantRepository.findAll(RestaurantFreeFeeSpec.withFreeFee());
+ */
 public class RestaurantFreeFeeSpec {
 
     // criando um predicate de free shipping

@@ -1,7 +1,7 @@
 package com.gtech.food_api.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,13 +42,13 @@ public class Order {
     @JsonIgnore
     @CreationTimestamp // data e hora atual
     @Column(nullable = false, updatable = false, columnDefinition = "datetime")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     @Column(columnDefinition = "datetime")
-    private LocalDateTime confirmedAt;
+    private OffsetDateTime confirmedAt;
     @Column(columnDefinition = "datetime")
-    private LocalDateTime canceledAt;
+    private OffsetDateTime canceledAt;
     @Column(columnDefinition = "datetime")
-    private LocalDateTime deliveredAt;
+    private OffsetDateTime deliveredAt;
     private OrderStatus status;
 
     @ManyToOne

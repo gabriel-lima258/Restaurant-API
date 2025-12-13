@@ -1,5 +1,9 @@
 package com.gtech.food_api.api.controller;
 
+import com.gtech.food_api.api.assembler.CityDTOAssembler;
+import com.gtech.food_api.api.disassembler.CityInputDisassembler;
+import com.gtech.food_api.api.model.CityDTO;
+import com.gtech.food_api.api.model.input.CityInput;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -22,37 +26,49 @@ public class CityController {
     @Autowired
     private CityService cityService;
 
+    @Autowired
+    private CityDTOAssembler cityDTOAssembler;
+
+    @Autowired
+    private CityInputDisassembler cityInputDisassembler;
+
     @GetMapping
-    public ResponseEntity<List<City>> listAll(){
+    public ResponseEntity<List<CityDTO>> listAll(){
         List<City> result = cityService.listAll();
-        return ResponseEntity.ok().body(result);
+        List<CityDTO> dtoList = cityDTOAssembler.toCollectionDTO(result);
+        return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<City> findById(@PathVariable Long id) {
+    public ResponseEntity<CityDTO> findById(@PathVariable Long id) {
         City entity = cityService.findOrFail(id);
-        return ResponseEntity.ok().body(entity);
+        CityDTO dto = cityDTOAssembler.copyToDTO(entity);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping
-    public ResponseEntity<City> save(@RequestBody @Valid City state) {
+    public ResponseEntity<CityDTO> save(@RequestBody @Valid CityInput cityInput) {
         try {
-            City entity = cityService.save(state);
+            City city = cityInputDisassembler.copyToDomainObject(cityInput);
+            City entity = cityService.save(city);
+            CityDTO dto = cityDTOAssembler.copyToDTO(entity);
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(state.getId()).toUri();
-            return ResponseEntity.created(uri).body(entity);
+                    .buildAndExpand(city.getId()).toUri();
+            return ResponseEntity.created(uri).body(dto);
         } catch (StateNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<City> update(@PathVariable Long id, @RequestBody @Valid City state) {
+    public ResponseEntity<CityDTO> update(@PathVariable Long id, @RequestBody @Valid CityInput cityInput) {
         // city existe?
         City entity = cityService.findOrFail(id);
         try {
-            cityService.update(id, state); // existe, atualiza
-            return ResponseEntity.ok().body(entity);
+            City city = cityInputDisassembler.copyToDomainObject(cityInput);
+            cityService.update(id, city); // existe, atualiza
+            CityDTO dto = cityDTOAssembler.copyToDTO(entity);
+            return ResponseEntity.ok().body(dto);
         } catch (StateNotFoundException e) { // existe, mas state id não existe
             throw new BusinessException(e.getMessage(), e);
         }

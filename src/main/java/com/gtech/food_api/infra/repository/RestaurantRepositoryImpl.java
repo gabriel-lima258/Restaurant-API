@@ -18,7 +18,21 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-// classe customizada para implementar a interface por métodos JPA, vantagem -> usar codigo java e codigo dinamico
+/**
+ * Implementação da interface RestaurantRepositoryQueries
+ * 
+ * Como funciona:
+ * - @Repository: Spring detecta e registra automaticamente esta implementação
+ * - find: busca Restaurantes com base em nome, frete mínimo e frete máximo
+ * - findWithFreeFee: busca Restaurantes com frete grátis e nome similar
+ * 
+ * Exemplo de uso:
+ * List<Restaurant> restaurants = restaurantRepositoryImpl.find("Free shipping", null, null);
+ * 
+ * Vantagens:
+ * - Usamos o criteria api para fazer a query complexas e dinamicas
+ * - Usamos o specification api para fazer a query complexas e dinamicas
+ */
 @Repository
 public class RestaurantRepositoryImpl implements RestaurantRepositoryQueries {
 

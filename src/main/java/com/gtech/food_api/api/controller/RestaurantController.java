@@ -2,7 +2,13 @@ package com.gtech.food_api.api.controller;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gtech.food_api.api.assembler.RestaurantDTOAssembler;
+import com.gtech.food_api.api.disassembler.RestaurantInputDisassembler;
+import com.gtech.food_api.api.model.KitchenDTO;
+import com.gtech.food_api.api.model.RestaurantDTO;
+import com.gtech.food_api.api.model.input.RestaurantInput;
 import com.gtech.food_api.core.validation.ValidationException;
+import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -26,6 +32,8 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -36,39 +44,59 @@ public class RestaurantController {
 
     @Autowired
     private SmartValidator validator;
+    
+    @Autowired
+    private RestaurantDTOAssembler restaurantDTOAssembler;
+
+    @Autowired
+    private RestaurantInputDisassembler restaurantInputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<Restaurant>> listAll(){
+    public ResponseEntity<List<RestaurantDTO>> listAll(){
         List<Restaurant> result = restaurantService.listAll();
-        return ResponseEntity.ok().body(result);
+        List<RestaurantDTO> dtoList = restaurantDTOAssembler.toCollectionDTO(result);
+        return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> findById(@PathVariable Long id) {
+    public ResponseEntity<RestaurantDTO> findById(@PathVariable Long id) {
         Restaurant entity = restaurantService.findOrFail(id);
-        return ResponseEntity.ok().body(entity);
+        RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
+        return ResponseEntity.ok().body(dto);
     }
 
     // @Validated(Groups.RegisterRestaurant.class) serve para especificar qual grupo de validação deve ser aplicado
     // @Valid por padrao é o grupo default, o que pode ser um problema se a classe tiver outros grupos de validação
     @PostMapping
-    public ResponseEntity<Restaurant> save(@RequestBody @Valid Restaurant restaurant) {
+    public ResponseEntity<RestaurantDTO> save(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
+            // recebe dto input e converte para entity
+            Restaurant restaurant = restaurantInputDisassembler.copyToEntity(restaurantInput);
+            // salva a entity
             Restaurant entity = restaurantService.save(restaurant);
+            // cria o uri para o novo restaurante
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(restaurant.getId()).toUri();
-            return ResponseEntity.created(uri).body(entity);
+                    .buildAndExpand(restaurant.getId()).toUri();   
+            // converte a entity salva para dto
+            RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
+
+            return ResponseEntity.created(uri).body(dto);
         } catch (KitchenNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant) {
+    public ResponseEntity<RestaurantDTO> update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput) {
         Restaurant entity = restaurantService.findOrFail(id);
         try {
+            // recebe dto input e converte para entity
+            Restaurant restaurant = restaurantInputDisassembler.copyToEntity(restaurantInput);
+            // atualiza a entity com o id e a entity convertida
             restaurantService.update(id, restaurant);
-            return ResponseEntity.ok().body(entity);
+            // converte a entity atualizada para dto
+            RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
+            return ResponseEntity.ok().body(dto);
         } catch (KitchenNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
@@ -90,7 +118,7 @@ public class RestaurantController {
      * @return ResponseEntity 200 OK
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<?> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields, HttpServletRequest request) {
+    public ResponseEntity<RestaurantDTO> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields, HttpServletRequest request) {
         // Busca restaurante existente
         Restaurant currentRestaurant = restaurantService.findOrFail(id);
         
@@ -102,8 +130,10 @@ public class RestaurantController {
         
         // Salva alterações
         restaurantService.update(id, currentRestaurant);
+
+        RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(currentRestaurant);
         
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(dto);
     }
 
     /**

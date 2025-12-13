@@ -7,7 +7,7 @@ import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import java.util.stream.Collectors;
@@ -484,7 +484,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // Cria corpo padrão quando Spring não fornece nenhum body
         if (body == null) {
             body = ExceptionsDTO.builder()
-                    .timestamp(LocalDateTime.now())
+                    .timestamp(OffsetDateTime.now())
                     .title(((HttpStatus) statusCode).getReasonPhrase()) // Mensagem padrão do Spring
                     .status(statusCode.value())
                     .userMessage(ERROR_MESSAGE)
@@ -493,7 +493,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // Converte mensagens de erro em texto puro (String) para o DTO padrão da API
         else if (body instanceof String) {
             body = ExceptionsDTO.builder()
-                    .timestamp(LocalDateTime.now())
+                    .timestamp(OffsetDateTime.now())
                     .title((String) body)
                     .status(statusCode.value())
                     .userMessage(ERROR_MESSAGE)
@@ -528,7 +528,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .title(type.getTitle())           // Título do tipo de erro
                 .status(status.value())           // Código HTTP
                 .detail(detail)                   // Detalhe específico
-                .timestamp(LocalDateTime.now());  // Timestamp do erro
+                .timestamp(OffsetDateTime.now());  // Timestamp do erro
     }
 
     /**

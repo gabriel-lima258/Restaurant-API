@@ -1,5 +1,9 @@
 package com.gtech.food_api.api.controller;
 
+import com.gtech.food_api.api.model.KitchenDTO;
+import com.gtech.food_api.api.assembler.KitchenDTOAssembler;
+import com.gtech.food_api.api.disassembler.KitchenInputDisassembler;
+import com.gtech.food_api.api.model.input.KitchenInput;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.service.KitchenService;
 
@@ -20,30 +24,42 @@ public class KitchenController {
     @Autowired
     private KitchenService kitchenService;
 
+    @Autowired
+    private KitchenDTOAssembler kitchenDTOAssembler;
+
+    @Autowired
+    private KitchenInputDisassembler kitchenInputDisassembler;
+
     @GetMapping
-    public ResponseEntity<List<Kitchen>> listAll(){
+    public ResponseEntity<List<KitchenDTO>> listAll(){
         List<Kitchen> result = kitchenService.listAll();
-        return ResponseEntity.ok().body(result);
+        List<KitchenDTO> dtoList = kitchenDTOAssembler.toCollectionDTO(result);
+        return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Kitchen> findById(@PathVariable Long id) {
+    public ResponseEntity<KitchenDTO> findById(@PathVariable Long id) {
         Kitchen entity = kitchenService.findOrFail(id);
-        return ResponseEntity.ok().body(entity);
+        KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping
-    public ResponseEntity<Kitchen> save(@RequestBody @Valid Kitchen kitchen) {
+    public ResponseEntity<KitchenDTO> save(@RequestBody @Valid KitchenInput kitchenInput) {
+        Kitchen kitchen = kitchenInputDisassembler.copyToDomainObject(kitchenInput);
         Kitchen entity = kitchenService.save(kitchen);
+        KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(kitchen.getId()).toUri();
-        return ResponseEntity.created(uri).body(entity);
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Kitchen> update(@PathVariable Long id, @RequestBody @Valid Kitchen kitchen) {
+    public ResponseEntity<KitchenDTO> update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput) {
+        Kitchen kitchen = kitchenInputDisassembler.copyToDomainObject(kitchenInput);
         Kitchen entity = kitchenService.update(id, kitchen);
-        return ResponseEntity.ok().body(entity);
+        KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
+        return ResponseEntity.ok().body(dto);
     }
 
     @DeleteMapping("/{id}")

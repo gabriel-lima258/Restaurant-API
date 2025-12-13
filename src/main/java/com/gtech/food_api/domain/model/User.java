@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class User {
     private String password;
     @CreationTimestamp
     @Column(nullable = false, updatable = false, columnDefinition = "datetime")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @ManyToMany
     @JoinTable(name = "group_user",

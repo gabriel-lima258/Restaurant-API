@@ -1,5 +1,9 @@
 package com.gtech.food_api.api.controller;
 
+import com.gtech.food_api.api.assembler.StateDTOAssembler;
+import com.gtech.food_api.api.disassembler.StateInputDisassembler;
+import com.gtech.food_api.api.model.StateDTO;
+import com.gtech.food_api.api.model.input.StateInput;
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.service.StateService;
 
@@ -20,30 +24,42 @@ public class StateController {
     @Autowired
     private StateService stateService;
 
+    @Autowired
+    private StateDTOAssembler stateDTOAssembler;
+
+    @Autowired
+    private StateInputDisassembler stateInputDisassembler;
+
     @GetMapping
-    public ResponseEntity<List<State>> listAll(){
+    public ResponseEntity<List<StateDTO>> listAll(){
         List<State> result = stateService.listAll();
-        return ResponseEntity.ok().body(result);
+        List<StateDTO> dtoList = stateDTOAssembler.toCollectionDTO(result);
+        return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<State> findById(@PathVariable Long id) {
+    public ResponseEntity<StateDTO> findById(@PathVariable Long id) {
         State entity = stateService.findOrFail(id);
-        return ResponseEntity.ok().body(entity);
+        StateDTO dto = stateDTOAssembler.copyToDTO(entity);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping
-    public ResponseEntity<State> save(@RequestBody @Valid State state) {
+    public ResponseEntity<StateDTO> save(@RequestBody @Valid StateInput stateInput) {
+        State state = stateInputDisassembler.copyToDomainObject(stateInput);
         State entity = stateService.save(state);
+        StateDTO dto = stateDTOAssembler.copyToDTO(entity);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(state.getId()).toUri();
-        return ResponseEntity.created(uri).body(entity);
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<State> update(@PathVariable Long id, @RequestBody @Valid State state) {
+    public ResponseEntity<StateDTO> update(@PathVariable Long id, @RequestBody @Valid StateInput stateInput) {
+        State state = stateInputDisassembler.copyToDomainObject(stateInput);
         State entity = stateService.update(id, state);
-        return ResponseEntity.ok().body(entity);
+        StateDTO dto = stateDTOAssembler.copyToDTO(entity);
+        return ResponseEntity.ok().body(dto);
     }
 
     @DeleteMapping("/{id}")
