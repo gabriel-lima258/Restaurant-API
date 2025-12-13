@@ -1,4 +1,4 @@
-package com.gtech.food_api.api.model.input;
+package com.gtech.food_api.api.dto.input;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -6,7 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StateInput {
+public class KitchenInput {
     @NotBlank
     private String name;
+    
 }

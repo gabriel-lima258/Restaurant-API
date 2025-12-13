@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gtech.food_api.api.assembler.RestaurantDTOAssembler;
 import com.gtech.food_api.api.disassembler.RestaurantInputDisassembler;
-import com.gtech.food_api.api.model.KitchenDTO;
-import com.gtech.food_api.api.model.RestaurantDTO;
-import com.gtech.food_api.api.model.input.RestaurantInput;
+import com.gtech.food_api.api.dto.RestaurantDTO;
+import com.gtech.food_api.api.dto.input.RestaurantInput;
 import com.gtech.food_api.core.validation.ValidationException;
-import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -32,8 +30,6 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -76,7 +72,7 @@ public class RestaurantController {
             Restaurant entity = restaurantService.save(restaurant);
             // cria o uri para o novo restaurante
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(restaurant.getId()).toUri();   
+                    .buildAndExpand(entity.getId()).toUri();   
             // converte a entity salva para dto
             RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
 
@@ -88,14 +84,15 @@ public class RestaurantController {
 
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantDTO> update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput) {
-        Restaurant entity = restaurantService.findOrFail(id);
         try {
-            // recebe dto input e converte para entity
-            Restaurant restaurant = restaurantInputDisassembler.copyToEntity(restaurantInput);
-            // atualiza a entity com o id e a entity convertida
-            restaurantService.update(id, restaurant);
-            // converte a entity atualizada para dto
-            RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
+            // busca o restaurante existente
+            Restaurant restaurant = restaurantService.findOrFail(id);
+            // recebe dto input e converte para entity e atualiza a entity existente    
+            restaurantInputDisassembler.copyToDomainObject(restaurantInput, restaurant);
+            // salva a entity atualizada
+            restaurantService.save(restaurant);
+            // converte a entity atualizada para dto e retorna
+            RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(restaurant);
             return ResponseEntity.ok().body(dto);
         } catch (KitchenNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
@@ -129,10 +126,10 @@ public class RestaurantController {
         validate(currentRestaurant, "restaurant");
         
         // Salva alterações
-        restaurantService.update(id, currentRestaurant);
+        restaurantService.save(currentRestaurant);
 
         RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(currentRestaurant);
-        
+
         return ResponseEntity.ok().body(dto);
     }
 

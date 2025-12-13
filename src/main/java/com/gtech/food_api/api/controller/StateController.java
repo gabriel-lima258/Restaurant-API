@@ -2,8 +2,8 @@ package com.gtech.food_api.api.controller;
 
 import com.gtech.food_api.api.assembler.StateDTOAssembler;
 import com.gtech.food_api.api.disassembler.StateInputDisassembler;
-import com.gtech.food_api.api.model.StateDTO;
-import com.gtech.food_api.api.model.input.StateInput;
+import com.gtech.food_api.api.dto.StateDTO;
+import com.gtech.food_api.api.dto.input.StateInput;
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.service.StateService;
 
@@ -46,19 +46,21 @@ public class StateController {
 
     @PostMapping
     public ResponseEntity<StateDTO> save(@RequestBody @Valid StateInput stateInput) {
-        State state = stateInputDisassembler.copyToDomainObject(stateInput);
+        State state = stateInputDisassembler.copyToEntity(stateInput);
         State entity = stateService.save(state);
         StateDTO dto = stateDTOAssembler.copyToDTO(entity);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(state.getId()).toUri();
+                .buildAndExpand(entity.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<StateDTO> update(@PathVariable Long id, @RequestBody @Valid StateInput stateInput) {
-        State state = stateInputDisassembler.copyToDomainObject(stateInput);
-        State entity = stateService.update(id, state);
+        State entity = stateService.findOrFail(id);
+        stateInputDisassembler.copyToDomainObject(stateInput, entity);
+        stateService.save(entity);
         StateDTO dto = stateDTOAssembler.copyToDTO(entity);
+
         return ResponseEntity.ok().body(dto);
     }
 

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.modelmapper.ModelMapper;
 
-import com.gtech.food_api.api.model.CityDTO;
+import com.gtech.food_api.api.dto.CityDTO;
 import com.gtech.food_api.domain.model.City;
 
 import java.util.List;

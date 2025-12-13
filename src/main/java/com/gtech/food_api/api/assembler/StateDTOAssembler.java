@@ -1,6 +1,6 @@
 package com.gtech.food_api.api.assembler;
 
-import com.gtech.food_api.api.model.StateDTO;
+import com.gtech.food_api.api.dto.StateDTO;
 import com.gtech.food_api.domain.model.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -30,13 +30,6 @@ public class StateService {
     }
 
     @Transactional
-    public State update(Long id, State state) {
-        State entity = findOrFail(id);
-        entity.setName(state.getName());
-        return stateRepository.save(entity);
-    }
-
-    @Transactional
     public void delete(Long id){
         if (!stateRepository.existsById(id)) {
             throw new StateNotFoundException(id);

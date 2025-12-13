@@ -1,9 +1,9 @@
 package com.gtech.food_api.api.controller;
 
-import com.gtech.food_api.api.model.KitchenDTO;
 import com.gtech.food_api.api.assembler.KitchenDTOAssembler;
 import com.gtech.food_api.api.disassembler.KitchenInputDisassembler;
-import com.gtech.food_api.api.model.input.KitchenInput;
+import com.gtech.food_api.api.dto.KitchenDTO;
+import com.gtech.food_api.api.dto.input.KitchenInput;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.service.KitchenService;
 
@@ -46,18 +46,19 @@ public class KitchenController {
 
     @PostMapping
     public ResponseEntity<KitchenDTO> save(@RequestBody @Valid KitchenInput kitchenInput) {
-        Kitchen kitchen = kitchenInputDisassembler.copyToDomainObject(kitchenInput);
+        Kitchen kitchen = kitchenInputDisassembler.copyToEntity(kitchenInput);
         Kitchen entity = kitchenService.save(kitchen);
         KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(kitchen.getId()).toUri();
+                .buildAndExpand(entity.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<KitchenDTO> update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput) {
-        Kitchen kitchen = kitchenInputDisassembler.copyToDomainObject(kitchenInput);
-        Kitchen entity = kitchenService.update(id, kitchen);
+        Kitchen entity = kitchenService.findOrFail(id);
+        kitchenInputDisassembler.copyToDomainObject(kitchenInput, entity);
+        kitchenService.save(entity);
         KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
         return ResponseEntity.ok().body(dto);
     }

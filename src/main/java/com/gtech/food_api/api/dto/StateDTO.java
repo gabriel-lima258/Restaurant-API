@@ -1,4 +1,4 @@
-package com.gtech.food_api.api.model;
+package com.gtech.food_api.api.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.gtech.food_api.api.model.input;
+package com.gtech.food_api.api.dto.input;
 
 import java.math.BigDecimal;
 

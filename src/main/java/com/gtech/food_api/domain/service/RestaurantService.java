@@ -37,20 +37,6 @@ public class RestaurantService {
     }
 
     @Transactional
-    public Restaurant update(Long id, Restaurant restaurant) {
-        Restaurant entity = findOrFail(id);
-        entity.setName(restaurant.getName());
-        entity.setShippingFee(restaurant.getShippingFee());
-
-        Long kitchenId = restaurant.getKitchen().getId();
-        Kitchen kitchen = kitchenService.findOrFail(kitchenId);
-
-        entity.setKitchen(kitchen);
-
-        return restaurantRepository.save(entity);
-    }
-
-    @Transactional
     public void delete(Long id){
             if (!restaurantRepository.existsById(id)) {
                 throw new RestaurantNotFoundException(id);

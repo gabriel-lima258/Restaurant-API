@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.modelmapper.ModelMapper;
 
-import com.gtech.food_api.api.model.input.KitchenInput;
+import com.gtech.food_api.api.dto.input.KitchenInput;
 import com.gtech.food_api.domain.model.Kitchen;
 
 /**
@@ -20,7 +20,11 @@ public class KitchenInputDisassembler {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Kitchen copyToDomainObject(KitchenInput kitchenInput) {
+    public Kitchen copyToEntity(KitchenInput kitchenInput) {
         return modelMapper.map(kitchenInput, Kitchen.class);
+    }
+
+    public void copyToDomainObject(KitchenInput kitchenInput, Kitchen kitchen) {
+        modelMapper.map(kitchenInput, kitchen);
     }
 }

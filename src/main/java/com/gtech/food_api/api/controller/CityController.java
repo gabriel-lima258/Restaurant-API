@@ -2,8 +2,8 @@ package com.gtech.food_api.api.controller;
 
 import com.gtech.food_api.api.assembler.CityDTOAssembler;
 import com.gtech.food_api.api.disassembler.CityInputDisassembler;
-import com.gtech.food_api.api.model.CityDTO;
-import com.gtech.food_api.api.model.input.CityInput;
+import com.gtech.food_api.api.dto.CityDTO;
+import com.gtech.food_api.api.dto.input.CityInput;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -49,11 +49,11 @@ public class CityController {
     @PostMapping
     public ResponseEntity<CityDTO> save(@RequestBody @Valid CityInput cityInput) {
         try {
-            City city = cityInputDisassembler.copyToDomainObject(cityInput);
+            City city = cityInputDisassembler.copyToEntity(cityInput);
             City entity = cityService.save(city);
             CityDTO dto = cityDTOAssembler.copyToDTO(entity);
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(city.getId()).toUri();
+                    .buildAndExpand(entity.getId()).toUri();
             return ResponseEntity.created(uri).body(dto);
         } catch (StateNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
@@ -62,11 +62,10 @@ public class CityController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CityDTO> update(@PathVariable Long id, @RequestBody @Valid CityInput cityInput) {
-        // city existe?
-        City entity = cityService.findOrFail(id);
         try {
-            City city = cityInputDisassembler.copyToDomainObject(cityInput);
-            cityService.update(id, city); // existe, atualiza
+            City entity = cityService.findOrFail(id);
+            cityInputDisassembler.copyToDomainObject(cityInput, entity);
+            cityService.save(entity);
             CityDTO dto = cityDTOAssembler.copyToDTO(entity);
             return ResponseEntity.ok().body(dto);
         } catch (StateNotFoundException e) { // existe, mas state id não existe

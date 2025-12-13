@@ -40,19 +40,6 @@ public class CityService {
     }
 
     @Transactional
-    public City update(Long id, City city) {
-        City entity = findOrFail(id);
-        entity.setName(city.getName());
-
-        Long stateId = city.getState().getId();
-        State state = stateService.findOrFail(stateId);
-
-        entity.setState(state);
-
-        return cityRepository.save(entity);
-    }
-
-    @Transactional
     public void delete(Long id) {
         if (!cityRepository.existsById(id)) {
             throw new CityNotFoundException(id);

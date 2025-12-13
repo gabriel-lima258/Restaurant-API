@@ -30,13 +30,6 @@ public class KitchenService {
     }
 
     @Transactional
-    public Kitchen update(Long id, Kitchen kitchen) {
-        Kitchen entity = findOrFail(id);
-        entity.setName(kitchen.getName());
-        return kitchenRepository.save(entity);
-    }
-
-    @Transactional
     public void delete(Long id){
         if (!kitchenRepository.existsById(id)) {
             throw new KitchenNotFoundException(id);
