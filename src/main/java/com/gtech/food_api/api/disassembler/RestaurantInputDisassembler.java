@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.gtech.food_api.api.dto.input.RestaurantInput;
-import com.gtech.food_api.domain.model.Address;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.Restaurant;
@@ -29,12 +28,19 @@ public class RestaurantInputDisassembler {
     }
 
     public void copyToDomainObject(RestaurantInput restaurantInput, Restaurant restaurant) {
-        // para evitar erro de trocar a kitchen existente pela nova kitchen
+        /**
+         * Para evitar erro de trocar a kitchen existente pela nova kitchen
+         * e para evitar erro de trocar a city existente pela nova city
+         * quando o restaurante é atualizado
+         * temos que criar novas instancias de Kitchen e City
+         * para evitar que o jpa confunda a kitchen e city existente com a nova kitchen e city
+         * quando o restaurante é atualizado
+         */
         restaurant.setKitchen(new Kitchen());
         if (restaurant.getAddress() != null) {
             restaurant.getAddress().setCity(new City());
         }
-        // converte o RestaurantInput para Restaurant
+        // RestaurantInput -> Restaurant em update
         modelMapper.map(restaurantInput, restaurant);
     }
     

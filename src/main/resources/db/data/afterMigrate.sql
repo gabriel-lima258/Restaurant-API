@@ -648,3 +648,6 @@ values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 
 insert into permission (id, name, description) 
 values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+
+-- Group
+insert into `group` (name) values ('Administrador'), ('Gerente'), ('Cadastrador');

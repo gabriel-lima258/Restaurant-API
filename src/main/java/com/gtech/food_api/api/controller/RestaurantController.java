@@ -110,6 +110,20 @@ public class RestaurantController {
         return ResponseEntity.noContent().build();
     }
 
+     // idempotente, pois pode ser chamado quantas vezes quiser, o resultado será o mesmo
+     @PutMapping("/{id}/active")
+     public ResponseEntity<Void> activate(@PathVariable Long id) {
+         restaurantService.activate(id);    
+         return ResponseEntity.noContent().build();
+     }
+ 
+     // idempotente, por coerencia, o delete é usado para desativar o restaurante, pois remove um recurso
+     @DeleteMapping("/{id}/deactive")
+     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+         restaurantService.deactivate(id);
+         return ResponseEntity.noContent().build();
+     }
+
     /**
      * Atualização parcial de restaurante (PATCH).
      * Atualiza apenas os campos enviados no Map, mantendo os demais inalterados.
@@ -214,19 +228,5 @@ public class RestaurantController {
             // Esta exceção fornece informações mais detalhadas sobre o erro de deserialização
             throw new HttpMessageNotReadableException(e.getMessage(), cause, inputMessage);
         }
-    }
-
-    // idempotente, pois pode ser chamado quantas vezes quiser, o resultado será o mesmo
-    @PutMapping("/{id}/active")
-    public ResponseEntity<Void> activate(@PathVariable Long id) {
-        restaurantService.activate(id);    
-        return ResponseEntity.noContent().build();
-    }
-
-    // idempotente, por coerencia, o delete é usado para desativar o restaurante, pois remove um recurso
-    @DeleteMapping("/{id}/deactive")
-    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
-        restaurantService.deactivate(id);
-        return ResponseEntity.noContent().build();
     }
 }
