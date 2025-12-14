@@ -1,6 +1,10 @@
 package com.gtech.food_api.core.mapper;
 
 import org.springframework.context.annotation.Configuration;
+
+import com.gtech.food_api.api.dto.AddressDTO;
+import com.gtech.food_api.domain.model.Address;
+
 import org.springframework.context.annotation.Bean;
 
 import org.modelmapper.ModelMapper;
@@ -25,7 +29,24 @@ public class ModelMapperConfig {
     
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        var modelMapper = new ModelMapper();
+
+        /**
+         * Mapear o endereço para o endereço DTO
+         * - src: endereço
+         * - dest: endereço DTO
+         * - value: nome do estado
+         * - dest.getCity().setState((String) value): setar o nome do estado no endereço DTO
+         * 
+         * Para que isso?
+         * - Para que o endereço DTO tenha somente o nome do estado, sem a necessidade de buscar o estado completo
+         */
+        var addressToAddressDTO = modelMapper.createTypeMap(Address.class, AddressDTO.class);
+        addressToAddressDTO.addMapping(
+            src -> src.getCity().getState().getName(),
+            (dest, value) -> dest.getCity().setState((String) value));
+
+        return modelMapper;
     }
 
 }
