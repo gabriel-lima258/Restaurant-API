@@ -38,17 +38,31 @@ public class RestaurantService {
 
     @Transactional
     public void delete(Long id){
-            if (!restaurantRepository.existsById(id)) {
-                throw new RestaurantNotFoundException(id);
-            }
+        if (!restaurantRepository.existsById(id)) {
+            throw new RestaurantNotFoundException(id);
+        }
         try {
             restaurantRepository.deleteById(id);
-            // flush força a violação de FK ainda dentro da transação
+            // flush descarrega a transação no banco, caso de exception, o rollback é feito automaticamente, diferente de commit, que é o final é feito alteracao no banco
             restaurantRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(RESTAURANT_IN_USE_MESSAGE, id));
         }
     }
+
+    @Transactional
+    public void activate(Long restaurantId) {
+        Restaurant restaurant = findOrFail(restaurantId);
+        // ativa, nao precisa chamar o save, pois o jpa ja atualiza automaticamente
+        restaurant.activate();
+    }
+
+    @Transactional
+    public void deactivate(Long restaurantId) {
+        Restaurant restaurant = findOrFail(restaurantId);
+        restaurant.deactivate();
+    }
+
 
     @Transactional(readOnly = true)
     public Restaurant findOrFail(Long restaurantId) {

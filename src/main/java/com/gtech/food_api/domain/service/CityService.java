@@ -46,7 +46,6 @@ public class CityService {
         }
         try {
             cityRepository.deleteById(id);
-            // flush força a violação de FK ainda dentro da transação
             cityRepository.flush();
         }  catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(CITY_IN_USE_MESSAGE, id));

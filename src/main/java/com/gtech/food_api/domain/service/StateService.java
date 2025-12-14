@@ -36,7 +36,6 @@ public class StateService {
         }
         try {
             stateRepository.deleteById(id);
-            // flush força a violação de FK ainda dentro da transação
             stateRepository.flush();
         } catch (DataIntegrityViolationException e) {   
             throw new EntityInUseException(String.format(STATE_IN_USE_MESSAGE, id));

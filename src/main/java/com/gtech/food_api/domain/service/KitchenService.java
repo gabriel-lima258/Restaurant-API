@@ -36,7 +36,6 @@ public class KitchenService {
         }
         try {
             kitchenRepository.deleteById(id);
-            // flush força a violação de FK ainda dentro da transação
             kitchenRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(KITCHEN_IN_USE_MESSAGE, id));

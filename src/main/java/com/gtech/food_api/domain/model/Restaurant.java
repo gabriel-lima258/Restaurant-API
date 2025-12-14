@@ -44,6 +44,8 @@ public class Restaurant {
     @Column(nullable = false, columnDefinition = "datetime")
     private OffsetDateTime updatedAt;
 
+    private Boolean active = Boolean.TRUE;
+
     @Embedded // indica que address é um atributo de outra entidade incorporada
     private Address address;
 
@@ -65,4 +67,13 @@ public class Restaurant {
 
     @OneToMany(mappedBy = "restaurant")
     private List<Order> orders = new ArrayList<>();
+
+    public void activate() {
+        setActive(true);
+    }
+
+    public void deactivate() {
+        setActive(false);
+    }
+    
 }

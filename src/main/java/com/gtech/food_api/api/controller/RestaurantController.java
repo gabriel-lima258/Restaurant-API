@@ -30,6 +30,10 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("/restaurants")
@@ -209,5 +213,19 @@ public class RestaurantController {
             // Esta exceção fornece informações mais detalhadas sobre o erro de deserialização
             throw new HttpMessageNotReadableException(e.getMessage(), cause, inputMessage);
         }
+    }
+
+    // idempotente, pois pode ser chamado quantas vezes quiser, o resultado será o mesmo
+    @PutMapping("/{id}/active")
+    public ResponseEntity<Void> activate(@PathVariable Long id) {
+        restaurantService.activate(id);    
+        return ResponseEntity.noContent().build();
+    }
+
+    // idempotente, por coerencia, o delete é usado para desativar o restaurante, pois remove um recurso
+    @DeleteMapping("/{id}/deactive")
+    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+        restaurantService.deactivate(id);
+        return ResponseEntity.noContent().build();
     }
 }
