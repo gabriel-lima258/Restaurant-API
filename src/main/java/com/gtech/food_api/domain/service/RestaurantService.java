@@ -1,8 +1,10 @@
 package com.gtech.food_api.domain.service;
 
+import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
+import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class RestaurantService {
     @Autowired
     private KitchenService kitchenService;
 
+    @Autowired
+    private CityService cityService;
+
     @Transactional(readOnly = true)
     public List<Restaurant> listAll(){
         return restaurantRepository.findAll();
@@ -31,8 +36,14 @@ public class RestaurantService {
     @Transactional
     public Restaurant save(Restaurant restaurant) {
         Long kitchenId = restaurant.getKitchen().getId();
+        Long cityId = restaurant.getAddress().getCity().getId();
+
         Kitchen kitchen = kitchenService.findOrFail(kitchenId);
+        City city = cityService.findOrFail(cityId);
+
         restaurant.setKitchen(kitchen);
+        restaurant.getAddress().setCity(city);
+        
         return restaurantRepository.save(restaurant);
     }
 

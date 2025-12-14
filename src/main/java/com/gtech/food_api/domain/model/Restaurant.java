@@ -49,7 +49,6 @@ public class Restaurant {
     @Embedded // indica que address é um atributo de outra entidade incorporada
     private Address address;
 
-    //@Valid validacao em cascata, valida a kitchen do restaurant
     //@ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
     @ManyToOne // por padrão é eager loading, busca no banco mesmo sem precisar
     @JoinColumn(name = "kitchen_id")

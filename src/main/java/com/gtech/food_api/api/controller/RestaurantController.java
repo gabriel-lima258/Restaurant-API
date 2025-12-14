@@ -10,6 +10,7 @@ import com.gtech.food_api.core.validation.ValidationException;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
+import com.gtech.food_api.domain.service.exceptions.CityNotFoundException;
 import com.gtech.food_api.domain.service.exceptions.KitchenNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -81,7 +82,7 @@ public class RestaurantController {
             RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
 
             return ResponseEntity.created(uri).body(dto);
-        } catch (KitchenNotFoundException e) {
+        } catch (KitchenNotFoundException | CityNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
     }
@@ -98,7 +99,7 @@ public class RestaurantController {
             // converte a entity atualizada para dto e retorna
             RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(restaurant);
             return ResponseEntity.ok().body(dto);
-        } catch (KitchenNotFoundException e) {
+        } catch (KitchenNotFoundException | CityNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
     }
