@@ -36,7 +36,14 @@ public class User {
     inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<Group> groups = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "client")
     private List<Order> orders = new ArrayList<>();
+
+    public boolean correctPassword(String currentPassword, String newPassword) {
+        if (this.password.equals(currentPassword)) {
+            this.password = newPassword;
+            return true;
+        }
+        return false;
+    }
 }

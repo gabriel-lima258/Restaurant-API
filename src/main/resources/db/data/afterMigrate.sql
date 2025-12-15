@@ -642,6 +642,15 @@ values (
 insert into product (name, description, price, active, restaurant_id) 
 values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
+-- User
+insert into `user` (name, email, password, created_at) values ('João da Silva', 'joao.silva@example.com', '123456', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Maria Oliveira', 'maria.oliveira@example.com', '123456', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Pedro Santos', 'pedro.santos@example.com', '123456', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Ana Paula', 'ana.paula@example.com', '123456', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Carlos Ferreira', 'carlos.ferreira@example.com', '123456', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Laura Lima', 'laura.lima@example.com', '123456', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Rafael Oliveira', 'rafael.oliveira@example.com', '123456', UTC_TIMESTAMP);
+
 -- Permission
 insert into permission (id, name, description) 
 values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
