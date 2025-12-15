@@ -37,6 +37,9 @@ public class UserService {
         if (!user.correctPassword(currentPassword, newPassword)) {
             throw new BusinessException("Current password does not match with the password of the user");
         }
+        // Dirty Checking: Como a entidade está gerenciada (carregada do banco), ao alterar user.setPassword(),
+        // o JPA detecta automaticamente a mudança. No commit da transação, o flush automático persiste
+        // as alterações no banco, por isso não é necessário chamar userRepository.save(user).
         user.setPassword(newPassword);
     }
 
