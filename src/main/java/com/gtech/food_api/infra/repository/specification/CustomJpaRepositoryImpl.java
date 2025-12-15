@@ -14,6 +14,7 @@ import java.util.Optional;
  * - @extends SimpleJpaRepository: extende a classe SimpleJpaRepository
  * - @implements CustomJpaRepository: implementa a interface CustomJpaRepository
  * - searchFirst: busca o primeiro resultado da consulta
+ * - detach: desanexa a entidade do contexto de persistencia, para que seja possivel atualizar o objeto sem precisar salvar. por que isso? porque o objeto ja esta no contexto de persistencia e o jpa nao consegue detectar as alterações.
  */
 public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> implements CustomJpaRepository<T, ID> {
 
@@ -34,5 +35,10 @@ public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> i
                 .getSingleResult();
 
         return Optional.ofNullable(entity);
+    }
+
+    @Override
+    public void detach(T entity) {
+        entityManager.detach(entity);
     }
 }

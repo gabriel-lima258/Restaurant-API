@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface CustomJpaRepository<T, ID> extends JpaRepository<T, ID> {
 
     Optional<T> searchFirst();
+
+    // desanexa a entidade do contexto de persistencia, para que seja possivel atualizar o objeto sem precisar salvar
+    void detach(T entity);
 }

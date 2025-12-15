@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -28,6 +29,17 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
+        // detach desativa o monitoramento do jpa, que nao salve qualquer alteracao no objeto antes do fim do contexto de persistencia
+        userRepository.detach(user);
+
+        Optional<User> userByEmail = userRepository.findByEmail(user.getEmail());
+
+        // se o email ja existe e nao é o mesmo usuario, lança exceção
+        if (userByEmail.isPresent() && !userByEmail.get().equals(user)) {
+            throw new BusinessException(
+                String.format("Email %s already in use", user.getEmail())
+            );
+        }
         return userRepository.save(user);
     }
 
