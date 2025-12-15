@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import com.gtech.food_api.api.dto.GroupDTO;
 import com.gtech.food_api.domain.model.Group;
@@ -27,7 +28,7 @@ public class GroupDTOAssembler {
         return modelMapper.map(group, GroupDTO.class);
     }
 
-    public List<GroupDTO> toCollectionDTO(List<Group> groups) {
+    public List<GroupDTO> toCollectionDTO(Collection<Group> groups) {
         return groups.stream()
             .map(this::copyToDTO)
             .collect(Collectors.toList());

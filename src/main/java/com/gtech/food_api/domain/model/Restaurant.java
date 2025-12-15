@@ -11,7 +11,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Validação aplicada: Se shippingFee = 0, então o name DEVE conter "Free shipping".
@@ -59,7 +61,7 @@ public class Restaurant {
             joinColumns = @JoinColumn(name = "restaurant_id"),
             inverseJoinColumns = @JoinColumn(name = "payment_method_id")
     )
-    private List<PaymentMethod> paymentMethods = new ArrayList<>();
+    private Set<PaymentMethod> paymentMethods = new HashSet<>();
 
     @OneToMany(mappedBy = "restaurant")
     List<Product> products = new ArrayList<>();
@@ -73,6 +75,14 @@ public class Restaurant {
 
     public void deactivate() {
         setActive(false);
+    }
+
+    public boolean disassociatePaymentMethod(PaymentMethod paymentMethod) {
+        return getPaymentMethods().remove(paymentMethod);
+    }
+
+    public boolean associatePaymentMethod(PaymentMethod paymentMethod) {
+        return getPaymentMethods().add(paymentMethod);
     }
     
 }

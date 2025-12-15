@@ -5,6 +5,8 @@ import com.gtech.food_api.domain.model.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.modelmapper.ModelMapper;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +20,7 @@ public class StateDTOAssembler {
         return modelMapper.map(state, StateDTO.class);
     }
 
-    public List<StateDTO> toCollectionDTO(List<State> states) {
+    public List<StateDTO> toCollectionDTO(Collection<State> states) {
         return states.stream()
             .map(this::copyToDTO)
             .collect(Collectors.toList());

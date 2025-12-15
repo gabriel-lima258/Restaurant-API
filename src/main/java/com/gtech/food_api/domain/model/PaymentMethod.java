@@ -21,7 +21,6 @@ public class PaymentMethod {
     @Column(nullable = false)
     private String description;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "paymentMethod")
     private List<Order> orders = new ArrayList<>();
     

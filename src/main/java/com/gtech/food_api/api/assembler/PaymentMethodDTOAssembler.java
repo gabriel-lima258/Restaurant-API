@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.gtech.food_api.api.dto.PaymentMethodDTO;
 import com.gtech.food_api.domain.model.PaymentMethod;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class PaymentMethodDTOAssembler {
         return modelMapper.map(paymentMethod, PaymentMethodDTO.class);
     }
 
-    public List<PaymentMethodDTO> toCollectionDTO(List<PaymentMethod> paymentMethods) {
+    public List<PaymentMethodDTO> toCollectionDTO(Collection<PaymentMethod> paymentMethods) {
         return paymentMethods.stream()
             .map(this::copyToDTO)
             .collect(Collectors.toList());

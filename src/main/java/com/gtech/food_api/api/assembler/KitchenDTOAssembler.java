@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.gtech.food_api.api.dto.KitchenDTO;
 import com.gtech.food_api.domain.model.Kitchen;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class KitchenDTOAssembler {
         return modelMapper.map(kitchen, KitchenDTO.class);
     }
 
-    public List<KitchenDTO> toCollectionDTO(List<Kitchen> kitchens) {
+    public List<KitchenDTO> toCollectionDTO(Collection<Kitchen> kitchens) {
         return kitchens.stream()
             .map(this::copyToDTO)
             .collect(Collectors.toList());

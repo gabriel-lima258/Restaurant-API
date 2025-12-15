@@ -5,8 +5,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,7 +37,6 @@ public class Order {
     @Embedded
     private Address deliveryAddress;
 
-    @JsonIgnore
     @CreationTimestamp // data e hora atual
     @Column(nullable = false, updatable = false, columnDefinition = "datetime")
     private OffsetDateTime createdAt;
@@ -63,7 +60,6 @@ public class Order {
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "order")
     private List<OrderItem> items = new ArrayList<>();
 }

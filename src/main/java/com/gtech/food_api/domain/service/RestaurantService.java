@@ -2,9 +2,11 @@ package com.gtech.food_api.domain.service;
 
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.model.Kitchen;
+import com.gtech.food_api.domain.model.PaymentMethod;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
 import com.gtech.food_api.domain.service.CityService;
+import com.gtech.food_api.domain.service.PaymentMethodService;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class RestaurantService {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private PaymentMethodService paymentMethodService;
 
     @Transactional(readOnly = true)
     public List<Restaurant> listAll(){
@@ -61,6 +66,8 @@ public class RestaurantService {
         }
     }
 
+
+    // jpa sicroniza esses metodos com transactional no banco de dados, entao nao é necessario chamar o save
     @Transactional
     public void activate(Long restaurantId) {
         Restaurant restaurant = findOrFail(restaurantId);
@@ -74,6 +81,21 @@ public class RestaurantService {
         restaurant.deactivate();
     }
 
+    @Transactional
+    public void disassociatePaymentMethod(Long restaurantId, Long paymentMethodId) {
+        Restaurant restaurant = findOrFail(restaurantId);
+        PaymentMethod paymentMethod = paymentMethodService.findOrFail(paymentMethodId);
+
+        restaurant.disassociatePaymentMethod(paymentMethod);
+    }
+
+    @Transactional
+    public void associatePaymentMethod(Long restaurantId, Long paymentMethodId) {
+        Restaurant restaurant = findOrFail(restaurantId);
+        PaymentMethod paymentMethod = paymentMethodService.findOrFail(paymentMethodId);
+
+        restaurant.associatePaymentMethod(paymentMethod);
+    }
 
     @Transactional(readOnly = true)
     public Restaurant findOrFail(Long restaurantId) {
