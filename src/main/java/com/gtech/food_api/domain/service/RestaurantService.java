@@ -4,6 +4,7 @@ import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.PaymentMethod;
 import com.gtech.food_api.domain.model.Restaurant;
+import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.RestaurantNotFoundException;
@@ -27,6 +28,9 @@ public class RestaurantService {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private PaymentMethodService paymentMethodService;
@@ -105,6 +109,20 @@ public class RestaurantService {
         PaymentMethod paymentMethod = paymentMethodService.findOrFail(paymentMethodId);
 
         restaurant.associatePaymentMethod(paymentMethod);
+    }
+
+    @Transactional
+    public void addResponsible(Long restaurantId, Long userId) {
+        Restaurant restaurant = findOrFail(restaurantId);
+        User user = userService.findOrFail(userId);
+        restaurant.addResponsible(user);
+    }
+
+    @Transactional
+    public void removeResponsible(Long restaurantId, Long userId) {
+        Restaurant restaurant = findOrFail(restaurantId);
+        User user = userService.findOrFail(userId);
+        restaurant.removeResponsible(user);
     }
 
     @Transactional(readOnly = true)

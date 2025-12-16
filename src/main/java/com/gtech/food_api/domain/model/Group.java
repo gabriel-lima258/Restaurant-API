@@ -25,11 +25,11 @@ public class Group {
     )
     private Set<Permission> permissions = new HashSet<>();
 
-    public void addPermission(Permission permission) {
-        getPermissions().add(permission);
+    public boolean addPermission(Permission permission) {
+        return getPermissions().add(permission);
     }
 
-    public void removePermission(Permission permission) {
-        getPermissions().remove(permission);
+    public boolean removePermission(Permission permission) {
+        return getPermissions().remove(permission);
     }
 }

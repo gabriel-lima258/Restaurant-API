@@ -20,6 +20,8 @@ delete from group_user;
 delete from order_item;
 delete from `order`;
 
+delete from restaurant_user_responsible;
+
 
 set foreign_key_checks = 1;
 
@@ -696,3 +698,6 @@ insert into group_permission (group_id, permission_id) values (1, 1), (1, 2), (2
 
 -- group user
 insert into group_user (user_id, group_id) values (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (3, 1), (3, 2), (3, 3);
+
+-- restaurant user responsible
+insert into restaurant_user_responsible (user_id, restaurant_id) values (1, 1), (2, 2), (3, 3);
