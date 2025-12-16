@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gtech.food_api.domain.model.Group;
+import com.gtech.food_api.domain.model.Permission;
 import com.gtech.food_api.domain.repository.GroupRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.GroupNotFoundException;
@@ -20,6 +21,9 @@ public class GroupService {
     @Autowired
     private GroupRepository groupRepository;
 
+    @Autowired
+    private PermissionService permissionService;
+
     @Transactional(readOnly = true)
     public List<Group> listAll() {
         return groupRepository.findAll();
@@ -28,6 +32,20 @@ public class GroupService {
     @Transactional
     public Group save(Group group) {
         return groupRepository.save(group);
+    }
+
+    @Transactional
+    public void addPermission(Long groupId, Long permissionId) {
+        Group group = findOrFail(groupId);
+        Permission permission = permissionService.findOrFail(permissionId);
+        group.addPermission(permission);
+    }
+
+    @Transactional
+    public void removePermission(Long groupId, Long permissionId) {
+        Group group = findOrFail(groupId);
+        Permission permission = permissionService.findOrFail(permissionId);
+        group.removePermission(permission);
     }
 
     @Transactional

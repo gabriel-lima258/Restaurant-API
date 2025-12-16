@@ -690,3 +690,6 @@ values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
 
 -- Group
 insert into `group` (name) values ('Administrador'), ('Gerente'), ('Cadastrador');
+
+-- group permission
+insert into group_permission (group_id, permission_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
