@@ -48,6 +48,8 @@ public class Restaurant {
 
     private Boolean active = Boolean.TRUE;
 
+    private Boolean open = Boolean.TRUE;
+
     @Embedded // indica que address é um atributo de outra entidade incorporada
     private Address address;
 
@@ -75,6 +77,14 @@ public class Restaurant {
 
     public void deactivate() {
         setActive(false);
+    }
+
+    public void openRestaurant() {
+        setOpen(true);
+    }
+
+    public void closedRestaurant() {
+        setOpen(false);
     }
 
     public boolean disassociatePaymentMethod(PaymentMethod paymentMethod) {

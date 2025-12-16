@@ -82,6 +82,18 @@ public class RestaurantService {
     }
 
     @Transactional
+    public void open(Long restaurantId) {
+        Restaurant restaurant = findOrFail(restaurantId);
+        restaurant.openRestaurant();
+    }
+
+    @Transactional
+    public void close(Long restaurantId) {
+        Restaurant restaurant = findOrFail(restaurantId);
+        restaurant.closedRestaurant();
+    }
+
+    @Transactional
     public void disassociatePaymentMethod(Long restaurantId, Long paymentMethodId) {
         Restaurant restaurant = findOrFail(restaurantId);
         PaymentMethod paymentMethod = paymentMethodService.findOrFail(paymentMethodId);

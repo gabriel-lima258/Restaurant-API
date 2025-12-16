@@ -92,13 +92,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at, 
-    active
+    active, 
+    open    
 ) values (
     1, 'Thai Gourmet', 10, 1, 
     '38400-000', 'Rua Tiradentes', '500', 
     'Sala 101', 'Centro', 1, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -106,13 +107,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     2, 'Thai Delivery', 9.50, 1, 
     '38400-100', 'Avenida João Pinheiro', '1234', 
     null, 'Marta Helena', 1, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -120,13 +122,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     3, 'Tuk Tuk Comida Indiana', 15, 2, 
     '01310-100', 'Avenida Paulista', '1578', 
     'Loja 45', 'Bela Vista', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -134,13 +137,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     4, 'Sabor do Oriente', 12.50, 1, 
     '30130-010', 'Rua da Bahia', '1200', 
     '2º andar', 'Centro', 2, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -148,13 +152,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     5, 'Curry House', 14, 2, 
     '13083-000', 'Rua Barão de Jaguara', '500', 
     null, 'Centro', 4, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -162,13 +167,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     6, 'Pad Thai Express', 8.50, 1, 
     '60060-100', 'Avenida Beira Mar', '2000', 
     'Kiosque 12', 'Meireles', 5, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -176,13 +182,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     7, 'Ganesh Indian Restaurant', 16, 2, 
     '01310-200', 'Rua Augusta', '2345', 
     'Sala 3', 'Consolação', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -190,13 +197,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     8, 'Bangkok Thai', 11, 1, 
     '38400-200', 'Rua Benjamin Constant', '789', 
     null, 'Fundinho', 1, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -204,13 +212,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     9, 'La Trattoria', 12, 3, 
     '20020-020', 'Avenida Atlântica', '1234', 
     'Loja 2', 'Copacabana', 6, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -218,13 +227,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     10, 'Pasta & Cia', 10.50, 3, 
     '01310-100', 'Rua Oscar Freire', '567', 
     '1º andar', 'Jardins', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -232,13 +242,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     11, 'Sushi Master', 18, 4, 
     '01310-100', 'Avenida Paulista', '2000', 
     'Sala 15', 'Bela Vista', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -246,13 +257,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     12, 'Sakura Sushi', 15.50, 4, 
     '20020-020', 'Rua Barata Ribeiro', '789', 
     null, 'Copacabana', 6, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -260,13 +272,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     13, 'Feijoada Completa', 9, 5, 
     '30130-010', 'Rua da Bahia', '500', 
     'Térreo', 'Centro', 2, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -274,13 +287,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     14, 'Churrasco Gaúcho', 13, 5, 
     '90010-150', 'Avenida Borges de Medeiros', '1000', 
     'Loja 5', 'Centro Histórico', 11, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -288,13 +302,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     15, 'Taco Loco', 11.50, 6, 
     '01310-100', 'Rua Augusta', '1500', 
     '2º andar', 'Consolação', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -302,13 +317,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     16, 'El Mariachi', 12, 6, 
     '20020-020', 'Avenida Atlântica', '800', 
     null, 'Copacabana', 6, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -316,13 +332,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     17, 'Bistro Francês', 16.50, 7, 
     '01310-100', 'Alameda Santos', '200', 
     'Sala 10', 'Jardins', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -330,13 +347,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     18, 'Le Petit Paris', 17, 7, 
     '20020-020', 'Rua Barata Ribeiro', '456', 
     '1º andar', 'Copacabana', 6, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -344,13 +362,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     19, 'Shawarma Express', 10, 8, 
     '01310-100', 'Rua Augusta', '3000', 
     null, 'Consolação', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -358,13 +377,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     20, 'Aladdin Food', 11.50, 8, 
     '30130-010', 'Rua da Bahia', '800', 
     'Loja 3', 'Centro', 2, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -372,13 +392,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     21, 'Dragão Dourado', 13, 9, 
     '01310-100', 'Rua dos Três Irmãos', '600', 
     '2º andar', 'Vila Madalena', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -386,13 +407,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     22, 'Wok Express', 9.50, 9, 
     '20020-020', 'Avenida Atlântica', '1500', 
     null, 'Copacabana', 6, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -400,13 +422,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     23, 'Verde Vida', 8, 10, 
     '01310-100', 'Rua Harmonia', '400', 
     'Loja 8', 'Vila Madalena', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -414,13 +437,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     24, 'Natureza Viva', 9, 10, 
     '30130-010', 'Rua da Bahia', '900', 
     '1º andar', 'Centro', 2, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -428,13 +452,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     25, 'Spice Garden', 14.50, 2, 
     '80020-010', 'Avenida Sete de Setembro', '1200', 
     'Sala 20', 'Centro', 8, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -442,13 +467,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     26, 'Bella Italia', 12, 3, 
     '88015-700', 'Avenida Beira Mar Norte', '500', 
     'Loja 12', 'Centro', 12, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -456,13 +482,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     27, 'Sushi Bar', 16, 4, 
     '74015-010', 'Avenida T-4', '1500', 
     '2º andar', 'Setor Bueno', 13, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -470,13 +497,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     28, 'Acarajé da Bahia', 7.50, 5, 
     '40020-000', 'Rua Chile', '200', 
     null, 'Pelourinho', 10, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -484,13 +512,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     29, 'Taco Fiesta', 11, 6, 
     '50010-000', 'Avenida Boa Viagem', '3000', 
     'Loja 5', 'Boa Viagem', 14, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 insert into restaurant (
@@ -498,13 +527,14 @@ insert into restaurant (
     address_cep, address_public_place, address_number, 
     address_complement, address_neighborhood, city_id, 
     created_at, updated_at,
-    active
+    active, 
+    open
 ) values (
     30, 'Green Garden', 8.50, 10, 
     '86010-000', 'Avenida Brasil', '1000', 
     '1º andar', 'Centro', 9, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true
+    true, true
 );
 
 -- Restaurant Payment Method

@@ -124,6 +124,18 @@ public class RestaurantController {
          return ResponseEntity.noContent().build();
      }
 
+     @PutMapping("/{id}/opening")
+     public ResponseEntity<Void> openRestaurant(@PathVariable Long id) {
+         restaurantService.open(id);
+         return ResponseEntity.noContent().build();
+     }
+
+     @PutMapping("/{id}/closing")
+     public ResponseEntity<Void> closeRestaurant(@PathVariable Long id) {
+         restaurantService.close(id);
+         return ResponseEntity.noContent().build();
+     }
+
     /**
      * Atualização parcial de restaurante (PATCH).
      * Atualiza apenas os campos enviados no Map, mantendo os demais inalterados.
