@@ -35,15 +35,16 @@ public class RestaurantPaymentMethodController {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @PutMapping("/{paymentMethodId}")
+    public ResponseEntity<Void> associatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
+        restaurantService.associatePaymentMethod(restaurantId, paymentMethodId);
+        return ResponseEntity.noContent().build();
+    }
+    
     @DeleteMapping("/{paymentMethodId}")
     public ResponseEntity<Void> disassociatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
         restaurantService.disassociatePaymentMethod(restaurantId, paymentMethodId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{paymentMethodId}")
-    public ResponseEntity<Void> associatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
-        restaurantService.associatePaymentMethod(restaurantId, paymentMethodId);
-        return ResponseEntity.noContent().build();
-    }
 }

@@ -46,4 +46,12 @@ public class User {
         }
         return false;
     }
+
+    public void addGroup(Group group) {
+        getGroups().add(group);
+    }
+
+    public void removeGroup(Group group) {
+        getGroups().remove(group);
+    }
 }

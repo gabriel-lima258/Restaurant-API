@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.modelmapper.ModelMapper;
 
-import com.gtech.food_api.domain.model.Group;
-import com.gtech.food_api.api.dto.input.GroupInput;
 import com.gtech.food_api.api.dto.input.UserInput;
 import com.gtech.food_api.domain.model.User;
 

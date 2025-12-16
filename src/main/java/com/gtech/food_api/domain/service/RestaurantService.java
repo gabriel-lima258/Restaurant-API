@@ -5,8 +5,6 @@ import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.PaymentMethod;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
-import com.gtech.food_api.domain.service.CityService;
-import com.gtech.food_api.domain.service.PaymentMethodService;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

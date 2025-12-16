@@ -6,9 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
-import com.gtech.food_api.api.dto.GroupDTO;
 import com.gtech.food_api.api.dto.UserDTO;
-import com.gtech.food_api.domain.model.Group;
 import com.gtech.food_api.domain.model.User;
 
 import java.util.stream.Collectors;

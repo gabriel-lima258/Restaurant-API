@@ -1,16 +1,11 @@
 package com.gtech.food_api.api.controller;
 
-import com.gtech.food_api.api.assembler.GroupDTOAssembler;
 import com.gtech.food_api.api.assembler.UserDTOAssembler;
-import com.gtech.food_api.api.disassembler.GroupInputDisassembler;
 import com.gtech.food_api.api.disassembler.UserInputDisassembler;
-import com.gtech.food_api.api.dto.GroupDTO;
 import com.gtech.food_api.api.dto.UserDTO;
-import com.gtech.food_api.api.dto.input.GroupInput;
 import com.gtech.food_api.api.dto.input.UserInput;
 import com.gtech.food_api.api.dto.input.UserPasswordInput;
 import com.gtech.food_api.api.dto.input.UserWithPasswordInput;
-import com.gtech.food_api.domain.model.Group;
 import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.service.UserService;
 

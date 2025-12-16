@@ -693,3 +693,6 @@ insert into `group` (name) values ('Administrador'), ('Gerente'), ('Cadastrador'
 
 -- group permission
 insert into group_permission (group_id, permission_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
+
+-- group user
+insert into group_user (user_id, group_id) values (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (3, 1), (3, 2), (3, 3);

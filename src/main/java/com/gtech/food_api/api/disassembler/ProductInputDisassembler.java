@@ -4,11 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.gtech.food_api.api.dto.input.ProductInput;
-import com.gtech.food_api.api.dto.input.RestaurantInput;
-import com.gtech.food_api.domain.model.City;
-import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.model.Product;
-import com.gtech.food_api.domain.model.Restaurant;
 import org.modelmapper.ModelMapper;
 
 /**

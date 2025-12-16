@@ -1,13 +1,12 @@
 package com.gtech.food_api.domain.service;
 
+import com.gtech.food_api.domain.model.Group;
 import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.repository.UserRepository;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
-import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.UserNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +20,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private GroupService groupService;
 
     @Transactional(readOnly = true)
     public List<User> listAll(){
@@ -53,6 +55,20 @@ public class UserService {
         // o JPA detecta automaticamente a mudança. No commit da transação, o flush automático persiste
         // as alterações no banco, por isso não é necessário chamar userRepository.save(user).
         user.setPassword(newPassword);
+    }
+
+    @Transactional
+    public void associateGroup(Long userId, Long groupId){
+        User user = findOrFail(userId);
+        Group group = groupService.findOrFail(groupId);
+        user.addGroup(group);
+    }
+
+    @Transactional
+    public void disassociateGroup(Long userId, Long groupId){
+        User user = findOrFail(userId);
+        Group group = groupService.findOrFail(groupId);
+        user.removeGroup(group);
     }
 
     @Transactional(readOnly = true)
