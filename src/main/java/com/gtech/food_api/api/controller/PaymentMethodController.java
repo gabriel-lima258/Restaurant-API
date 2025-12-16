@@ -1,15 +1,10 @@
 package com.gtech.food_api.api.controller;
 
 import com.gtech.food_api.api.assembler.PaymentMethodDTOAssembler;
-import com.gtech.food_api.api.disassembler.CityInputDisassembler;
 import com.gtech.food_api.api.disassembler.PaymentMethodInputDisassembler;
 import com.gtech.food_api.api.dto.PaymentMethodDTO;
-import com.gtech.food_api.api.dto.PaymentMethodDTO;
-import com.gtech.food_api.api.dto.input.PaymentMethodInput;
 import com.gtech.food_api.api.dto.input.PaymentMethodInput;
 import com.gtech.food_api.domain.model.PaymentMethod;
-import com.gtech.food_api.domain.model.PaymentMethod;
-import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.PaymentMethodService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;

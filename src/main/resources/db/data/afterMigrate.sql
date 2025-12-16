@@ -603,7 +603,7 @@ insert into product (name, description, price, active, restaurant_id)
 values ('Porco com molho agridoce', 'Deliciosa carne suína ao molho especial', 78.90, 1, 1);
 
 insert into product (name, description, price, active, restaurant_id) 
-values ('Camarão tailandês', '16 camarões grandes ao molho picante', 110, 1, 1);
+values ('Camarão tailandês', '16 camarões grandes ao molho picante', 110, 1, 3);
 
 insert into product (name, description, price, active, restaurant_id) 
 values (
