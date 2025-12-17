@@ -7,27 +7,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/orders/{orderId}")
+@RequestMapping("/orders/{orderCode}")
 public class StatusOrderController {
 
     @Autowired
     private StatusOrderService statusOrderService;
 
     @PutMapping("/confirm")
-    public ResponseEntity<Void> confirm(@PathVariable Long orderId){
-        statusOrderService.confirmOrder(orderId);
+    public ResponseEntity<Void> confirm(@PathVariable String orderCode){
+        statusOrderService.confirmOrder(orderCode);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/deliver")
-    public ResponseEntity<Void> deliver(@PathVariable Long orderId){
-        statusOrderService.deliverOrder(orderId);
+    public ResponseEntity<Void> deliver(@PathVariable String orderCode){
+        statusOrderService.deliverOrder(orderCode);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/cancel")
-    public ResponseEntity<Void> cancel(@PathVariable Long orderId){
-        statusOrderService.cancelOrder(orderId);
+    public ResponseEntity<Void> cancel(@PathVariable String orderCode){
+        statusOrderService.cancelOrder(orderCode);
         return ResponseEntity.noContent().build();
     }
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
@@ -17,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Embedded;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -34,6 +36,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String code; // code será um UUID, evita expor do id do pedido publicamente
     private BigDecimal subtotal;
     private BigDecimal feeShipping;
     private BigDecimal totalValue;
@@ -84,17 +87,17 @@ public class Order {
         this.totalValue = this.subtotal.add(this.feeShipping);
     }
 
-    public void canBeConfirmed() {
+    public void confirm() {
         setStatus(OrderStatus.CONFIRMED);
         setConfirmedAt(OffsetDateTime.now());
     }
 
-    public void canBeDelivered() {
+    public void deliver() {
         setStatus(OrderStatus.DELIVERED);
         setDeliveredAt(OffsetDateTime.now());
     }
 
-    public void canBeCanceled() {
+    public void cancel() {
         setStatus(OrderStatus.CANCELED);
         setCanceledAt(OffsetDateTime.now());
     }
@@ -103,13 +106,19 @@ public class Order {
     private void setStatus(OrderStatus newStatus) {
         // Verifica se o status já é o mesmo que está sendo tentado definir
         if (getStatus().equals(newStatus)) {
-            throw new BusinessException(String.format("Order %d is already %s", getId(), newStatus.getDescription()));
+            throw new BusinessException(String.format("Order %s is already %s", getCode(), newStatus.getDescription()));
         }
         
         // Verifica se a transição de status é válida
         if (getStatus().cannotBeAlteratedTo(newStatus)) {
-            throw new BusinessException(String.format("Order %d cannot be altered to %s because it is in status %s", getId(), newStatus.getDescription(), getStatus().getDescription()));
+            throw new BusinessException(String.format("Order %s cannot be altered to %s because it is in status %s", getCode(), newStatus.getDescription(), getStatus().getDescription()));
         }
         this.status = newStatus;
+    }
+
+    // gera o código do pedido quando o pedido é salvo, evita o erro de null
+    @PrePersist
+    private void generateCode() {
+        setCode(UUID.randomUUID().toString());
     }
 }

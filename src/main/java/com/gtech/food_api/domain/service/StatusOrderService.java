@@ -16,21 +16,21 @@ public class StatusOrderService {
 
 
     @Transactional
-    public void confirmOrder(Long orderId) {
-        Order order = orderService.findOrFail(orderId);
-        order.canBeConfirmed();
+    public void confirmOrder(String orderCode) {
+        Order order = orderService.findOrFail(orderCode);
+        order.confirm();
     }
 
     @Transactional
-    public void deliverOrder(Long orderId) {
-        Order order = orderService.findOrFail(orderId);
-        order.canBeDelivered();
+    public void deliverOrder(String orderCode) {
+        Order order = orderService.findOrFail(orderCode);
+        order.deliver();
     }
 
     @Transactional
-    public void cancelOrder(Long orderId) {
-        Order order = orderService.findOrFail(orderId);
-        order.canBeCanceled();
+    public void cancelOrder(String orderCode) {
+        Order order = orderService.findOrFail(orderCode);
+        order.cancel();
     }
 
 }

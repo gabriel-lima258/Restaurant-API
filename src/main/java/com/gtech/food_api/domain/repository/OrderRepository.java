@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends CustomJpaRepository<Order, Long> {
+public interface OrderRepository extends CustomJpaRepository<Order, Long>, OrderRepositoryQueries {
 
     @Query("FROM Order o JOIN FETCH o.client JOIN FETCH o.restaurant r JOIN FETCH r.kitchen")
     List<Order> findAll();

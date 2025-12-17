@@ -50,9 +50,9 @@ public class OrderController {
         return ResponseEntity.ok().body(dtoList);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OrderDTO> findById(@PathVariable Long id) {
-        Order entity = orderService.findOrFail(id);
+    @GetMapping("/{orderCode}")
+    public ResponseEntity<OrderDTO> findById(@PathVariable String orderCode) {
+        Order entity = orderService.findOrFail(orderCode);
         OrderDTO dto = orderDTOAssembler.copyToDTO(entity);
         return ResponseEntity.ok().body(dto);
     }
@@ -70,7 +70,7 @@ public class OrderController {
             OrderDTO dto = orderDTOAssembler.copyToDTO(newOrder);
             
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(newOrder.getId()).toUri();
+                    .buildAndExpand(newOrder.getCode()).toUri();
 
             return ResponseEntity.created(uri).body(dto);
         } catch (EntityNotFoundException e) {

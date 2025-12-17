@@ -12,7 +12,7 @@ import com.gtech.food_api.domain.model.OrderStatus;
 @Setter
 public class OrderSummaryDTO {
 
-    private Long id;
+    private String code;
     private BigDecimal subtotal;
     private BigDecimal feeShipping;
     private BigDecimal totalValue;

@@ -29,8 +29,8 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Order findOrFail(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(()
-                -> new OrderNotFoundException(orderId));
+    public Order findOrFail(String orderCode) {
+        return orderRepository.findByCodeWithEagerType(orderCode).orElseThrow(()
+                -> new OrderNotFoundException(orderCode));
     }
 }
