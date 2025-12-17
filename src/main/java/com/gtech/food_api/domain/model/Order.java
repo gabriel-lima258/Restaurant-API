@@ -19,6 +19,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Embedded;
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.gtech.food_api.domain.service.exceptions.BusinessException;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -79,5 +82,34 @@ public class Order {
 
         // totalValue = subtotal + feeShipping
         this.totalValue = this.subtotal.add(this.feeShipping);
+    }
+
+    public void canBeConfirmed() {
+        setStatus(OrderStatus.CONFIRMED);
+        setConfirmedAt(OffsetDateTime.now());
+    }
+
+    public void canBeDelivered() {
+        setStatus(OrderStatus.DELIVERED);
+        setDeliveredAt(OffsetDateTime.now());
+    }
+
+    public void canBeCanceled() {
+        setStatus(OrderStatus.CANCELED);
+        setCanceledAt(OffsetDateTime.now());
+    }
+
+    // validação feita na entidade para evitar que o status seja alterado para um status inválido
+    private void setStatus(OrderStatus newStatus) {
+        // Verifica se o status já é o mesmo que está sendo tentado definir
+        if (getStatus().equals(newStatus)) {
+            throw new BusinessException(String.format("Order %d is already %s", getId(), newStatus.getDescription()));
+        }
+        
+        // Verifica se a transição de status é válida
+        if (getStatus().cannotBeAlteratedTo(newStatus)) {
+            throw new BusinessException(String.format("Order %d cannot be altered to %s because it is in status %s", getId(), newStatus.getDescription(), getStatus().getDescription()));
+        }
+        this.status = newStatus;
     }
 }

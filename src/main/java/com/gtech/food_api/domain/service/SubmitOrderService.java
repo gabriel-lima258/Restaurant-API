@@ -1,6 +1,5 @@
 package com.gtech.food_api.domain.service;
 
-import com.gtech.food_api.domain.model.Address;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.model.Order;
 import com.gtech.food_api.domain.model.PaymentMethod;
@@ -8,14 +7,11 @@ import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.repository.OrderRepository;
-import com.gtech.food_api.domain.service.exceptions.BusinessException;
-import com.gtech.food_api.domain.service.exceptions.OrderNotFoundException;
+import com.gtech.food_api.domain.service.exceptions.PaymentNoAcceptedException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class SubmitOrderService {
@@ -64,7 +60,7 @@ public class SubmitOrderService {
 
         // verifica se o restaurante não aceita o método de pagamento
         if (restaurant.notAcceptPaymentMethod(paymentMethod)) {
-            throw new BusinessException(String.format("Payment method %s is not accepted by restaurant %s", paymentMethod.getDescription(), restaurant.getName()));
+            throw new PaymentNoAcceptedException(paymentMethod.getDescription(), restaurant.getName());
         }
     }
 
