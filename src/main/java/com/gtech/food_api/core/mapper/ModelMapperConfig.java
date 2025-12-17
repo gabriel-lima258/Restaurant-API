@@ -3,7 +3,9 @@ package com.gtech.food_api.core.mapper;
 import org.springframework.context.annotation.Configuration;
 
 import com.gtech.food_api.api.dto.AddressDTO;
+import com.gtech.food_api.api.dto.input.OrderItemInput;
 import com.gtech.food_api.domain.model.Address;
+import com.gtech.food_api.domain.model.OrderItem;
 
 import org.springframework.context.annotation.Bean;
 
@@ -45,6 +47,20 @@ public class ModelMapperConfig {
         addressToAddressDTO.addMapping(
             src -> src.getCity().getState().getName(),
             (dest, value) -> dest.getCity().setState((String) value));
+
+        /**
+         * Mapear o order item input para o order item
+         * - src: OrderItemInput
+         * - dest: OrderItem
+         * - mapper: mapper do model mapper
+         * - mapper.skip(OrderItem::setId): pular o id do order item
+         * 
+         * Por que isso?
+         * - Para que o order item input não tenha o id do order item
+         * - O id do order item é gerado automaticamente pelo banco de dados
+         */
+        modelMapper.createTypeMap(OrderItemInput.class, OrderItem.class)
+        .addMappings(mapper -> mapper.skip(OrderItem::setId));
 
         return modelMapper;
     }

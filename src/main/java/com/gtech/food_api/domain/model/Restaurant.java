@@ -108,5 +108,13 @@ public class Restaurant {
     public boolean removeResponsible(User user) {
         return getResponsible().remove(user);
     }
+
+    public boolean acceptPaymentMethod(PaymentMethod paymentMethod) {
+        return getPaymentMethods().contains(paymentMethod);
+    }
+
+    public boolean notAcceptPaymentMethod(PaymentMethod paymentMethod) {
+        return !acceptPaymentMethod(paymentMethod);
+    }
     
 }

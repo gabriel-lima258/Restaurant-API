@@ -83,6 +83,18 @@ public class RestaurantService {
         restaurant.deactivate();
     }
 
+    // ativacao e desativacao de restaurant em massa
+    @Transactional
+    public void activate(List<Long> restaurantIds) {
+        // foreach chama o metodo activate para cada restaurantId
+        restaurantIds.forEach(this::activate);
+    } 
+
+    @Transactional
+    public void deactivate(List<Long> restaurantIds) {
+        restaurantIds.forEach(this::deactivate);
+    }
+
     @Transactional
     public void open(Long restaurantId) {
         Restaurant restaurant = findOrFail(restaurantId);

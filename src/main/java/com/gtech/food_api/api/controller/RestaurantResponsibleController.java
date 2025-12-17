@@ -1,8 +1,6 @@
 package com.gtech.food_api.api.controller;
 
-import com.gtech.food_api.api.assembler.PaymentMethodDTOAssembler;
 import com.gtech.food_api.api.assembler.UserDTOAssembler;
-import com.gtech.food_api.api.dto.PaymentMethodDTO;
 import com.gtech.food_api.api.dto.UserDTO;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;

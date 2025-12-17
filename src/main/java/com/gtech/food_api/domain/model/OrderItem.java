@@ -20,20 +20,33 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
     private Integer quantity;
-    @Column(nullable = false)
     private BigDecimal unitPrice;
-    @Column(nullable = false)
     private BigDecimal totalPrice;
-    @Column(nullable = false)
     private String observation;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    // calcular o total do item
+    public void calculateTotalPrice() {
+        BigDecimal unitPrice = getUnitPrice();
+        Integer quantity = getQuantity();
+
+        // se o unitPrice for nulo, seta para 0
+        if (unitPrice == null) {
+            unitPrice = BigDecimal.ZERO;
+        }
+        // se a quantidade for nula, seta para 0
+        if (quantity == null) {
+            quantity = 0;
+        }
+        // totalPrice = unitPrice * quantity
+        this.totalPrice = unitPrice.multiply(new BigDecimal(quantity));
+    }
 }

@@ -34,6 +34,9 @@ alter table permission auto_increment = 1;
 alter table product auto_increment = 1;
 alter table restaurant auto_increment = 1;
 alter table `user` auto_increment = 1;
+alter table `order` auto_increment = 1;
+alter table order_item auto_increment = 1;
+
 -- ============================================
 -- INSERT DATA
 -- ============================================
@@ -92,7 +95,7 @@ insert into payment_method (id, description) values (6, 'Vale alimentação');
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at, 
     active, 
     open    
@@ -107,7 +110,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -122,7 +125,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -137,7 +140,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -152,7 +155,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -167,7 +170,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -182,7 +185,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -197,7 +200,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -212,7 +215,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -227,7 +230,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -242,7 +245,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -257,7 +260,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -272,7 +275,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -287,7 +290,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -302,7 +305,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -317,7 +320,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -332,7 +335,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -347,7 +350,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -362,7 +365,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -377,7 +380,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -392,7 +395,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -407,7 +410,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -422,7 +425,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -437,7 +440,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -452,7 +455,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -467,7 +470,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -482,7 +485,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -497,7 +500,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -512,7 +515,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -527,7 +530,7 @@ insert into restaurant (
 insert into restaurant (
     id, name, shipping_fee, kitchen_id, 
     address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, city_id, 
+    address_complement, address_neighborhood, address_city_id, 
     created_at, updated_at,
     active, 
     open
@@ -701,3 +704,41 @@ insert into group_user (user_id, group_id) values (1, 1), (1, 2), (1, 3), (2, 1)
 
 -- restaurant user responsible
 insert into restaurant_user_responsible (user_id, restaurant_id) values (1, 1), (2, 2), (3, 3);
+
+-- order
+insert into `order` (id, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
+    address_public_place, address_number, address_complement, address_neighborhood,
+    status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
+values (1, 3, 1, 1, 3, '01310-100', 'Avenida Paulista', '1578', 'Loja 45', 'Bela Vista',
+    'CREATED', UTC_TIMESTAMP, null, null, null, 174.00, 15.00, 189.00);
+
+insert into `order` (id, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
+    address_public_place, address_number, address_complement, address_neighborhood,
+    status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
+values (2, 4, 2, 2, 2, '30130-010', 'Rua da Bahia', '500', 'Térreo', 'Centro',
+    'CONFIRMED', UTC_TIMESTAMP, UTC_TIMESTAMP, null, null, 168.00, 12.50, 180.50);
+
+insert into `order` (id, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
+    address_public_place, address_number, address_complement, address_neighborhood,
+    status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
+values (3, 1, 3, 3, 1, '38400-000', 'Rua Tiradentes', '500', 'Sala 101', 'Centro',
+    'DELIVERED', UTC_TIMESTAMP, UTC_TIMESTAMP, null, UTC_TIMESTAMP, 78.90, 10.00, 88.90);
+
+-- order item
+insert into order_item (id, order_id, product_id, quantity, unit_price, total_price, observation)
+values (1, 1, 2, 1, 110.00, 110.00, 'Sem pimenta');
+
+insert into order_item (id, order_id, product_id, quantity, unit_price, total_price, observation)
+values (2, 1, 4, 1, 21.00, 21.00, 'Bem assado');
+
+insert into order_item (id, order_id, product_id, quantity, unit_price, total_price, observation)
+values (3, 1, 5, 1, 43.00, 43.00, null);
+
+insert into order_item (id, order_id, product_id, quantity, unit_price, total_price, observation)
+values (4, 2, 6, 1, 79.00, 79.00, 'Ao ponto');
+
+insert into order_item (id, order_id, product_id, quantity, unit_price, total_price, observation)
+values (5, 2, 7, 1, 89.00, 89.00, null);
+
+insert into order_item (id, order_id, product_id, quantity, unit_price, total_price, observation)
+values (6, 3, 1, 1, 78.90, 78.90, null);

@@ -34,7 +34,7 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -57,6 +57,18 @@ public class RestaurantController {
         List<Restaurant> result = restaurantService.listAll();
         List<RestaurantDTO> dtoList = restaurantDTOAssembler.toCollectionDTO(result);
         return ResponseEntity.ok().body(dtoList);
+    }
+
+    @PutMapping("/activation")
+    public ResponseEntity<Void> activateMany(@RequestBody List<Long> restaurantIds) {
+        restaurantService.activate(restaurantIds);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/deactivation")
+    public ResponseEntity<Void> deactivateMany(@RequestBody List<Long> restaurantIds) {
+        restaurantService.deactivate(restaurantIds);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
