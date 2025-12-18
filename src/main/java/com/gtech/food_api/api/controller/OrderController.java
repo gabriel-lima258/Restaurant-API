@@ -6,6 +6,7 @@ import com.gtech.food_api.api.disassembler.OrderInputDisassembler;
 import com.gtech.food_api.api.dto.OrderDTO;
 import com.gtech.food_api.api.dto.OrderSummaryDTO;
 import com.gtech.food_api.api.dto.input.OrderInput;
+import com.gtech.food_api.core.data.PageableTranslator;
 import com.gtech.food_api.domain.filter.OrderFilter;
 import com.gtech.food_api.domain.model.Order;
 import com.gtech.food_api.domain.model.User;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
@@ -52,12 +54,10 @@ public class OrderController {
     */
     @GetMapping
     public ResponseEntity<Page<OrderSummaryDTO>> listAll(OrderFilter filter, Pageable pageable){
-        /*
-         * lista todos os pedidos com o filtro e a paginação
-         * orders: lista de pedidos
-         * filter: filtro de pedidos com a query specification
-         * pageable: paginação
-         */
+        // atribui a paginação convertida para a paginação
+        pageable = convertPageable(pageable);
+
+        // lista todos os pedidos com o filtro de specification e a paginação
         Page<Order> orders = orderService.listAll(filter, pageable);
 
         List<OrderSummaryDTO> dtoContent = orderSummaryDTOAssembler.toCollectionDTO(orders.getContent());
@@ -93,5 +93,52 @@ public class OrderController {
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Converte os parâmetros de ordenação (sort) da URL para os nomes de propriedades da entidade.
+     * 
+     * Por que isso é necessário?
+     * - O frontend pode usar nomes de campos do DTO (mais amigáveis) na URL
+     * - O backend precisa usar os nomes de propriedades da entidade para ordenação no banco
+     * - Isso mantém o desacoplamento entre a API (DTO) e o modelo de domínio (Entity)
+     * 
+     * Como funciona:
+     * - Recebe um Pageable com parâmetros de ordenação da URL (ex: ?sort=nameClient,asc)
+     * - Traduz os nomes dos campos usando o mapper (chave = nome da URL, valor = nome da entidade)
+     * - Retorna um novo Pageable com os nomes de propriedades corretos para a entidade
+     * 
+     * Exemplos de uso na URL:
+     * - GET /orders?sort=code,asc
+     *   → Ordena por "code" (mesmo nome na entidade)
+     * 
+     * - GET /orders?sort=nameClient,desc
+     *   → Traduz "nameClient" (DTO) para "client.name" (entidade)
+     * 
+     * - GET /orders?sort=restaurant.name,asc&sort=totalValue,desc
+     *   → Ordena por nome do restaurante (asc) e depois por valor total (desc)
+     * 
+     * Mapeamento de campos:
+     * - "code" → "code" (mesmo nome)
+     * - "nameRestaurant" → "restaurant.name" (tradução: DTO usa nameRestaurant, entidade usa restaurant.name)
+     * - "nameClient" → "client.name" (tradução: DTO usa nameClient, entidade usa client.name)
+     * - "totalValue" → "totalValue" (mesmo nome)
+     * 
+     * @param pageable Pageable com parâmetros de ordenação da requisição HTTP
+     * @return Pageable convertido com nomes de propriedades da entidade para ordenação no banco
+     */
+    private Pageable convertPageable(Pageable pageable) {
+        // Mapeamento: chave = nome usado na URL sort=nameClient, valor = entidade
+        var mapper = Map.of(
+            "code", "code",                           
+            "totalValue", "totalValue",
+            "subtotal", "subtotal",
+            "feeShipping", "feeShipping",
+            "nameRestaurant", "restaurant.name",             
+            "nameClient", "client.name",                       
+            "status", "status",                       
+            "createdAt", "createdAt"
+        );
+        return PageableTranslator.translate(pageable, mapper);
     }
 }
