@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DailySelling" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ab882edd-c6aa-4797-af3a-9c7169d336dc">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="randomRecords"/>
+	<field name="date" class="java.util.Date"/>
+	<field name="totalSales" class="java.lang.Long"/>
+	<field name="totalBilling" class="java.math.BigDecimal"/>
+	<variable name="TOTAL_SALES_SUM" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalSales}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_BILLING_SUM" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalBilling}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="70">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="36" forecolor="#FFFFFF" backcolor="#1F2937" uuid="8d4c2b6b-2208-4f7e-9628-319e4ae33a7d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de Vendas Diárias]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="0" y="44" width="555" height="16" uuid="326161c1-678e-4248-b79a-a75b4a324283"/>
+				<textElement textAlignment="Right">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="28">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="28" backcolor="#F3F4F6" uuid="65b2c42c-610d-4a1f-99fb-3f561794c9f3"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="185" height="28" uuid="365656cc-3c3d-4b17-b74f-e9f11f8d5fd5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="0" width="185" height="28" uuid="2e26e0b6-fb23-43b2-b758-d374aa6a3ffb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total de Vendas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="0" width="185" height="28" uuid="112de555-0e62-4cdb-a370-8875d2f775db"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Faturamento Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="0" width="185" height="22" uuid="899fb46f-a054-4fee-8b36-6021b33ef8b3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{date}, "dd/MM/yyyy" )]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###;#,##0.###-">
+				<reportElement x="185" y="0" width="185" height="22" uuid="b4628983-2e24-440d-915e-320efd858f2f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{totalSales}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="370" y="0" width="185" height="22" uuid="929a4907-eded-4691-bdba-08808fb500c0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{totalBilling}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="36">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="1" backcolor="#9CA3AF" uuid="a0b883cc-b2cc-447b-b9a0-c5f5ec891c49"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="8" width="185" height="28" uuid="11b4784d-db3b-4631-96be-d58e49b2608e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL GERAL]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement x="185" y="8" width="185" height="28" uuid="cab14b81-a25a-4916-83dd-ac237806639a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL_SALES_SUM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="370" y="8" width="185" height="28" uuid="80d07035-db80-4385-a94d-4153c4bbc2af"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL_BILLING_SUM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

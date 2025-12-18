@@ -710,19 +710,19 @@ insert into `order` (id, code, restaurant_id, client_id, payment_method_id, addr
     address_public_place, address_number, address_complement, address_neighborhood,
     status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
 values (1, "9f5f3b1f-67e1-4b3a-9f61-c042db67443f", 3, 1, 1, 3, '01310-100', 'Avenida Paulista', '1578', 'Loja 45', 'Bela Vista',
-    'CREATED', UTC_TIMESTAMP, null, null, null, 174.00, 15.00, 189.00);
+    'CREATED', "2019-11-02 20:35:10", null, null, null, 174.00, 15.00, 189.00);
 
 insert into `order` (id, code, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
     address_public_place, address_number, address_complement, address_neighborhood,
     status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
 values (2, "31ef66a1-d362-4085-8dd6-7d91815bc0c2", 4, 2, 2, 2, '30130-010', 'Rua da Bahia', '500', 'Térreo', 'Centro',
-    'CONFIRMED', UTC_TIMESTAMP, UTC_TIMESTAMP, null, null, 168.00, 12.50, 180.50);
+    'CONFIRMED', "2025-12-18 20:35:10", "2025-12-18 20:40:00", null, null, 168.00, 12.50, 180.50);
 
 insert into `order` (id, code, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
     address_public_place, address_number, address_complement, address_neighborhood,
     status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
 values (3, "b0969c7c-3348-441f-bb15-eaf435f7ad83", 1, 3, 3, 1, '38400-000', 'Rua Tiradentes', '500', 'Sala 101', 'Centro',
-    'DELIVERED', UTC_TIMESTAMP, UTC_TIMESTAMP, null, UTC_TIMESTAMP, 78.90, 10.00, 88.90);
+    'DELIVERED', "2025-12-11 20:35:10", "2025-12-11 20:40:00", null, "2025-12-11 21:00:00", 78.90, 10.00, 88.90);
 
 -- order item
 insert into order_item (id, order_id, product_id, quantity, unit_price, total_price, observation)

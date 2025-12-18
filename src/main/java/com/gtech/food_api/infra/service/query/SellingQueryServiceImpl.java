@@ -1,8 +1,8 @@
-package com.gtech.food_api.infra.service;
+package com.gtech.food_api.infra.service.query;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +21,7 @@ public class SellingQueryServiceImpl implements SellingQueryService {
     private EntityManager entityManager;
 
     @Override
-    public List<DailySelling> queryDailySelling(DailySellingFilter filter) {
+    public List<DailySelling> queryDailySelling(DailySellingFilter filter, String timeOffset) {
         // cria o builder para criar a query
         var builder = entityManager.getCriteriaBuilder();
         // cria a query para a classe DailySelling
@@ -47,9 +47,12 @@ public class SellingQueryServiceImpl implements SellingQueryService {
         // criando um where com os predicados, recebe um array, então deve ser convertido para Predicate[]
         query.where(predicates.toArray(Predicate[]::new));
 
-        // criando um extrator de data 
-        var functionDateCreatedAt = builder.function(
-            "DATE", LocalDate.class, root.get("createdAt"));
+        // convertendo a data de createdAt para o timezone do usuario
+        var fuctionConverteTzCreatedAt = builder.function("CONVERT_TZ", Date.class, root.get("createdAt"), builder.literal("UTC"), builder.literal(timeOffset));
+
+        // criando um extrator de data para a data de createdAt
+        var functionConvertToDate = builder.function(
+            "DATE", Date.class, fuctionConverteTzCreatedAt);
 
         // criando o select para o construct de DailySelling, usando o root de Order
         /*
@@ -65,13 +68,13 @@ public class SellingQueryServiceImpl implements SellingQueryService {
             DATE(createdAt)
         */
         var selection = builder.construct(DailySelling.class, 
-            functionDateCreatedAt,
+            functionConvertToDate,
             builder.count(root.get("id")),
             builder.sum(root.get("totalValue"))
         );
         query.select(selection);
         // agrupando por data de criação
-        query.groupBy(functionDateCreatedAt);
+        query.groupBy(functionConvertToDate);
 
         // executando a query e retornando o resultado como lista de DailySelling
         return entityManager.createQuery(query).getResultList();

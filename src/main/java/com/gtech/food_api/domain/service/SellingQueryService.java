@@ -12,5 +12,5 @@ import com.gtech.food_api.domain.filter.DailySellingFilter;
  */
 public interface SellingQueryService {
     
-    List<DailySelling> queryDailySelling(DailySellingFilter filter);
+    List<DailySelling> queryDailySelling(DailySellingFilter filter, String timeOffset);
 }
