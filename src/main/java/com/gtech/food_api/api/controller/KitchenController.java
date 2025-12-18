@@ -9,6 +9,10 @@ import com.gtech.food_api.domain.service.KitchenService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +34,26 @@ public class KitchenController {
     @Autowired
     private KitchenInputDisassembler kitchenInputDisassembler;
 
+    /**
+     * Lista todas as cozinhas paginadas
+     * @param pageable
+     * @return Page<KitchenDTO>
+     */ 
     @GetMapping
-    public ResponseEntity<List<KitchenDTO>> listAll(){
-        List<Kitchen> result = kitchenService.listAll();
-        List<KitchenDTO> dtoList = kitchenDTOAssembler.toCollectionDTO(result);
-        return ResponseEntity.ok().body(dtoList);
+    public ResponseEntity<Page<KitchenDTO>> listAll(@PageableDefault(size = 10) Pageable pageable){
+        Page<Kitchen> kitchens = kitchenService.listAll(pageable);
+
+        List<KitchenDTO> content = kitchenDTOAssembler.toCollectionDTO(kitchens.getContent());
+
+        /*
+         * cria uma nova pagina com os dados da pagina atual e o total de elementos
+         * content: lista de DTOs
+         * pageable: pagina atual
+         * kitchens.getTotalElements(): total de elementos
+         */
+        Page<KitchenDTO> kitchenPageDTO = new PageImpl<>(content, pageable, kitchens.getTotalElements());
+
+        return ResponseEntity.ok().body(kitchenPageDTO);
     }
 
     @GetMapping("/{id}")

@@ -4,12 +4,13 @@ import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.repository.KitchenRepository;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.KitchenNotFoundException;
+
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class KitchenService {
@@ -20,8 +21,8 @@ public class KitchenService {
     private KitchenRepository kitchenRepository;
 
     @Transactional(readOnly = true)
-    public List<Kitchen> listAll(){
-        return kitchenRepository.findAll();
+    public Page<Kitchen> listAll(Pageable pageable){
+        return kitchenRepository.findAll(pageable);
     }
 
     @Transactional

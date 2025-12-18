@@ -17,6 +17,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -48,10 +51,20 @@ public class OrderController {
     * @param filter: filtro de pedidos, exemplo: clientId, restaurantId, creationDateStart, creationDateEnd
     */
     @GetMapping
-    public ResponseEntity<List<OrderSummaryDTO>> listAll(OrderFilter filter){
-        List<Order> result = orderService.listAll(filter);
-        List<OrderSummaryDTO> dtoList = orderSummaryDTOAssembler.toCollectionDTO(result);
-        return ResponseEntity.ok().body(dtoList);
+    public ResponseEntity<Page<OrderSummaryDTO>> listAll(OrderFilter filter, Pageable pageable){
+        /*
+         * lista todos os pedidos com o filtro e a paginação
+         * orders: lista de pedidos
+         * filter: filtro de pedidos com a query specification
+         * pageable: paginação
+         */
+        Page<Order> orders = orderService.listAll(filter, pageable);
+
+        List<OrderSummaryDTO> dtoContent = orderSummaryDTOAssembler.toCollectionDTO(orders.getContent());
+
+        Page<OrderSummaryDTO> orderSummaryPage = new PageImpl<>(dtoContent, pageable, orders.getTotalElements());
+
+        return ResponseEntity.ok().body(orderSummaryPage);
     }
 
     @GetMapping("/{orderCode}")

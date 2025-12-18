@@ -11,10 +11,16 @@ import com.gtech.food_api.domain.model.Order;
 public class OrderSpec {
     public static Specification<Order> withFilter(OrderFilter filter) {
         return ((root, query, builder) -> {
-            // usando fetch para carregar as relações com eager loading
-            // evitando o problema de N+1
-            root.fetch("client");
-            root.fetch("restaurant").fetch("kitchen");
+            /*
+             * se o resultado da query for do tipo Order, carrega as relações com eager loading
+             * evitando o problema de N+1
+             * Pelo fato da Order controller utiliza o Pageable e pode retornar um count, então precisamos verificar se o resultado da query é numerico ou não. Caso nao 
+             * pode utilizar o fetch normalmente e nenhum erro será lançado.
+             */
+            if (Order.class.equals(query.getResultType())) {
+                root.fetch("client");
+                root.fetch("restaurant").fetch("kitchen");
+            }
 
             // criando uma lista de predicates, para adicionar as condições do filtro
             var predicates = new ArrayList<Predicate>();
