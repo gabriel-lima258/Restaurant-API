@@ -7,6 +7,7 @@ import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 
+import java.net.BindException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
@@ -180,6 +181,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), 
                 HttpStatus.BAD_REQUEST, request);
     }
+
 
     /**
      * Trata erros de validação automática do Spring (@Valid, @NotNull, @Size, etc).

@@ -1,5 +1,6 @@
 package com.gtech.food_api.domain.service;
 
+import com.gtech.food_api.domain.filter.OrderFilter;
 import com.gtech.food_api.domain.model.Address;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.model.Order;
@@ -10,6 +11,7 @@ import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.repository.OrderRepository;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.OrderNotFoundException;
+import com.gtech.food_api.infra.repository.specification.OrderSpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,10 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
-    public List<Order> listAll(){
-        return orderRepository.findAll();
+    public List<Order> listAll(OrderFilter filter){
+        // passando o filtro OrderFilter para o specification
+        // OrderSpec.withFilter(filter) é um Specification<Order> que é usado para filtrar os pedidos
+        return orderRepository.findAll(OrderSpec.withFilter(filter));
     }
 
     @Transactional(readOnly = true)

@@ -49,10 +49,12 @@ public class ProductController {
     @Autowired 
     private ProductInputDisassembler productInputDisassembler;
 
+    // active é opcional, se nao for informado, retorna todos os produtos
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> listAll(@PathVariable Long restaurantId){
+    public ResponseEntity<List<ProductDTO>> listAll(@PathVariable Long restaurantId,
+            @RequestParam(required = false) Boolean active){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
-        List<Product> products = productService.listAll(restaurant);
+        List<Product> products = productService.listAll(restaurant, active);
         List<ProductDTO> dtoList = productDTOAssembler.toCollectionDTO(products);
         return ResponseEntity.ok().body(dtoList);
     }

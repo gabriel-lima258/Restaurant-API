@@ -18,8 +18,8 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Transactional(readOnly = true)
-    public List<Product> listAll(Restaurant restaurant){
-        return productRepository.findByRestaurant(restaurant);
+    public List<Product> listAll(Restaurant restaurant, Boolean active){
+        return productRepository.findByRestaurant(restaurant, active);
     }
 
     @Transactional

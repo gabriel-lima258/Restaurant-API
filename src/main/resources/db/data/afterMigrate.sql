@@ -119,7 +119,7 @@ insert into restaurant (
     '38400-100', 'Avenida João Pinheiro', '1234', 
     null, 'Marta Helena', 1, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    false, true
 );
 
 insert into restaurant (
@@ -464,7 +464,7 @@ insert into restaurant (
     '80020-010', 'Avenida Sete de Setembro', '1200', 
     'Sala 20', 'Centro', 8, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    false, true
 );
 
 insert into restaurant (
@@ -494,7 +494,7 @@ insert into restaurant (
     '74015-010', 'Avenida T-4', '1500', 
     '2º andar', 'Setor Bueno', 13, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    false, true
 );
 
 insert into restaurant (
@@ -524,7 +524,7 @@ insert into restaurant (
     '50010-000', 'Avenida Boa Viagem', '3000', 
     'Loja 5', 'Boa Viagem', 14, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    false, true
 );
 
 insert into restaurant (
@@ -664,7 +664,7 @@ insert into product (name, description, price, active, restaurant_id)
 values (
     'T-Bone', 
     'Corte muito saboroso, com um osso em formato de T, sendo de um lado o contrafilé e do outro o filé mignon', 
-    89, 1, 4
+    89, 0, 4
 );
 
 insert into product (name, description, price, active, restaurant_id) 
@@ -675,7 +675,7 @@ values (
 );
 
 insert into product (name, description, price, active, restaurant_id) 
-values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
+values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 0, 1);
 
 -- User
 insert into `user` (name, email, password, created_at) values ('João da Silva', 'joao.silva@example.com', '123456', UTC_TIMESTAMP);

@@ -1,11 +1,13 @@
 package com.gtech.food_api.api.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gtech.food_api.api.assembler.RestaurantDTOAssembler;
 import com.gtech.food_api.api.disassembler.RestaurantInputDisassembler;
 import com.gtech.food_api.api.dto.RestaurantDTO;
 import com.gtech.food_api.api.dto.input.RestaurantInput;
+import com.gtech.food_api.api.dto.view.RestaurantView;
 import com.gtech.food_api.core.validation.ValidationException;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
@@ -54,9 +56,15 @@ public class RestaurantController {
 
     @GetMapping
     public ResponseEntity<List<RestaurantDTO>> listAll(){
-        List<Restaurant> result = restaurantService.listAll();
-        List<RestaurantDTO> dtoList = restaurantDTOAssembler.toCollectionDTO(result);
+        List<RestaurantDTO> dtoList = restaurantDTOAssembler.toCollectionDTO(restaurantService.listAll());
         return ResponseEntity.ok().body(dtoList);
+    }
+
+    // get de resumo DTO de restaurantes
+    @JsonView(RestaurantView.Summary.class)
+    @GetMapping(params = "projection=summary")
+    public ResponseEntity<List<RestaurantDTO>> listSummary(){
+        return listAll();
     }
 
     @PutMapping("/activation")

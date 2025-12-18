@@ -6,8 +6,8 @@ import com.gtech.food_api.api.disassembler.OrderInputDisassembler;
 import com.gtech.food_api.api.dto.OrderDTO;
 import com.gtech.food_api.api.dto.OrderSummaryDTO;
 import com.gtech.food_api.api.dto.input.OrderInput;
+import com.gtech.food_api.domain.filter.OrderFilter;
 import com.gtech.food_api.domain.model.Order;
-import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.service.OrderService;
 import com.gtech.food_api.domain.service.SubmitOrderService;
@@ -43,9 +43,13 @@ public class OrderController {
     @Autowired
     private OrderInputDisassembler orderInputDisassembler;
 
+    /*
+    * OrderFilter foi injetado no metodo listAll, para que seja possivel passar o filtro na url, exemplo: /orders?clientId=1&restaurantId=1&creationDateStart=2025-01-01&creationDateEnd=2025-01-01
+    * @param filter: filtro de pedidos, exemplo: clientId, restaurantId, creationDateStart, creationDateEnd
+    */
     @GetMapping
-    public ResponseEntity<List<OrderSummaryDTO>> listAll(){
-        List<Order> result = orderService.listAll();
+    public ResponseEntity<List<OrderSummaryDTO>> listAll(OrderFilter filter){
+        List<Order> result = orderService.listAll(filter);
         List<OrderSummaryDTO> dtoList = orderSummaryDTOAssembler.toCollectionDTO(result);
         return ResponseEntity.ok().body(dtoList);
     }

@@ -17,12 +17,22 @@ import java.math.BigDecimal;
  */
 public class RestaurantFreeFeeSpec {
 
-    // criando um predicate de free shipping
+    /*
+    * RestaurantFreeFeeSpec: classe de specification para Restaurant com frete grátis
+    * o que é um predicate? é uma expressão booleana que retorna true ou false, exemplo: root.get("shippingFee").equal(BigDecimal.ZERO)
+    * @return Specification<Restaurant>
+    */
     public static Specification<Restaurant> withFreeFee() {
         return ((root, query, builder) ->
                 builder.equal(root.get("shippingFee"), BigDecimal.ZERO));
     }
 
+    /*
+    * withSimiliarName: criando um predicate de similar name
+    * o que é um predicate? é uma expressão booleana que retorna true ou false, exemplo: root.get("name").like("%" + name + "%")
+    * @param name
+    * @return Specification<Restaurant>
+    */
     public static Specification<Restaurant> withSimiliarName(String name) {
         return (((root, query, builder) ->
                 builder.like(root.get("name"), "%" + name + "%")));
