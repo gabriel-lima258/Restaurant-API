@@ -3,6 +3,7 @@ package com.gtech.food_api.api.controller;
 import com.gtech.food_api.api.assembler.ProductDTOAssembler;
 import com.gtech.food_api.api.disassembler.ProductInputDisassembler;
 import com.gtech.food_api.api.dto.ProductDTO;
+import com.gtech.food_api.api.dto.input.ProductFileInput;
 import com.gtech.food_api.api.dto.input.ProductInput;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.Restaurant;
@@ -12,15 +13,20 @@ import com.gtech.food_api.domain.service.RestaurantService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -59,7 +65,7 @@ public class ProductController {
         return ResponseEntity.ok().body(dtoList);
     }
 
-    @GetMapping("{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long productId, @PathVariable Long restaurantId) {
         Product product = productService.findOrFail(productId, restaurantId);
         ProductDTO productDTO = productDTOAssembler.copyToDTO(product);
@@ -82,14 +88,33 @@ public class ProductController {
         return ResponseEntity.created(uri).body(productDTO);
     }
 
-    @PutMapping("{productId}")
-    public ResponseEntity<ProductDTO> putMethodName(@PathVariable Long productId, @PathVariable Long restaurantId, @RequestBody ProductInput productInput) {
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDTO> update(@PathVariable Long productId, @PathVariable Long restaurantId, @RequestBody ProductInput productInput) {
         Product product = productService.findOrFail(productId, restaurantId);
         // Copy ProductInput values to Product entity
         productInputDisassembler.copyToDomainObject(productInput, product);
         productService.save(product);
         ProductDTO dto = productDTOAssembler.copyToDTO(product);
         return ResponseEntity.ok().body(dto);
+    }
+
+    
+    @PutMapping(value = "/{productId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @ModelAttribute ProductFileInput input) {
+        
+        var fileName = UUID.randomUUID().toString() + "_" + input.getFile().getOriginalFilename();
+
+        var filePath = Path.of("/Users/sosprecatorios/Documents/AlgaWorks/food-api/src/main/resources/images/", fileName);
+
+        System.out.println("Nome do arquivo: " + filePath.getFileName());
+        System.out.println("Content: " + input.getFile().getContentType());
+        System.out.println("Description: " + input.getDescription());
+
+        try {
+            input.getFile().transferTo(filePath);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
 }
