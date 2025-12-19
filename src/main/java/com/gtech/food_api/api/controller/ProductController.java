@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -144,16 +145,39 @@ public class ProductController {
         return ResponseEntity.ok().body(photoDTO);
     }
     
-    @GetMapping(value = "{productId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<InputStreamResource> downloadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
+    /*
+    * Request header é o header da requisição, ex: accept: image/jpeg, image/png, image/gif
+    * throws HttpMediaTypeNotAcceptableException é uma exceção que é lançada quando o tipo de arquivo não é compatível com o tipo requerido pelo cliente
+    */
+    @GetMapping(value = "{productId}/photo")
+    public ResponseEntity<InputStreamResource> downloadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId,
+        @RequestHeader("accept") String acceptHeader
+    ) throws HttpMediaTypeNotAcceptableException {
         try {
             PhotoProduct photoProduct = photoProductService.findOrFail(productId, restaurantId);
+
+            // parseia String acceptHeader para um objeto MediaType
+            MediaType mediaType = MediaType.parseMediaType(photoProduct.getContentType());
+            List<MediaType> acceptedMediaTypes = MediaType.parseMediaTypes(acceptHeader);
+
+            // verifica se o tipo de arquivo real é compatível com o tipo requerido pelo cliente
+            verifyTypeFile(mediaType, acceptedMediaTypes);
+
             InputStream file = photoStorageService.recoverFile(photoProduct.getFileName());
             return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
+                    .contentType(mediaType)
                     .body(new InputStreamResource(file));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    private void verifyTypeFile(MediaType type, List<MediaType> acceptedMediaTypes) throws HttpMediaTypeNotAcceptableException {
+        boolean isCompatible = acceptedMediaTypes.stream()
+            .anyMatch(mediaType -> mediaType.isCompatibleWith(type));
+
+        if (!isCompatible) {
+            throw new HttpMediaTypeNotAcceptableException(acceptedMediaTypes);
         }
     }
 }
