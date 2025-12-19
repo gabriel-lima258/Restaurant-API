@@ -6,8 +6,8 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gtech.food_api.domain.service.SellingQueryService;
-import com.gtech.food_api.domain.service.SellingReportService;
+import com.gtech.food_api.domain.service.report.SellingQueryService;
+import com.gtech.food_api.domain.service.report.SellingReportService;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;

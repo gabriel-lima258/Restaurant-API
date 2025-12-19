@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepository extends CustomJpaRepository<Product, Long> {
+public interface ProductRepository extends CustomJpaRepository<Product, Long>, ProductRepositoryQueries {
 
     @Query("FROM Product p WHERE p.id = :productId AND p.restaurant.id = :restaurantId")
     Optional<Product> findById(@Param("productId") Long productId, @Param("restaurantId") Long restaurantId);

@@ -1,12 +1,16 @@
 package com.gtech.food_api.api.controller;
 
+import com.gtech.food_api.api.assembler.PhotoProductDTOAssembler;
 import com.gtech.food_api.api.assembler.ProductDTOAssembler;
 import com.gtech.food_api.api.disassembler.ProductInputDisassembler;
+import com.gtech.food_api.api.dto.PhotoProductDTO;
 import com.gtech.food_api.api.dto.ProductDTO;
 import com.gtech.food_api.api.dto.input.ProductFileInput;
 import com.gtech.food_api.api.dto.input.ProductInput;
+import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.Restaurant;
+import com.gtech.food_api.domain.service.PhotoProductService;
 import com.gtech.food_api.domain.service.ProductService;
 import com.gtech.food_api.domain.service.RestaurantService;
 
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -49,7 +54,13 @@ public class ProductController {
     private RestaurantService restaurantService;
 
     @Autowired
+    private PhotoProductService photoProductService;
+
+    @Autowired
     private ProductDTOAssembler productDTOAssembler;
+
+    @Autowired
+    private PhotoProductDTOAssembler photoProductDTOAssembler;
 
     @Autowired 
     private ProductInputDisassembler productInputDisassembler;
@@ -99,21 +110,25 @@ public class ProductController {
 
     
     @PutMapping(value = "/{productId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @Valid ProductFileInput input) {
-        
-        var fileName = UUID.randomUUID().toString() + "_" + input.getFile().getOriginalFilename();
+    public ResponseEntity<PhotoProductDTO> uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @Valid ProductFileInput input) {
+    
+        // extrai o arquivo do multipart file dentro input
+        MultipartFile file = input.getFile();
 
-        var filePath = Path.of("/Users/sosprecatorios/Documents/AlgaWorks/food-api/src/main/resources/images/", fileName);
+        Product product = productService.findOrFail(productId, restaurantId);
 
-        System.out.println("Nome do arquivo: " + filePath.getFileName());
-        System.out.println("Content: " + input.getFile().getContentType());
-        System.out.println("Description: " + input.getDescription());
+        PhotoProduct photoProduct = new PhotoProduct();
+        photoProduct.setProduct(product);
+        photoProduct.setFileName(file.getOriginalFilename());
+        photoProduct.setDescription(input.getDescription());
+        photoProduct.setContentType(file.getContentType());
+        photoProduct.setSize(file.getSize());
 
-        try {
-            input.getFile().transferTo(filePath);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        photoProductService.savePhoto(photoProduct);
+
+        PhotoProductDTO photoDTO = photoProductDTOAssembler.copyToDTO(photoProduct);
+
+        return ResponseEntity.ok().body(photoDTO);
     }
     
 }

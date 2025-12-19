@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.List;
 
 import com.gtech.food_api.domain.model.OrderStatus;
 

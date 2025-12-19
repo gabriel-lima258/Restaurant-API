@@ -1,4 +1,4 @@
-package com.gtech.food_api.domain.service;
+package com.gtech.food_api.domain.service.report;
 
 import java.util.List;
 

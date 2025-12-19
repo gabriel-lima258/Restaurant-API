@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gtech.food_api.api.dto.report.DailySelling;
 import com.gtech.food_api.domain.filter.DailySellingFilter;
-import com.gtech.food_api.domain.service.SellingQueryService;
-import com.gtech.food_api.domain.service.SellingReportService;
+import com.gtech.food_api.domain.service.report.SellingQueryService;
+import com.gtech.food_api.domain.service.report.SellingReportService;
 
 @RestController
 @RequestMapping("/reports")

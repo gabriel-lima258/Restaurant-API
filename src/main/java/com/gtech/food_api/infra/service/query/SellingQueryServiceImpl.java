@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import com.gtech.food_api.api.dto.report.DailySelling;
 import com.gtech.food_api.domain.filter.DailySellingFilter;
-import com.gtech.food_api.domain.service.SellingQueryService;
 import com.gtech.food_api.domain.model.Order;
+import com.gtech.food_api.domain.service.report.SellingQueryService;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.Predicate;
