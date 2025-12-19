@@ -25,6 +25,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -260,6 +261,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+    }
+
+    // ==========================================
+    // HANDLERS DE HTTP HEADERS E TIPOS DE MÍDIA
+    // ==========================================
+
+    /**
+     * Trata erros quando o cliente solicita um tipo de mídia que o servidor não pode fornecer.
+     * 
+     * Quando é usado:
+     * - Cliente envia header Accept com tipo não suportado (ex: Accept: application/xml)
+     * - Servidor só retorna JSON, mas cliente solicita outro formato
+     * 
+     * Como funciona:
+     * - Retorna resposta vazia com status 406 (Not Acceptable) e headers apropriados
+     * - Permite que o Spring gerencie a negociação de conteúdo automaticamente
+     * 
+     * @param ex Exceção indicando que o tipo de mídia solicitado não é aceito
+     * @param headers Cabeçalhos HTTP
+     * @param status Status HTTP (geralmente 406)
+     * @param request Requisição HTTP
+     * @return ResponseEntity vazia com status e headers apropriados
+     */
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return ResponseEntity.status(status).headers(headers).build();
     }
 
     // ==========================================
