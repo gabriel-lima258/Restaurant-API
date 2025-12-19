@@ -12,19 +12,21 @@ import lombok.Getter;
  * Exemplo: Amazon S3, Google Cloud Storage, local, etc.
  */
 public interface PhotoStorageService {
-    
-    void store(NewPhoto newPhoto);
 
-    void remove(String fileName);
+    InputStream recoverFile(String fileName);
+    
+    void storeFile(NewPhoto newPhoto);
+
+    void removeFile(String fileName);
 
     // por que usar default? porque é uma implementação padrão, e pode ser sobrescrita caso necessario
     default void replaceFile(String oldFileName, NewPhoto newPhoto) {
         // armazenamos a nova foto
-        this.store(newPhoto);
+        this.storeFile(newPhoto);
 
         // se existe uma foto existente, removemos a foto existente para nao ficar duplicada
         if (oldFileName != null) {
-            this.remove(oldFileName);
+            this.removeFile(oldFileName);
         }
     }
 

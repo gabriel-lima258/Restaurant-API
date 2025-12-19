@@ -11,17 +11,22 @@ import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.PhotoProductService;
+import com.gtech.food_api.domain.service.PhotoStorageService;
 import com.gtech.food_api.domain.service.ProductService;
 import com.gtech.food_api.domain.service.RestaurantService;
+import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -32,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * Controller para gerenciar os métodos de pagamento de um restaurante
@@ -51,6 +58,9 @@ public class ProductController {
 
     @Autowired
     private PhotoProductService photoProductService;
+
+    @Autowired
+    private PhotoStorageService photoStorageService;
 
     @Autowired
     private ProductDTOAssembler productDTOAssembler;
@@ -126,5 +136,24 @@ public class ProductController {
 
         return ResponseEntity.ok().body(photoDTO);
     }
+
+    @GetMapping(value = "{productId}/photo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PhotoProductDTO> getPhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
+        PhotoProduct photoProduct = photoProductService.findOrFail(productId, restaurantId);
+        PhotoProductDTO photoDTO = photoProductDTOAssembler.copyToDTO(photoProduct);
+        return ResponseEntity.ok().body(photoDTO);
+    }
     
+    @GetMapping(value = "{productId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<InputStreamResource> downloadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
+        try {
+            PhotoProduct photoProduct = photoProductService.findOrFail(productId, restaurantId);
+            InputStream file = photoStorageService.recoverFile(photoProduct.getFileName());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(new InputStreamResource(file));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

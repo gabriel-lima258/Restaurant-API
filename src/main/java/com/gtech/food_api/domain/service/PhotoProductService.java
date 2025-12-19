@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.repository.ProductRepository;
 import com.gtech.food_api.domain.service.PhotoStorageService.NewPhoto;
+import com.gtech.food_api.domain.service.exceptions.PhotoProductNotFoundException;
 
 @Service
 public class PhotoProductService {
@@ -53,4 +54,10 @@ public class PhotoProductService {
 
         return photo;
     }  
+
+    @Transactional(readOnly = true)
+    public PhotoProduct findOrFail(Long restaurantId, Long productId) {
+        return productRepository.findPhotoById(productId, restaurantId).orElseThrow(()
+                -> new PhotoProductNotFoundException(restaurantId, productId));
+    }
 }

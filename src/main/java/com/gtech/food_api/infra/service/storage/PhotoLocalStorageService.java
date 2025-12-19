@@ -1,5 +1,6 @@
 package com.gtech.food_api.infra.service.storage;
 
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -17,7 +18,7 @@ public class PhotoLocalStorageService implements PhotoStorageService {
     private Path directoryPath;
 
     @Override
-    public void store(NewPhoto newPhoto) {
+    public void storeFile(NewPhoto newPhoto) {
         try {
             Path pathFile = getFilePath(newPhoto.getFileName());
             // copia o fluxo do file para o pathFile 
@@ -28,13 +29,23 @@ public class PhotoLocalStorageService implements PhotoStorageService {
     }
 
     @Override
-    public void remove(String fileName) {
+    public void removeFile(String fileName) {
         try {
             Path pathFile = getFilePath(fileName);
             // remove o arquivo se existir
             Files.deleteIfExists(pathFile);
         } catch (Exception e) {
             throw new StorageException("It was not possible to remove file.", e);
+        }
+    }
+
+    @Override
+    public InputStream recoverFile(String fileName) {
+        try {
+            Path pathFile = getFilePath(fileName);
+            return Files.newInputStream(pathFile);      
+        } catch (Exception e) {
+            throw new StorageException("It was not possible to recover file.", e);
         }
     }
 
