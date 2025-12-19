@@ -110,7 +110,11 @@ public class ProductFileController {
 
     @DeleteMapping
     public ResponseEntity<PhotoProductDTO> deletePhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
-        photoProductService.delete(restaurantId, productId);
+        try {
+            photoProductService.delete(restaurantId, productId);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.noContent().build();
     }
 
