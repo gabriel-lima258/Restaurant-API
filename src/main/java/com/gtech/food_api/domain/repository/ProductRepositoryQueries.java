@@ -13,4 +13,5 @@ import com.gtech.food_api.domain.model.PhotoProduct;
 public interface ProductRepositoryQueries {
 
     PhotoProduct savePhoto(PhotoProduct photoProduct);
+    void deletePhoto(PhotoProduct photoProduct);
 }

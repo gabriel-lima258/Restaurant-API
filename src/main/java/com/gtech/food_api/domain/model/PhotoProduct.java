@@ -27,4 +27,18 @@ public class PhotoProduct {
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId // mapeia o id do product para o id da photo product, isso permite nao mapear as entidades
     private Product product;
+
+    public Long getRestaurantId() {
+        if (getProduct() != null) {
+            return getProduct().getRestaurant().getId();
+        }
+        return null;
+    }
+
+    public Long getProductId() {
+        if (getProduct() != null) {
+            return getProduct().getId();
+        }
+        return null;
+    }
 }

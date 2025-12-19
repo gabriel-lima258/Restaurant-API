@@ -1,5 +1,6 @@
 package com.gtech.food_api.domain.repository;
 
+import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.Restaurant;
 
@@ -19,4 +20,7 @@ public interface ProductRepository extends CustomJpaRepository<Product, Long>, P
     // active se receber NULL, retorna todos os produtos, caso contrario, retorna os produtos ativos ou inativos
     @Query("FROM Product p WHERE p.restaurant = :restaurant AND (:active IS NULL OR p.active = :active)")
     List<Product> findByRestaurant(@Param("restaurant") Restaurant restaurant, @Param("active") Boolean active);
+
+    @Query("SELECT p FROM PhotoProduct p WHERE p.product.id = :productId AND p.product.restaurant.id = :restaurantId")
+    Optional<PhotoProduct> findPhotoById(Long productId, Long restaurantId);
 }
