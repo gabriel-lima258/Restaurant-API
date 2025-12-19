@@ -5,6 +5,7 @@ import com.gtech.food_api.domain.repository.ProductRepositoryQueries;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementação da interface ProductRepositoryQueries

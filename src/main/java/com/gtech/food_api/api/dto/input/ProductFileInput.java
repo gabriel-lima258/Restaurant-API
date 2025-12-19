@@ -21,4 +21,5 @@ public class ProductFileInput {
     private MultipartFile file;
     @NotBlank
     private String description;
+    
 }

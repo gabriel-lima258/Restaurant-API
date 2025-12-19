@@ -23,7 +23,8 @@ public class PhotoProduct {
     private String description;
     private String contentType;
     private Long size;
-
+    
+    
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId // mapeia o id do product para o id da photo product, isso permite nao mapear as entidades
     private Product product;

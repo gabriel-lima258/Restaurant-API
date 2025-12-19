@@ -21,10 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -33,9 +32,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-
-
 
 /**
  * Controller para gerenciar os métodos de pagamento de um restaurante
@@ -110,12 +106,12 @@ public class ProductController {
 
     
     @PutMapping(value = "/{productId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PhotoProductDTO> uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @Valid ProductFileInput input) {
-    
-        // extrai o arquivo do multipart file dentro input
-        MultipartFile file = input.getFile();
+    public ResponseEntity<PhotoProductDTO> uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @Valid ProductFileInput input) throws IOException {
 
         Product product = productService.findOrFail(productId, restaurantId);
+
+        // extrai o arquivo do multipart file dentro input
+        MultipartFile file = input.getFile();
 
         PhotoProduct photoProduct = new PhotoProduct();
         photoProduct.setProduct(product);
@@ -124,7 +120,7 @@ public class ProductController {
         photoProduct.setContentType(file.getContentType());
         photoProduct.setSize(file.getSize());
 
-        photoProductService.savePhoto(photoProduct);
+        photoProductService.savePhoto(photoProduct, file.getInputStream());
 
         PhotoProductDTO photoDTO = photoProductDTOAssembler.copyToDTO(photoProduct);
 

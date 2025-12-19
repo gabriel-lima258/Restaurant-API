@@ -1,5 +1,6 @@
 package com.gtech.food_api.domain.service;
 
+import java.io.InputStream;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.repository.ProductRepository;
+import com.gtech.food_api.domain.service.PhotoStorageService.NewPhoto;
 
 @Service
 public class PhotoProductService {
@@ -15,19 +17,40 @@ public class PhotoProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    // usamos uma interface para abstrair a implementação do storage, assim podemos usar diferentes implementações de storage, como local, aws, etc. Assim diminuimos o acoplamento da aplicação.
+    @Autowired
+    private PhotoStorageService photoStorageService;
+
     @Transactional
-    public PhotoProduct savePhoto(PhotoProduct photoProduct) {
-        Long productId = photoProduct.getProductId();
-        Long restaurantId = photoProduct.getRestaurantId();
+    public PhotoProduct savePhoto(PhotoProduct photo, InputStream inputStream) {
+        Long productId = photo.getProductId();
+        Long restaurantId = photo.getRestaurantId();
+        String newFileName = photoStorageService.generateNewFileName(photo.getFileName());
+        String existingFileName = null;
 
-        Optional<PhotoProduct> photoProductOptional = productRepository.findPhotoById(productId, restaurantId);
+        Optional<PhotoProduct> existingPhoto = productRepository.findPhotoById(productId, restaurantId);
 
-        if (photoProductOptional.isPresent()) {
+        if (existingPhoto.isPresent()) {
+            // se existe uma foto existente, pega o nome da foto existente
+            existingFileName = existingPhoto.get().getFileName();
             // exclui a foto existente
-            productRepository.deletePhoto(photoProductOptional.get());
-            productRepository.flush(); // Força a execução da query no banco de dados antes de salvar a nova foto
+            productRepository.deletePhoto(existingPhoto.get());
         }
 
-        return productRepository.savePhoto(photoProduct);
+        // salvamos o arquivo com nome unico gerado pelo sistema
+        photo.setFileName(newFileName);
+        // garantimos que a foto foi salva no banco de dados antes de armazenar a foto no storage
+        photo = productRepository.savePhoto(photo);
+        productRepository.flush();
+
+        NewPhoto newPhoto = NewPhoto.builder()
+            .fileName(photo.getFileName())
+            .inputStream(inputStream)
+            .build();
+
+        // caso de erro, a foto nao é armazenada no storage, e o banco de dados nao é salvo e da um rollback automaticamente pelo spring data jpa
+        photoStorageService.replaceFile(existingFileName, newPhoto);
+
+        return photo;
     }  
 }
