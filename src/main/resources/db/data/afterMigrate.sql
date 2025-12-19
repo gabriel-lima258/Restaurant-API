@@ -20,6 +20,8 @@ delete from group_user;
 delete from order_item;
 delete from `order`;
 
+delete from photo_product;
+
 delete from restaurant_user_responsible;
 
 
