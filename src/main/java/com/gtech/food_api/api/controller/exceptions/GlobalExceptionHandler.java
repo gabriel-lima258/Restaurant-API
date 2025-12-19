@@ -7,7 +7,6 @@ import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 
-import java.net.BindException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
@@ -23,9 +22,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -90,6 +91,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionsDTO body = createBuilder(status, type, detail).build();
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
     }
+    
 
     // ==========================================
     // HANDLERS DE EXCEÇÕES DE DOMÍNIO

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -100,7 +99,7 @@ public class ProductController {
 
     
     @PutMapping(value = "/{productId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @ModelAttribute ProductFileInput input) {
+    public void uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @Valid ProductFileInput input) {
         
         var fileName = UUID.randomUUID().toString() + "_" + input.getFile().getOriginalFilename();
 
