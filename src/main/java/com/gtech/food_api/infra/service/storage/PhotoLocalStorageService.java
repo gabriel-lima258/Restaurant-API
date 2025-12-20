@@ -4,7 +4,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.gtech.food_api.core.storage.StorageProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -14,8 +15,9 @@ import com.gtech.food_api.infra.service.storage.exceptions.StorageException;
 @Service
 public class PhotoLocalStorageService implements PhotoStorageService {
 
-    @Value("${photo.storage.local.directory}")
-    private Path directoryPath;
+    // storageProperties permite escolher qual implementação de armazenamento será utilizada
+    @Autowired
+    private StorageProperties storageProperties;
 
     @Override
     public void storeFile(NewPhoto newPhoto) {
@@ -56,7 +58,7 @@ public class PhotoLocalStorageService implements PhotoStorageService {
      * O resolve é um método da classe Path que concatena o diretório de armazenamento com o nome do arquivo
      */
     private Path getFilePath(String fileName) {
-        return directoryPath.resolve(Path.of(fileName));    
+        return storageProperties.getLocal().getDirectory().resolve(Path.of(fileName));
     }
     
 }

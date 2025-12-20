@@ -1,4 +1,4 @@
-package com.gtech.food_api.infra.service.report;
+package com.gtech.food_api.infra.service.report.exceptions;
 
 // exception para lidar com erros de relatório na camada de infra
 public class ReportException extends RuntimeException {

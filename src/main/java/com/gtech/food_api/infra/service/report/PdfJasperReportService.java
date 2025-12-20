@@ -3,6 +3,7 @@ package com.gtech.food_api.infra.service.report;
 import java.util.HashMap;
 import java.util.Locale;
 
+import com.gtech.food_api.infra.service.report.exceptions.ReportException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
