@@ -12,7 +12,7 @@ import org.springframework.util.FileCopyUtils;
 import com.gtech.food_api.domain.service.PhotoStorageService;
 import com.gtech.food_api.infra.service.storage.exceptions.StorageException;
 
-@Service
+//@Service
 public class PhotoLocalStorageService implements PhotoStorageService {
 
     // storageProperties permite escolher qual implementação de armazenamento será utilizada
