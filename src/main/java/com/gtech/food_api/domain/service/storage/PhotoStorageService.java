@@ -1,4 +1,4 @@
-package com.gtech.food_api.domain.service;
+package com.gtech.food_api.domain.service.storage;
 
 import java.io.InputStream;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import lombok.Getter;
  */
 public interface PhotoStorageService {
 
-    InputStream recoverFile(String fileName);
+    RecoverPhoto recoverFile(String fileName);
     
     void storeFile(NewPhoto newPhoto);
 
@@ -37,7 +37,25 @@ public interface PhotoStorageService {
     @Builder
     @Getter
     class NewPhoto {
-        String fileName;
-        InputStream inputStream; // fluxo de entrada de dados
+        private String fileName;
+        private String contentType;
+        private InputStream inputStream; // fluxo de entrada de dados
+        private Long contentLength;
+    }
+
+    // classe permite escolher entre InputStream ou URL para recuperar a foto
+    @Builder
+    @Getter
+    class RecoverPhoto {
+        private InputStream inputStream;
+        private String url;
+
+        public boolean hasUrl() {
+            return url != null;
+        }
+
+        public boolean hasInputStream() {
+            return inputStream != null;
+        }
     }
 }

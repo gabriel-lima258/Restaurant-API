@@ -1,18 +1,16 @@
 package com.gtech.food_api.infra.service.storage;
 
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.gtech.food_api.core.storage.StorageProperties;
+import com.gtech.food_api.domain.service.storage.PhotoStorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import com.gtech.food_api.domain.service.PhotoStorageService;
 import com.gtech.food_api.infra.service.storage.exceptions.StorageException;
 
-//@Service
 public class PhotoLocalStorageService implements PhotoStorageService {
 
     // storageProperties permite escolher qual implementação de armazenamento será utilizada
@@ -42,10 +40,15 @@ public class PhotoLocalStorageService implements PhotoStorageService {
     }
 
     @Override
-    public InputStream recoverFile(String fileName) {
+    public RecoverPhoto recoverFile(String fileName) {
         try {
             Path pathFile = getFilePath(fileName);
-            return Files.newInputStream(pathFile);      
+
+            RecoverPhoto recoverPhoto = RecoverPhoto.builder()
+                .inputStream(Files.newInputStream(pathFile))
+                .build();
+
+            return recoverPhoto;      
         } catch (Exception e) {
             throw new StorageException("It was not possible to recover file.", e);
         }

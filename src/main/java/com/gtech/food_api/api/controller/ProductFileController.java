@@ -5,22 +5,25 @@ import com.gtech.food_api.api.dto.PhotoProductDTO;
 import com.gtech.food_api.api.dto.input.ProductFileInput;
 import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.model.Product;
-import com.gtech.food_api.domain.service.PhotoProductService;
-import com.gtech.food_api.domain.service.PhotoStorageService;
 import com.gtech.food_api.domain.service.ProductService;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
+import com.gtech.food_api.domain.service.storage.PhotoProductService;
+import com.gtech.food_api.domain.service.storage.PhotoStorageService;
+import com.gtech.food_api.domain.service.storage.PhotoStorageService.RecoverPhoto;
 
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,10 +80,19 @@ public class ProductFileController {
             // verifica se o tipo de arquivo real é compatível com o tipo requerido pelo cliente
             verifyTypeFile(mediaType, acceptedMediaTypes);
 
-            InputStream file = photoStorageService.recoverFile(photoProduct.getFileName());
-            return ResponseEntity.ok()
+            RecoverPhoto file = photoStorageService.recoverFile(photoProduct.getFileName());
+
+            // se tiver url redireciona para a url se não, retorna o arquivo
+            if (file.hasUrl()) {
+                return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, file.getUrl())
+                    .build();
+            } else {
+                return ResponseEntity.ok()
                     .contentType(mediaType)
-                    .body(new InputStreamResource(file));
+                    .body(new InputStreamResource(file.getInputStream()));
+            }
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

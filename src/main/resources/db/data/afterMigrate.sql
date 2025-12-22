@@ -680,7 +680,7 @@ insert into product (name, description, price, active, restaurant_id)
 values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 0, 1);
 
 -- User
-insert into `user` (name, email, password, created_at) values ('João da Silva', 'joao.silva@example.com', '123456', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Gabriel Silva', 'gabriel58221@gmail.com', '123456', UTC_TIMESTAMP);
 insert into `user` (name, email, password, created_at) values ('Maria Oliveira', 'maria.oliveira@example.com', '123456', UTC_TIMESTAMP);
 insert into `user` (name, email, password, created_at) values ('Pedro Santos', 'pedro.santos@example.com', '123456', UTC_TIMESTAMP);
 insert into `user` (name, email, password, created_at) values ('Ana Paula', 'ana.paula@example.com', '123456', UTC_TIMESTAMP);

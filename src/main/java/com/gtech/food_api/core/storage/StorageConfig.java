@@ -8,6 +8,10 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.gtech.food_api.core.storage.StorageProperties.StorageType;
+import com.gtech.food_api.domain.service.storage.PhotoStorageService;
+import com.gtech.food_api.infra.service.storage.PhotoLocalStorageService;
+import com.gtech.food_api.infra.service.storage.S3StorageService;
 
 /**
  * Classe de configuração do cliente Amazon S3.
@@ -18,7 +22,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
  * - O bean criado pode ser injetado em qualquer classe usando @Autowired
  */
 @Configuration
-public class AmazonS3Config {
+public class StorageConfig {
     
     @Autowired
     private StorageProperties storageProperties;
@@ -33,7 +37,7 @@ public class AmazonS3Config {
      * - withRegion: Define a região AWS onde o bucket está localizado
      */
     @Bean
-    private AmazonS3 amazonS3() {
+    public AmazonS3 amazonS3() {
         var credentials = new BasicAWSCredentials(storageProperties.getS3().getKeyId(),
             storageProperties.getS3().getSecretKey());
 
@@ -41,5 +45,21 @@ public class AmazonS3Config {
             .withCredentials(new AWSStaticCredentialsProvider(credentials))
             .withRegion(storageProperties.getS3().getRegion())
             .build();
+    }
+
+    /*
+     * Cria e configura o serviço de armazenamento de fotos.
+     * 
+     * O que faz:
+     * - Se o tipo de armazenamento for S3, cria e configura o serviço de armazenamento de fotos S3
+     * - Se o tipo de armazenamento for LOCAL, cria e configura o serviço de armazenamento de fotos LOCAL
+     */
+    @Bean
+    public PhotoStorageService photoStorageService() {
+        if (StorageType.S3.equals(storageProperties.getType())) {
+            return new S3StorageService();
+        } else {
+            return new PhotoLocalStorageService();
+        }
     }
 }

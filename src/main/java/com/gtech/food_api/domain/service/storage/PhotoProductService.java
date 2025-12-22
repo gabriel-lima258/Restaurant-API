@@ -1,4 +1,4 @@
-package com.gtech.food_api.domain.service;
+package com.gtech.food_api.domain.service.storage;
 
 import java.io.InputStream;
 import java.util.Optional;
@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.repository.ProductRepository;
-import com.gtech.food_api.domain.service.PhotoStorageService.NewPhoto;
 import com.gtech.food_api.domain.service.exceptions.PhotoProductNotFoundException;
+import com.gtech.food_api.domain.service.storage.PhotoStorageService.NewPhoto;
 
 @Service
 public class PhotoProductService {
@@ -46,7 +46,9 @@ public class PhotoProductService {
 
         NewPhoto newPhoto = NewPhoto.builder()
             .fileName(photo.getFileName())
+            .contentType(photo.getContentType())
             .inputStream(inputStream)
+            .contentLength(photo.getSize())
             .build();
 
         // caso de erro, a foto nao é armazenada no storage, e o banco de dados nao é salvo e da um rollback automaticamente pelo spring data jpa
