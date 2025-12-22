@@ -12,9 +12,9 @@ import com.gtech.food_api.infra.service.email.exceptions.EmailException;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
-@Service
 public class SmtpSendEmailService implements SendEmailService {
 
     // java mail sender é o sender de email padrão do spring boot
@@ -26,36 +26,35 @@ public class SmtpSendEmailService implements SendEmailService {
 
     @Autowired
     private Configuration freemarker;
-
-    /**
-     * Envia um email usando SMTP através do JavaMailSender do Spring Boot.
-     * 
-     * Este método processa o template de email, configura a mensagem MIME com
-     * remetente, destinatários, assunto e corpo HTML, e envia o email através
-     * do servidor SMTP configurado (Amazon SES, SendGrid, etc.).
-     * 
-     * @param message Objeto Message contendo os destinatários, assunto, template
-     *                e variáveis para processamento do template
-     * @throws EmailException se houver falha ao processar o template ou enviar o email
-     */
+    
     @Override
     public void send(Message message) {
         try {
-            // Processa o template de email substituindo as variáveis e gerando o HTML final
-            String body = processTemplate(message);
-
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
-            helper.setFrom(emailProperties.getSender());
-            helper.setTo(message.getRecipients().toArray(new String[0]));
-            helper.setSubject(message.getSubject());
-            helper.setText(body, true); // true para indicar que o corpo é HTML
-
+            MimeMessage mimeMessage = createMimeMessage(message);
             mailSender.send(mimeMessage);
-
         } catch (Exception e) {
             throw new EmailException("Failed to send email", e);
         }
+    }
+
+    /**
+     * Cria uma mensagem MIME com o remetente, destinatários, assunto e corpo HTML.
+     * 
+     * O que faz:
+     * - Processa o template de email substituindo as variáveis e gerando o HTML final
+     * - Cria uma mensagem MIME com o remetente, destinatários, assunto e corpo HTML
+     * - Envia o email através do servidor SMTP configurado (Amazon SES, SendGrid, etc.)
+     */
+    protected MimeMessage createMimeMessage(Message message)throws MessagingException {
+        String body = processTemplate(message);
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
+        helper.setFrom(emailProperties.getSender());
+        helper.setTo(message.getRecipients().toArray(new String[0]));
+        helper.setSubject(message.getSubject());
+        helper.setText(body, true); // true para indicar que o corpo é HTML
+
+        return mimeMessage;
     }
 
     /**

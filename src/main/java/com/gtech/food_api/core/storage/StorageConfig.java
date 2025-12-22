@@ -56,10 +56,13 @@ public class StorageConfig {
      */
     @Bean
     public PhotoStorageService photoStorageService() {
-        if (StorageType.S3.equals(storageProperties.getType())) {
-            return new S3StorageService();
-        } else {
-            return new PhotoLocalStorageService();
+        switch (storageProperties.getType()) {
+            case S3:
+                return new S3StorageService();
+            case LOCAL:
+                return new PhotoLocalStorageService();
+            default:
+                return null;
         }
     }
 }

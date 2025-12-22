@@ -31,8 +31,6 @@ public class StatusOrderService {
         .recipient(order.getClient().getEmail())
         .build();
         sendEmailService.send(message);
-
-        System.out.println("Email enviado para: " + message.getRecipients());
     }
 
     @Transactional
