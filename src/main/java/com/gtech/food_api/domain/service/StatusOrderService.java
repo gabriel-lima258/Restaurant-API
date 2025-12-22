@@ -26,7 +26,8 @@ public class StatusOrderService {
 
         var message = SendEmailService.Message.builder()
         .subject(order.getClient().getName() + " - Pedido confirmado")
-        .body("O pedido <strong>" + order.getCode() + "</strong> foi confirmado")
+        .body("confirmed-order.html") // escolhe o template de email
+        .variable("order", order) // passa as variáveis para o template
         .recipient(order.getClient().getEmail())
         .build();
         sendEmailService.send(message);

@@ -1,5 +1,6 @@
 package com.gtech.food_api.domain.service.email;
 
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
@@ -23,5 +24,7 @@ public interface SendEmailService {
         private String subject;
         @NotBlank
         private String body;
+        @Singular
+        private Map<String, Object> variables;
     }
 }
