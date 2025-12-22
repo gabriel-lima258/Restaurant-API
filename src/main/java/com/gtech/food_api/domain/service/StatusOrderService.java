@@ -1,9 +1,7 @@
 package com.gtech.food_api.domain.service;
 
 import com.gtech.food_api.domain.model.Order;
-import com.gtech.food_api.domain.model.OrderStatus;
-import com.gtech.food_api.domain.service.email.SendEmailService;
-import com.gtech.food_api.domain.service.exceptions.BusinessException;
+import com.gtech.food_api.domain.repository.OrderRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,35 +12,30 @@ public class StatusOrderService {
 
     @Autowired
     private OrderService orderService;
-
+    
     @Autowired
-    private SendEmailService sendEmailService;
+    private OrderRepository orderRepository;
 
     @Transactional
     public void confirmOrder(String orderCode) {
         Order order = orderService.findOrFail(orderCode);
-        
         order.confirm();
-
-        var message = SendEmailService.Message.builder()
-        .subject(order.getClient().getName() + " - Pedido confirmado")
-        .body("confirmed-order.html") // escolhe o template de email
-        .variable("order", order) // passa as variáveis para o template
-        .recipient(order.getClient().getEmail())
-        .build();
-        sendEmailService.send(message);
+        // para disparar o evento de confirmação de pedido precisa salvar o pedido 
+        orderRepository.save(order);
     }
 
     @Transactional
     public void deliverOrder(String orderCode) {
         Order order = orderService.findOrFail(orderCode);
         order.deliver();
+        orderRepository.save(order);
     }
 
     @Transactional
     public void cancelOrder(String orderCode) {
         Order order = orderService.findOrFail(orderCode);
         order.cancel();
+        orderRepository.save(order);
     }
 
 }

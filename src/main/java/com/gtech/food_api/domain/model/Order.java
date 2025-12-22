@@ -21,16 +21,21 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Embedded;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
+import com.gtech.food_api.domain.event.CanceledOrderEvent;
+import com.gtech.food_api.domain.event.ConfirmedOrderEvent;
+import com.gtech.food_api.domain.event.DeliveredOrderEvent;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+// AbstractAggregateRoot é uma classe que permite adicionar eventos ao pedido
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) // especificando quais atributos
 @Entity
-public class Order {
+public class Order extends AbstractAggregateRoot<Order>{
     
     @EqualsAndHashCode.Include
     @Id
@@ -90,16 +95,20 @@ public class Order {
     public void confirm() {
         setStatus(OrderStatus.CONFIRMED);
         setConfirmedAt(OffsetDateTime.now());
+        // dispara o evento de confirmação de pedido passando referência a esta classe Order
+        registerEvent(new ConfirmedOrderEvent(this));
     }
 
     public void deliver() {
         setStatus(OrderStatus.DELIVERED);
         setDeliveredAt(OffsetDateTime.now());
+        registerEvent(new DeliveredOrderEvent(this));
     }
 
     public void cancel() {
         setStatus(OrderStatus.CANCELED);
         setCanceledAt(OffsetDateTime.now());
+        registerEvent(new CanceledOrderEvent(this));
     }
 
     // validação feita na entidade para evitar que o status seja alterado para um status inválido
