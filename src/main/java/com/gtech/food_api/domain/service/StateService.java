@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class StateService {
 
-    private static final String STATE_IN_USE_MESSAGE = "State with id %d cannot be deleted because it is in use";
+    private static final String STATE_IN_USE_MESSAGE = "Estado com id %d não pode ser excluído pois está em uso";
 
     @Autowired
     private StateRepository stateRepository;

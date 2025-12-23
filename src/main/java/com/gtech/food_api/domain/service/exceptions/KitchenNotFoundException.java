@@ -6,6 +6,6 @@ public class KitchenNotFoundException extends ResourceNotFoundException {
     }
 
     public KitchenNotFoundException(Long id) {
-        this(String.format("Kitchen with id %d not found.", id));
+        this(String.format("Cozinha com id %d não encontrada.", id));
     }
 }

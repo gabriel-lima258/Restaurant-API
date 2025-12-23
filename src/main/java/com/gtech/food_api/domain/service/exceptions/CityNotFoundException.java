@@ -6,6 +6,6 @@ public class CityNotFoundException extends ResourceNotFoundException {
     }
 
     public CityNotFoundException(Long id) {
-        this(String.format("City with id %d not found.", id));
+        this(String.format("Cidade com id %d não encontrada.", id));
     }
 }

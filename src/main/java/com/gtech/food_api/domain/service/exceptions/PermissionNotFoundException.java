@@ -6,6 +6,6 @@ public class PermissionNotFoundException extends ResourceNotFoundException {
     }
 
     public PermissionNotFoundException(Long id) {
-        this(String.format("Permission with id %d not found.", id));
+        this(String.format("Permissão com id %d não encontrada.", id));
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class RestaurantService {
 
-    private static final String RESTAURANT_IN_USE_MESSAGE = "Restaurant with id %d cannot be deleted because it is in use";
+    private static final String RESTAURANT_IN_USE_MESSAGE = "Restaurante com id %d não pode ser excluído pois está em uso";
 
     @Autowired
     private RestaurantRepository restaurantRepository;

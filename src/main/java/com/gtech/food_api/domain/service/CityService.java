@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class CityService {
 
-    private static final String CITY_IN_USE_MESSAGE = "City with id %d cannot be deleted because it is in use";
+    private static final String CITY_IN_USE_MESSAGE = "Cidade com id %d não pode ser excluída pois está em uso";
     
     @Autowired
     private CityRepository cityRepository;

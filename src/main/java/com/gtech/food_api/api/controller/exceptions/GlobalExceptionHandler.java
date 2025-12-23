@@ -53,7 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     // ==========================================
 
     /** Mensagem genérica de erro interno do sistema */
-    public static final String ERROR_MESSAGE = "Occured an unexpected internal error, try again, if the problem persists, contact the support.";
+    public static final String ERROR_MESSAGE = "Ocorreu um erro interno inesperado. Tente novamente. Se o problema persistir, entre em contato com o suporte.";
 
     /** MessageSource para buscar mensagens internacionalizadas do arquivo messages.properties */
     @Autowired
@@ -227,7 +227,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, 
             HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ExceptionType type = ExceptionType.INVALID_DATA;
-        String detail = "One or more fields are invalid. Fill in the correct data and try again.";
+        String detail = "Um ou mais campos estão inválidos. Preencha os dados corretamente e tente novamente.";
 
         // Processa cada erro de validação encontrado
         List<ExceptionsDTO.Field> fields = bindingResult
@@ -328,7 +328,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         // Erro genérico de JSON inválido
         ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
-        String detail = "The request body is not valid. Fix the sintax and try again.";
+        String detail = "O corpo da requisição não é válido. Corrija a sintaxe e tente novamente.";
 
         ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail).build();
         return handleExceptionInternal(ex, body, headers, status, request);
@@ -354,7 +354,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
         String detail = String.format(
-                "Property field '%s' has an invalid value '%s'. Expected type: %s, fix and try again.", 
+                "O campo '%s' possui um valor inválido '%s'. Tipo esperado: %s. Corrija e tente novamente.", 
                 path,                    // Nome do campo
                 ex.getValue(),           // Valor inválido recebido
                 ex.getTargetType().getSimpleName()); // Tipo esperado
@@ -386,7 +386,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ExceptionType type = ExceptionType.MESSAGE_NOT_READABLE;
         String detail = String.format(
-                "Property field '%s' does not exist. Fix or remove the property and try again.", path);
+                "O campo '%s' não existe. Corrija ou remova a propriedade e tente novamente.", path);
         
         ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail)
                 .userMessage(ERROR_MESSAGE)
@@ -442,7 +442,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String path = ex.getName(); // Nome do parâmetro (ex: "id")
         ExceptionType type = ExceptionType.INVALID_PATH_VARIABLE;
         String detail = String.format(
-                "The url path '%s' has an invalid value '%s'. Fix and insert a valid value with type %s.", 
+                "O parâmetro da URL '%s' possui um valor inválido '%s'. Corrija e insira um valor válido do tipo %s.", 
                 path,                           // Nome do parâmetro
                 ex.getValue(),                  // Valor inválido recebido
                 ex.getRequiredType().getSimpleName()); // Tipo esperado
@@ -476,7 +476,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status, WebRequest request) {
         ExceptionType type = ExceptionType.RESOURCE_NOT_FOUND;
         String detail = String.format(
-                "The resource '%s' that was tried to be accessed does not exist.", ex.getRequestURL());
+                "O recurso '%s' que foi tentado acessar não existe.", ex.getRequestURL());
         
         ExceptionsDTO body = createBuilder((HttpStatus) status, type, detail)
                 .userMessage(detail)

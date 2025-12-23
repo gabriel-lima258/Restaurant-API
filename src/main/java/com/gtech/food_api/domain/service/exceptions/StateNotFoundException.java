@@ -6,6 +6,6 @@ public class StateNotFoundException extends ResourceNotFoundException {
     }
 
     public StateNotFoundException(Long id) {
-        this(String.format("State with id %d not found.", id));
+        this(String.format("Estado com id %d não encontrado.", id));
     }
 }

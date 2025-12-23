@@ -6,6 +6,6 @@ public class RestaurantNotFoundException extends ResourceNotFoundException {
     }
 
     public RestaurantNotFoundException(Long id) {
-        this(String.format("Restaurant with id %d not found.", id));
+        this(String.format("Restaurante com id %d não encontrado.", id));
     }
 }

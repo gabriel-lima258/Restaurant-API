@@ -115,12 +115,12 @@ public class Order extends AbstractAggregateRoot<Order>{
     private void setStatus(OrderStatus newStatus) {
         // Verifica se o status já é o mesmo que está sendo tentado definir
         if (getStatus().equals(newStatus)) {
-            throw new BusinessException(String.format("Order %s is already %s", getCode(), newStatus.getDescription()));
+            throw new BusinessException(String.format("Pedido %s já está com status %s", getCode(), newStatus.getDescription()));
         }
         
         // Verifica se a transição de status é válida
         if (getStatus().cannotBeAlteratedTo(newStatus)) {
-            throw new BusinessException(String.format("Order %s cannot be altered to %s because it is in status %s", getCode(), newStatus.getDescription(), getStatus().getDescription()));
+            throw new BusinessException(String.format("Pedido %s não pode ser alterado para %s pois está com status %s", getCode(), newStatus.getDescription(), getStatus().getDescription()));
         }
         this.status = newStatus;
     }

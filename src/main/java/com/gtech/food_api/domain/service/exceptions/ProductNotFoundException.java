@@ -6,6 +6,6 @@ public class ProductNotFoundException extends ResourceNotFoundException {
     }
 
     public ProductNotFoundException(Long productId, Long restaurantId) {
-        this(String.format("Product with id %d not found with restaurant id %d.", productId, restaurantId));
+        this(String.format("Produto com id %d não encontrado no restaurante com id %d.", productId, restaurantId));
     }
 }

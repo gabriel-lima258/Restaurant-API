@@ -6,6 +6,6 @@ public class PaymentNoAcceptedException extends BusinessException {
     }
 
     public PaymentNoAcceptedException(String paymentMethodDescription, String restaurantName) {
-        this(String.format("Payment method %s is not accepted by restaurant %s", paymentMethodDescription, restaurantName));
+        this(String.format("Método de pagamento %s não é aceito pelo restaurante %s", paymentMethodDescription, restaurantName));
     }
 }

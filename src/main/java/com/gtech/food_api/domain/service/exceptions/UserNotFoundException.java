@@ -6,6 +6,6 @@ public class UserNotFoundException extends ResourceNotFoundException {
     }
 
     public UserNotFoundException(Long id) {
-        this(String.format("User with id %d not found.", id));
+        this(String.format("Usuário com id %d não encontrado.", id));
     }
 }

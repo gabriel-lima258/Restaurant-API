@@ -6,6 +6,6 @@ public class PaymentNotFoundException extends ResourceNotFoundException {
     }
 
     public PaymentNotFoundException(Long id) {
-        this(String.format("Payment method with id %d not found.", id));
+        this(String.format("Método de pagamento com id %d não encontrado.", id));
     }
 }

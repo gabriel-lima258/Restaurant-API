@@ -6,6 +6,6 @@ public class GroupNotFoundException extends ResourceNotFoundException {
     }
 
     public GroupNotFoundException(Long id) {
-        this(String.format("Group with id %d not found.", id));
+        this(String.format("Grupo com id %d não encontrado.", id));
     }
 }

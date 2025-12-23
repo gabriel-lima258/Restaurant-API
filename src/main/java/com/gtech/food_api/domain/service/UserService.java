@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private static final String USER_IN_USE_MESSAGE = "User with id %d cannot be deleted because it is in use";
+    private static final String USER_IN_USE_MESSAGE = "Usuário com id %d não pode ser excluído pois está em uso";
 
     @Autowired
     private UserRepository userRepository;
@@ -39,7 +39,7 @@ public class UserService {
         // se o email ja existe e nao é o mesmo usuario, lança exceção
         if (userByEmail.isPresent() && !userByEmail.get().equals(user)) {
             throw new BusinessException(
-                String.format("Email %s already in use", user.getEmail())
+                String.format("Email %s já está em uso", user.getEmail())
             );
         }
         return userRepository.save(user);

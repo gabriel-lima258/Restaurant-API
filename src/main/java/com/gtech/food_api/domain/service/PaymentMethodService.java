@@ -16,7 +16,7 @@ import com.gtech.food_api.domain.service.exceptions.PaymentNotFoundException;
 @Service
 public class PaymentMethodService {
 
-    private static final String PAYMENT_METHOD_IN_USE_MESSAGE = "Payment method with id %d cannot be deleted because it is in use";
+    private static final String PAYMENT_METHOD_IN_USE_MESSAGE = "Método de pagamento com id %d não pode ser excluído pois está em uso";
     
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;

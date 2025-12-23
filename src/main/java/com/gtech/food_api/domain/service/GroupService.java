@@ -16,7 +16,7 @@ import com.gtech.food_api.domain.service.exceptions.GroupNotFoundException;
 @Service
 public class GroupService {
     
-    private static final String GROUP_IN_USE_MESSAGE = "Group with id %d cannot be deleted because it is in use";
+    private static final String GROUP_IN_USE_MESSAGE = "Grupo com id %d não pode ser excluído pois está em uso";
     
     @Autowired
     private GroupRepository groupRepository;

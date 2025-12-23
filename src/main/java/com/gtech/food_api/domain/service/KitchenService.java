@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class KitchenService {
 
-    private static final String KITCHEN_IN_USE_MESSAGE = "Kitchen with id %d cannot be deleted because it is in use";
+    private static final String KITCHEN_IN_USE_MESSAGE = "Cozinha com id %d não pode ser excluída pois está em uso";
 
     @Autowired
     private KitchenRepository kitchenRepository;
