@@ -17,5 +17,4 @@ public class FoodApiApplication {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		SpringApplication.run(FoodApiApplication.class, args);
 	}
-
 }

@@ -9,15 +9,21 @@ import com.gtech.food_api.domain.service.PaymentMethodService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/payment-methods")
@@ -33,17 +39,28 @@ public class PaymentMethodController {
     private PaymentMethodInputDisassembler paymentMethodInputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<PaymentMethodDTO>> listAll(){
+    public ResponseEntity<List<PaymentMethodDTO>> listAll(ServletWebRequest request){
         List<PaymentMethod> result = paymentMethodService.listAll();
         List<PaymentMethodDTO> dtoList = paymentMethodDTOAssembler.toCollectionDTO(result);
-        return ResponseEntity.ok().body(dtoList);
+
+        /* CacheControl.maxAge(10, TimeUnit.SECONDS) é o tempo de expiração do cache em segundos.
+         * CacheControl.cachePublic() é o tipo de cache público compartilhado por todos os clientes.
+         * CacheControl.cachePrivate() é o tipo de cache privado local individual.
+         * CacheControl.noCache() é o tipo de cache precisa validar ETag toda vez.
+         * CacheControl.noStore() não existe cache.
+         */
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
+                .body(dtoList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PaymentMethodDTO> findById(@PathVariable Long id) {
         PaymentMethod entity = paymentMethodService.findOrFail(id);
         PaymentMethodDTO dto = paymentMethodDTOAssembler.copyToDTO(entity);
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .body(dto);
     }
 
     @PostMapping

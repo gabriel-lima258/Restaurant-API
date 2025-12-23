@@ -1,10 +1,13 @@
 package com.gtech.food_api.core.web;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import jakarta.servlet.Filter;
 /**
  * Configuração de CORS (Cross-Origin Resource Sharing) para permitir
  * requisições do frontend.
@@ -34,5 +37,18 @@ public class WebConfig implements WebMvcConfigurer {
             .allowedOrigins("http://localhost:3000")
             .allowedMethods("*");
     }
+
+    /*
+	 * ShallowEtagHeaderFilter é um filtro que adiciona o header ETag na resposta HTTP.
+	 * O ETag é um hash do conteúdo da resposta.
+	 * Se o cliente fizer uma nova requisição e o conteúdo for o mesmo, o cliente receberá o conteúdo da cache.
+	 * Toda vez que enviar uma requisição, sera feita um If-None-Match com o ETag do conteúdo.
+	 * Se o ETag for o mesmo, o cliente receberá o conteúdo do cache mesmo se o tempo de expiração do cache for atingido. com HttpStatus 304 Not Modified.
+	 * Se o ETag for diferente, o cliente receberá o novo conteúdo. Retornando HttpStatus 200 OK.
+	 */
+	@Bean
+	public Filter shallowEtagHeaderFilter() {
+		return new ShallowEtagHeaderFilter();
+	}
 }
 

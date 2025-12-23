@@ -86,12 +86,12 @@ insert into city (id, name, state_id) values (15, 'Santos', 2);
 insert into city (id, name, state_id) values (16, 'Ribeirão Preto', 2);
 
 -- Payment Method
-insert into payment_method (id, description) values (1, 'Cartão de crédito');
-insert into payment_method (id, description) values (2, 'Cartão de débito');
-insert into payment_method (id, description) values (3, 'Dinheiro');
-insert into payment_method (id, description) values (4, 'PIX');
-insert into payment_method (id, description) values (5, 'Vale refeição');
-insert into payment_method (id, description) values (6, 'Vale alimentação');
+insert ignore into payment_method (id, description, updated_at) values (1, 'Cartão de crédito', UTC_TIMESTAMP());
+insert ignore into payment_method (id, description, updated_at) values (2, 'Cartão de débito', UTC_TIMESTAMP());
+insert ignore into payment_method (id, description, updated_at) values (3, 'Dinheiro', UTC_TIMESTAMP());
+insert ignore into payment_method (id, description, updated_at) values (4, 'PIX', UTC_TIMESTAMP());
+insert ignore into payment_method (id, description, updated_at) values (5, 'Vale refeição', UTC_TIMESTAMP());
+insert ignore into payment_method (id, description, updated_at) values (6, 'Vale alimentação', UTC_TIMESTAMP());
 
 -- Restaurant
 insert into restaurant (
