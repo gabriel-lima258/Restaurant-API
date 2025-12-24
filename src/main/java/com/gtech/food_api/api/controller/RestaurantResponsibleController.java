@@ -6,6 +6,7 @@ import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +30,9 @@ public class RestaurantResponsibleController {
     private UserDTOAssembler userDTOAssembler;
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> listAll(@PathVariable Long restaurantId){
+    public ResponseEntity<CollectionModel<UserDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
-        List<UserDTO> dtoList = userDTOAssembler.toCollectionDTO(restaurant.getResponsible());
+        CollectionModel<UserDTO> dtoList = userDTOAssembler.toCollectionModel(restaurant.getResponsible());
         return ResponseEntity.ok().body(dtoList);
     }
 

@@ -13,6 +13,7 @@ import com.gtech.food_api.domain.service.UserService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -34,16 +35,16 @@ public class UserController {
     private UserInputDisassembler userInputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> listAll(){
+    public ResponseEntity<CollectionModel<UserDTO>> listAll(){
         List<User> result = userService.listAll();
-        List<UserDTO> dtoList = userDTOAssembler.toCollectionDTO(result);
+        CollectionModel<UserDTO> dtoList = userDTOAssembler.toCollectionModel(result);
         return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         User entity = userService.findOrFail(id);
-        UserDTO dto = userDTOAssembler.copyToDTO(entity);
+        UserDTO dto = userDTOAssembler.toModelWithSelf(entity);
         return ResponseEntity.ok().body(dto);
     }
 
@@ -51,7 +52,7 @@ public class UserController {
     public ResponseEntity<UserDTO> save(@RequestBody @Valid UserWithPasswordInput userWithPasswordInput) {
         User user = userInputDisassembler.copyToEntity(userWithPasswordInput);
         User entity = userService.save(user);
-        UserDTO dto = userDTOAssembler.copyToDTO(entity);
+        UserDTO dto = userDTOAssembler.toModel(entity);
         URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
         return ResponseEntity.created(uri).body(dto);
     }
@@ -61,7 +62,7 @@ public class UserController {
         User entity = userService.findOrFail(id);
         userInputDisassembler.copyToDomainObject(userInput, entity);
         userService.save(entity);
-        UserDTO dto = userDTOAssembler.copyToDTO(entity);
+        UserDTO dto = userDTOAssembler.toModel(entity);
         return ResponseEntity.ok().body(dto);
     }
 

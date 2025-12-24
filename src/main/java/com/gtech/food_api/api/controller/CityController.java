@@ -13,6 +13,11 @@ import com.gtech.food_api.domain.service.exceptions.StateNotFoundException;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -33,17 +38,20 @@ public class CityController {
     @Autowired
     private CityInputDisassembler cityInputDisassembler;
 
+    // usamos CollectionModel para retornar uma lista de DTOs com links HATEOAS
     @GetMapping
-    public ResponseEntity<List<CityDTO>> listAll(){
+    public ResponseEntity<CollectionModel<CityDTO>> listAll(){
         List<City> result = cityService.listAll();
-        List<CityDTO> dtoList = cityDTOAssembler.toCollectionDTO(result);
-        return ResponseEntity.ok().body(dtoList);
+        CollectionModel<CityDTO> dtoCollectionModel = cityDTOAssembler.toCollectionModel(result);
+
+        return ResponseEntity.ok().body(dtoCollectionModel);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CityDTO> findById(@PathVariable Long id) {
         City entity = cityService.findOrFail(id);
-        CityDTO dto = cityDTOAssembler.copyToDTO(entity);
+        CityDTO dto = cityDTOAssembler.toModelWithSelf(entity);
+
         return ResponseEntity.ok().body(dto);
     }
 
@@ -52,7 +60,7 @@ public class CityController {
         try {
             City city = cityInputDisassembler.copyToEntity(cityInput);
             City entity = cityService.save(city);
-            CityDTO dto = cityDTOAssembler.copyToDTO(entity);
+            CityDTO dto = cityDTOAssembler.toModel(entity);
             URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
 
             return ResponseEntity.created(uri).body(dto);
@@ -67,7 +75,7 @@ public class CityController {
             City entity = cityService.findOrFail(id);
             cityInputDisassembler.copyToDomainObject(cityInput, entity);
             cityService.save(entity);
-            CityDTO dto = cityDTOAssembler.copyToDTO(entity);
+            CityDTO dto = cityDTOAssembler.toModel(entity);
             return ResponseEntity.ok().body(dto);
         } catch (StateNotFoundException e) { // existe, mas state id não existe
             throw new BusinessException(e.getMessage(), e);
