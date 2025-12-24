@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gtech.food_api.api.assembler.RestaurantDTOAssembler;
+import com.gtech.food_api.api.assembler.RestaurantSummaryDTOAssembler;
 import com.gtech.food_api.api.disassembler.RestaurantInputDisassembler;
 import com.gtech.food_api.api.dto.RestaurantDTO;
+import com.gtech.food_api.api.dto.RestaurantSummaryDTO;
 import com.gtech.food_api.api.dto.input.RestaurantInput;
 import com.gtech.food_api.api.dto.view.RestaurantView;
 import com.gtech.food_api.api.utils.ResourceUriHelper;
@@ -21,6 +23,7 @@ import jakarta.validation.Valid;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -53,19 +56,15 @@ public class RestaurantController {
     private RestaurantDTOAssembler restaurantDTOAssembler;
 
     @Autowired
+    private RestaurantSummaryDTOAssembler restaurantSummaryDTOAssembler;
+
+    @Autowired
     private RestaurantInputDisassembler restaurantInputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<RestaurantDTO>> listAll(){
-        List<RestaurantDTO> dtoList = restaurantDTOAssembler.toCollectionDTO(restaurantService.listAll());
+    public ResponseEntity<CollectionModel<RestaurantSummaryDTO>> listAll(){
+        CollectionModel<RestaurantSummaryDTO> dtoList = restaurantSummaryDTOAssembler.toCollectionModel(restaurantService.listAll());
         return ResponseEntity.ok().body(dtoList);
-    }
-
-    // get de resumo DTO de restaurantes
-    @JsonView(RestaurantView.Summary.class)
-    @GetMapping(params = "projection=summary")
-    public ResponseEntity<List<RestaurantDTO>> listSummary(){
-        return listAll();
     }
 
     @PutMapping("/activation")
@@ -83,7 +82,7 @@ public class RestaurantController {
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantDTO> findById(@PathVariable Long id) {
         Restaurant entity = restaurantService.findOrFail(id);
-        RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
+        RestaurantDTO dto = restaurantDTOAssembler.toModelWithSelf(entity);
         return ResponseEntity.ok().body(dto);
     }
 
@@ -97,7 +96,7 @@ public class RestaurantController {
             // salva a entity
             Restaurant entity = restaurantService.save(restaurant);
             // converte a entity salva para dto
-            RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
+            RestaurantDTO dto = restaurantDTOAssembler.toModelWithSelf(entity);
             // cria o uri para o novo restaurante
             URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
 
@@ -117,7 +116,7 @@ public class RestaurantController {
             // salva a entity atualizada
             restaurantService.save(restaurant);
             // converte a entity atualizada para dto e retorna
-            RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(restaurant);
+            RestaurantDTO dto = restaurantDTOAssembler.toModelWithSelf(restaurant);
             return ResponseEntity.ok().body(dto);
         } catch (KitchenNotFoundException | CityNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
@@ -179,7 +178,7 @@ public class RestaurantController {
         // Salva alterações
         restaurantService.save(currentRestaurant);
 
-        RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(currentRestaurant);
+        RestaurantDTO dto = restaurantDTOAssembler.toModelWithSelf(currentRestaurant);
 
         return ResponseEntity.ok().body(dto);
     }

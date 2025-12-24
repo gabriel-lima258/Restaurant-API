@@ -111,6 +111,18 @@ public class Order extends AbstractAggregateRoot<Order>{
         registerEvent(new CanceledOrderEvent(this));
     }
 
+    public boolean canBeConfirmed() {
+        return getStatus().canBeAlteratedTo(OrderStatus.CONFIRMED);
+    }
+
+    public boolean canBeDelivered() {
+        return getStatus().canBeAlteratedTo(OrderStatus.DELIVERED);
+    }
+
+    public boolean canBeCanceled() {
+        return getStatus().canBeAlteratedTo(OrderStatus.CANCELED);
+    }
+
     // validação feita na entidade para evitar que o status seja alterado para um status inválido
     private void setStatus(OrderStatus newStatus) {
         // Verifica se o status já é o mesmo que está sendo tentado definir

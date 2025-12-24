@@ -2,18 +2,12 @@ package com.gtech.food_api.api.assembler;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.gtech.food_api.api.controller.KitchenController;
 import com.gtech.food_api.api.dto.KitchenDTO;
+import com.gtech.food_api.api.utils.LinksBuilder;
 import com.gtech.food_api.domain.model.Kitchen;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Assembler para converter Kitchen em KitchenDTO
@@ -28,6 +22,9 @@ public class KitchenDTOAssembler extends RepresentationModelAssemblerSupport<Kit
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private LinksBuilder linksBuilder;
+
     public KitchenDTOAssembler() {
         super(KitchenController.class, KitchenDTO.class);
     }
@@ -36,7 +33,9 @@ public class KitchenDTOAssembler extends RepresentationModelAssemblerSupport<Kit
     public KitchenDTO toModel(Kitchen kitchen) {
         KitchenDTO kitchenDTO = createModelWithId(kitchen.getId(), kitchen);
         modelMapper.map(kitchen, kitchenDTO);
-        kitchenDTO.add(linkTo(KitchenController.class).withRel("kitchens"));
+        
+        kitchenDTO.add(linksBuilder.linkToKitchens());
+
         return kitchenDTO;
     }
     

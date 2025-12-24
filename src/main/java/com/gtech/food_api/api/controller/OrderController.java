@@ -7,6 +7,7 @@ import com.gtech.food_api.api.dto.OrderDTO;
 import com.gtech.food_api.api.dto.OrderSummaryDTO;
 import com.gtech.food_api.api.dto.input.OrderInput;
 import com.gtech.food_api.api.utils.ResourceUriHelper;
+import com.gtech.food_api.core.data.PageWrapper;
 import com.gtech.food_api.core.data.PageableTranslator;
 import com.gtech.food_api.domain.filter.OrderFilter;
 import com.gtech.food_api.domain.model.Order;
@@ -61,13 +62,20 @@ public class OrderController {
     */
     @GetMapping
     public ResponseEntity<PagedModel<OrderSummaryDTO>> listAll(OrderFilter filter,@PageableDefault(size = 10) Pageable pageable ){
-        // atribui a paginação convertida para a paginação
-        pageable = convertPageable(pageable);
+        // traduz a paginação para o nome da entidade Ex: nameClient -> client.name
+        Pageable pageableTranslated = convertPageable(pageable);
 
         // lista todos os pedidos com o filtro de specification e a paginação
-        Page<Order> orders = orderService.listAll(filter, pageable);
+        Page<Order> pagedOrders = orderService.listAll(filter, pageableTranslated);
 
-        PagedModel<OrderSummaryDTO> pagedModel = pagedResourcesAssembler.toModel(orders, orderSummaryDTOAssembler);
+        // Envolve o Page em um PageWrapper preservando o Pageable original (não traduzido)
+        // Por quê?
+        // - pagedOrders foi criado com pageableTranslated (campos da entidade: "client.name")
+        // - Mas o PagedResourcesAssembler precisa do Pageable original (campos do DTO: "nameClient")
+        // - Isso garante que os links de paginação na resposta usem os nomes de campos do DTO
+        pagedOrders = new PageWrapper<>(pagedOrders, pageable);
+
+        PagedModel<OrderSummaryDTO> pagedModel = pagedResourcesAssembler.toModel(pagedOrders, orderSummaryDTOAssembler);
 
         // List<OrderSummaryDTO> dtoContent = orderSummaryDTOAssembler.toModel(orders.getContent());
 

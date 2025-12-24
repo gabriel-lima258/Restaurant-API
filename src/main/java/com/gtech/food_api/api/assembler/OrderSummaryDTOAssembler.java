@@ -4,13 +4,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.gtech.food_api.api.controller.OrderController;
-import com.gtech.food_api.api.controller.RestaurantController;
-import com.gtech.food_api.api.controller.UserController;
 import com.gtech.food_api.api.dto.OrderSummaryDTO;
+import com.gtech.food_api.api.utils.LinksBuilder;
 import com.gtech.food_api.domain.model.Order;
 
 
@@ -27,6 +24,9 @@ public class OrderSummaryDTOAssembler extends RepresentationModelAssemblerSuppor
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private LinksBuilder linksBuilder;
+
     public OrderSummaryDTOAssembler() {
         super(OrderController.class, OrderSummaryDTO.class);
     }
@@ -36,8 +36,8 @@ public class OrderSummaryDTOAssembler extends RepresentationModelAssemblerSuppor
         OrderSummaryDTO orderSummaryDTO = createModelWithId(order.getCode(), order);
         modelMapper.map(order, orderSummaryDTO);
 
-        orderSummaryDTO.getRestaurant().add(linkTo(methodOn(RestaurantController.class).findById(orderSummaryDTO.getRestaurant().getId())).withSelfRel());
-        orderSummaryDTO.getClient().add(linkTo(methodOn(UserController.class).findById(orderSummaryDTO.getClient().getId())).withSelfRel());
+        orderSummaryDTO.getRestaurant().add(linksBuilder.linkToRestaurant(orderSummaryDTO.getRestaurant().getId()));
+        orderSummaryDTO.getClient().add(linksBuilder.linkToUser(orderSummaryDTO.getClient().getId()));
 
         return orderSummaryDTO;
     }

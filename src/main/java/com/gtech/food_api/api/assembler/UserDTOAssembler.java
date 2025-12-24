@@ -12,6 +12,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.gtech.food_api.api.controller.UserController;
 import com.gtech.food_api.api.controller.UserGroupController;
 import com.gtech.food_api.api.dto.UserDTO;
+import com.gtech.food_api.api.utils.LinksBuilder;
 import com.gtech.food_api.domain.model.User;
 
 
@@ -27,6 +28,9 @@ public class UserDTOAssembler extends RepresentationModelAssemblerSupport<User, 
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private LinksBuilder linksBuilder;
    
     public UserDTOAssembler() {
         super(UserController.class, UserDTO.class);
@@ -37,14 +41,14 @@ public class UserDTOAssembler extends RepresentationModelAssemblerSupport<User, 
         UserDTO userDTO = createModelWithId(user.getId(), user);
         modelMapper.map(user, userDTO);
 
-        userDTO.add(linkTo(methodOn(UserGroupController.class).listAll(user.getId())).withRel("groups-users"));
+        userDTO.add(linksBuilder.linkToUserGroups(user.getId()));
         return userDTO;
     }
 
     public UserDTO toModelWithSelf(User user) {
         UserDTO userDTO = toModel(user);
 
-        userDTO.add(linkTo(methodOn(UserController.class).listAll()).withRel("users"));
+        userDTO.add(linksBuilder.linkToUsers());
  
         return userDTO;
     }
@@ -52,7 +56,7 @@ public class UserDTOAssembler extends RepresentationModelAssemblerSupport<User, 
     @Override
     public CollectionModel<UserDTO> toCollectionModel(Iterable<? extends User> entities) {
         return super.toCollectionModel(entities)
-            .add(linkTo(UserController.class).withSelfRel());
+            .add(linksBuilder.linkToUsers());
     }
 
     // public UserDTO copyToDTO(User user) {

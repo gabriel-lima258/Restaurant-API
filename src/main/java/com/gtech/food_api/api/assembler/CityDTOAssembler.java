@@ -5,11 +5,9 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 import org.modelmapper.ModelMapper;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.gtech.food_api.api.controller.CityController;
-import com.gtech.food_api.api.controller.StateController;
 import com.gtech.food_api.api.dto.CityDTO;
+import com.gtech.food_api.api.utils.LinksBuilder;
 import com.gtech.food_api.domain.model.City;
 
 /**
@@ -38,6 +36,9 @@ public class CityDTOAssembler extends RepresentationModelAssemblerSupport<City, 
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private LinksBuilder linksBuilder;
 
     /**
      * Construtor do assembler que configura o controller e o tipo de DTO.
@@ -91,7 +92,7 @@ public class CityDTOAssembler extends RepresentationModelAssemblerSupport<City, 
         modelMapper.map(city, cityDTO);
 
         // Adiciona link self ao estado relacionado
-        cityDTO.getState().add(linkTo(methodOn(StateController.class).findById(city.getState().getId())).withSelfRel());
+        cityDTO.getState().add(linksBuilder.linkToState(city.getState().getId()));
 
         return cityDTO;
     }
@@ -101,7 +102,7 @@ public class CityDTOAssembler extends RepresentationModelAssemblerSupport<City, 
         CityDTO cityDTO = toModel(city);
 
         // Adiciona link para a coleção de cidades
-        cityDTO.add(linkTo(methodOn(CityController.class).listAll()).withRel("cities"));
+        cityDTO.add(linksBuilder.linkToCities());
         
         return cityDTO;
     }
@@ -124,7 +125,7 @@ public class CityDTOAssembler extends RepresentationModelAssemblerSupport<City, 
     @Override
     public CollectionModel<CityDTO> toCollectionModel(Iterable<? extends City> entities) {
         return super.toCollectionModel(entities)
-            .add(linkTo(CityController.class).withSelfRel());
+            .add(linksBuilder.linkToCities());
     }
 
     // !metodo padrao DTO sem links HATEOAS

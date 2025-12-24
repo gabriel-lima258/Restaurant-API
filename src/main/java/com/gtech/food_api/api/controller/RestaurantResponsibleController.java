@@ -2,6 +2,7 @@ package com.gtech.food_api.api.controller;
 
 import com.gtech.food_api.api.assembler.UserDTOAssembler;
 import com.gtech.food_api.api.dto.UserDTO;
+import com.gtech.food_api.api.utils.LinksBuilder;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
 
@@ -31,12 +32,15 @@ public class RestaurantResponsibleController {
     @Autowired
     private UserDTOAssembler userDTOAssembler;
 
+    @Autowired
+    private LinksBuilder linksBuilder;
+
     @GetMapping
     public ResponseEntity<CollectionModel<UserDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
         CollectionModel<UserDTO> dtoList = userDTOAssembler.toCollectionModel(restaurant.getResponsible())
-        .removeLinks()
-        .add(linkTo(methodOn(RestaurantResponsibleController.class).listAll(restaurantId)).withSelfRel());
+            .removeLinks()
+            .add(linksBuilder.linkToRestaurantResponsible(restaurantId));
         return ResponseEntity.ok().body(dtoList);
     }
 
