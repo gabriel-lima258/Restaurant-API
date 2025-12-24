@@ -8,6 +8,7 @@ import com.gtech.food_api.api.disassembler.RestaurantInputDisassembler;
 import com.gtech.food_api.api.dto.RestaurantDTO;
 import com.gtech.food_api.api.dto.input.RestaurantInput;
 import com.gtech.food_api.api.dto.view.RestaurantView;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.core.validation.ValidationException;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
@@ -95,11 +96,10 @@ public class RestaurantController {
             Restaurant restaurant = restaurantInputDisassembler.copyToEntity(restaurantInput);
             // salva a entity
             Restaurant entity = restaurantService.save(restaurant);
-            // cria o uri para o novo restaurante
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(entity.getId()).toUri();   
             // converte a entity salva para dto
             RestaurantDTO dto = restaurantDTOAssembler.copyToDTO(entity);
+            // cria o uri para o novo restaurante
+            URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
 
             return ResponseEntity.created(uri).body(dto);
         } catch (KitchenNotFoundException | CityNotFoundException e) {

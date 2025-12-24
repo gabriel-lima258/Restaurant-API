@@ -4,6 +4,7 @@ import com.gtech.food_api.api.assembler.ProductDTOAssembler;
 import com.gtech.food_api.api.disassembler.ProductInputDisassembler;
 import com.gtech.food_api.api.dto.ProductDTO;
 import com.gtech.food_api.api.dto.input.ProductInput;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.ProductService;
@@ -75,11 +76,10 @@ public class ProductController {
         product.setRestaurant(restaurant); 
         Product entity = productService.save(product);
         // Product -> ProductDTO
-        ProductDTO productDTO = productDTOAssembler.copyToDTO(entity);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-        .buildAndExpand(entity.getId()).toUri();
+        ProductDTO dto = productDTOAssembler.copyToDTO(entity);
+        URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
 
-        return ResponseEntity.created(uri).body(productDTO);
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{productId}")

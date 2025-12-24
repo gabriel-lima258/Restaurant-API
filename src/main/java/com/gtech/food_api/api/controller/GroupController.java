@@ -4,6 +4,7 @@ import com.gtech.food_api.api.assembler.GroupDTOAssembler;
 import com.gtech.food_api.api.disassembler.GroupInputDisassembler;
 import com.gtech.food_api.api.dto.GroupDTO;
 import com.gtech.food_api.api.dto.input.GroupInput;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.domain.model.Group;
 import com.gtech.food_api.domain.service.GroupService;
 
@@ -49,8 +50,8 @@ public class GroupController {
         Group group = groupInputDisassembler.copyToEntity(groupInput);
         Group entity = groupService.save(group);
         GroupDTO dto = groupDTOAssembler.copyToDTO(entity);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(entity.getId()).toUri();
+        URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
+        
         return ResponseEntity.created(uri).body(dto);
     }
 

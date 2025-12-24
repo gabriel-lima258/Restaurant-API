@@ -4,6 +4,7 @@ import com.gtech.food_api.api.assembler.KitchenDTOAssembler;
 import com.gtech.food_api.api.disassembler.KitchenInputDisassembler;
 import com.gtech.food_api.api.dto.KitchenDTO;
 import com.gtech.food_api.api.dto.input.KitchenInput;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.service.KitchenService;
 
@@ -68,8 +69,7 @@ public class KitchenController {
         Kitchen kitchen = kitchenInputDisassembler.copyToEntity(kitchenInput);
         Kitchen entity = kitchenService.save(kitchen);
         KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(entity.getId()).toUri();
+        URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
         return ResponseEntity.created(uri).body(dto);
     }
 

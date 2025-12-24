@@ -6,6 +6,7 @@ import com.gtech.food_api.api.dto.UserDTO;
 import com.gtech.food_api.api.dto.input.UserInput;
 import com.gtech.food_api.api.dto.input.UserPasswordInput;
 import com.gtech.food_api.api.dto.input.UserWithPasswordInput;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.service.UserService;
 
@@ -51,8 +52,7 @@ public class UserController {
         User user = userInputDisassembler.copyToEntity(userWithPasswordInput);
         User entity = userService.save(user);
         UserDTO dto = userDTOAssembler.copyToDTO(entity);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(entity.getId()).toUri();
+        URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
         return ResponseEntity.created(uri).body(dto);
     }
 

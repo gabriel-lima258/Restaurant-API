@@ -6,6 +6,7 @@ import com.gtech.food_api.api.disassembler.OrderInputDisassembler;
 import com.gtech.food_api.api.dto.OrderDTO;
 import com.gtech.food_api.api.dto.OrderSummaryDTO;
 import com.gtech.food_api.api.dto.input.OrderInput;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.core.data.PageableTranslator;
 import com.gtech.food_api.domain.filter.OrderFilter;
 import com.gtech.food_api.domain.model.Order;
@@ -86,8 +87,7 @@ public class OrderController {
             Order newOrder = submitOrderService.submitOrder(order);
             OrderDTO dto = orderDTOAssembler.copyToDTO(newOrder);
             
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(newOrder.getCode()).toUri();
+            URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getCode());
 
             return ResponseEntity.created(uri).body(dto);
         } catch (EntityNotFoundException e) {

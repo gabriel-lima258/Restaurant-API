@@ -4,6 +4,7 @@ import com.gtech.food_api.api.assembler.CityDTOAssembler;
 import com.gtech.food_api.api.disassembler.CityInputDisassembler;
 import com.gtech.food_api.api.dto.CityDTO;
 import com.gtech.food_api.api.dto.input.CityInput;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -52,8 +53,8 @@ public class CityController {
             City city = cityInputDisassembler.copyToEntity(cityInput);
             City entity = cityService.save(city);
             CityDTO dto = cityDTOAssembler.copyToDTO(entity);
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(entity.getId()).toUri();
+            URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
+
             return ResponseEntity.created(uri).body(dto);
         } catch (StateNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);

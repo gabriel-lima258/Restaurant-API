@@ -4,6 +4,7 @@ import com.gtech.food_api.api.assembler.StateDTOAssembler;
 import com.gtech.food_api.api.disassembler.StateInputDisassembler;
 import com.gtech.food_api.api.dto.StateDTO;
 import com.gtech.food_api.api.dto.input.StateInput;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.service.StateService;
 
@@ -49,8 +50,7 @@ public class StateController {
         State state = stateInputDisassembler.copyToEntity(stateInput);
         State entity = stateService.save(state);
         StateDTO dto = stateDTOAssembler.copyToDTO(entity);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(entity.getId()).toUri();
+        URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
         return ResponseEntity.created(uri).body(dto);
     }
 

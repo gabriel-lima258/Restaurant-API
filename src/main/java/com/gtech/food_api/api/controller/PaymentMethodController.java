@@ -4,6 +4,7 @@ import com.gtech.food_api.api.assembler.PaymentMethodDTOAssembler;
 import com.gtech.food_api.api.disassembler.PaymentMethodInputDisassembler;
 import com.gtech.food_api.api.dto.PaymentMethodDTO;
 import com.gtech.food_api.api.dto.input.PaymentMethodInput;
+import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.domain.model.PaymentMethod;
 import com.gtech.food_api.domain.service.PaymentMethodService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -69,8 +70,7 @@ public class PaymentMethodController {
             PaymentMethod paymentMethod = paymentMethodInputDisassembler.copyToEntity(paymentMethodInput);
             PaymentMethod entity = paymentMethodService.save(paymentMethod);
             PaymentMethodDTO dto = paymentMethodDTOAssembler.copyToDTO(entity);
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(entity.getId()).toUri();
+            URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
             return ResponseEntity.created(uri).body(dto);
         } catch (StateNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);

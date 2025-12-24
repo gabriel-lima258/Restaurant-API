@@ -3,8 +3,6 @@ package com.gtech.food_api.domain.filter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 import lombok.Getter;
