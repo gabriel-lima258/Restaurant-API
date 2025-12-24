@@ -109,6 +109,22 @@ public class LinksBuilder {
         return linkTo(methodOn(RestaurantPaymentMethodController.class).listAll(restaurantId)).withRel(rel);
     }
 
+    public Link linkToOpenRestaurant(Long restaurantId, String rel) {
+        return linkTo(methodOn(RestaurantController.class).openRestaurant(restaurantId)).withRel(rel);
+    }
+
+    public Link linkToCloseRestaurant(Long restaurantId, String rel) {
+        return linkTo(methodOn(RestaurantController.class).closeRestaurant(restaurantId)).withRel(rel);
+    }
+
+    public Link linkToActivateRestaurant(Long restaurantId, String rel) {
+        return linkTo(methodOn(RestaurantController.class).activate(restaurantId)).withRel(rel);
+    }
+
+    public Link linkToDeactivateRestaurant(Long restaurantId, String rel) {
+        return linkTo(methodOn(RestaurantController.class).deactivate(restaurantId)).withRel(rel);
+    }
+
     public Link linkToUser(Long userId, String rel) {
         return linkTo(methodOn(UserController.class).findById(userId)).withRel(rel);
     }

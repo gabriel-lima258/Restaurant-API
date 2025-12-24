@@ -44,9 +44,21 @@ public class RestaurantDTOAssembler extends RepresentationModelAssemblerSupport<
         restaurantDTO.getKitchen().add(linksBuilder.linkToKitchen(restaurant.getKitchen().getId()));
         restaurantDTO.getAddress().getCity().add(linksBuilder.linkToCity(restaurant.getAddress().getCity().getId()));
 
-
         restaurantDTO.add(linksBuilder.linkToRestaurantPaymentMethods(restaurant.getId(), "paymentMethods"));
         restaurantDTO.add(linksBuilder.linkToRestaurantResponsible(restaurant.getId(), "responsible"));
+
+        if (restaurant.isActive()) {
+            restaurantDTO.add(linksBuilder.linkToDeactivateRestaurant(restaurant.getId(), "deactivate"));
+        }
+        if (restaurant.isOpen()) {
+            restaurantDTO.add(linksBuilder.linkToCloseRestaurant(restaurant.getId(), "close"));
+        }
+        if (restaurant.isClosed()) {
+            restaurantDTO.add(linksBuilder.linkToOpenRestaurant(restaurant.getId(), "open"));
+        }
+        if (restaurant.isNotActive()) {
+            restaurantDTO.add(linksBuilder.linkToActivateRestaurant(restaurant.getId(), "activate"));
+        }
 
         return restaurantDTO;
     }

@@ -93,6 +93,22 @@ public class Restaurant {
         setOpen(false);
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean isNotActive() {
+        return !isActive();
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public boolean isClosed() {
+        return !isOpen();
+    }
+
     public boolean disassociatePaymentMethod(PaymentMethod paymentMethod) {
         return getPaymentMethods().remove(paymentMethod);
     }
