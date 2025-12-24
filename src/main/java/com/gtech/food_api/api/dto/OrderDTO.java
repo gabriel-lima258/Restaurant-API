@@ -6,11 +6,15 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import com.gtech.food_api.domain.model.OrderStatus;
 
+@Relation(collectionRelation = "orders")
 @Getter
 @Setter
-public class OrderDTO {
+public class OrderDTO extends RepresentationModel<OrderDTO> {
 
     private String code;
     private BigDecimal subtotal;

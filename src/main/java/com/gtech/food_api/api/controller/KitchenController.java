@@ -14,13 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/kitchens")
@@ -35,32 +35,35 @@ public class KitchenController {
     @Autowired
     private KitchenInputDisassembler kitchenInputDisassembler;
 
-    /**
-     * Lista todas as cozinhas paginadas
-     * @param pageable
-     * @return Page<KitchenDTO>
-     */ 
+    // PagedResourcesAssembler é um componente do Spring HATEOAS que ajuda a criar uma paginação de recursos
+    @Autowired
+    private PagedResourcesAssembler<Kitchen> pagedResourcesAssembler;
+
     @GetMapping
-    public ResponseEntity<Page<KitchenDTO>> listAll(@PageableDefault(size = 10) Pageable pageable){
+    public ResponseEntity<PagedModel<KitchenDTO>> listAll(@PageableDefault(size = 10) Pageable pageable){
         Page<Kitchen> kitchens = kitchenService.listAll(pageable);
 
-        List<KitchenDTO> content = kitchenDTOAssembler.toCollectionDTO(kitchens.getContent());
+        // toModel é um método do PagedResourcesAssembler que cria um PagedModel a partir de uma lista de recursos e um assembler
+        PagedModel<KitchenDTO> pagedModel = pagedResourcesAssembler.toModel(kitchens, kitchenDTOAssembler);
 
-        /*
-         * cria uma nova pagina com os dados da pagina atual e o total de elementos
-         * content: lista de DTOs
-         * pageable: pagina atual
-         * kitchens.getTotalElements(): total de elementos
-         */
-        Page<KitchenDTO> kitchenPageDTO = new PageImpl<>(content, pageable, kitchens.getTotalElements());
 
-        return ResponseEntity.ok().body(kitchenPageDTO);
+        // List<KitchenDTO> content = kitchenDTOAssembler.toCollectionDTO(kitchens.getContent());
+
+        // /*
+        //  * cria uma nova pagina com os dados da pagina atual e o total de elementos
+        //  * content: lista de DTOs
+        //  * pageable: pagina atual
+        //  * kitchens.getTotalElements(): total de elementos
+        //  */
+        // Page<KitchenDTO> kitchenPageDTO = new PageImpl<>(content, pageable, kitchens.getTotalElements());
+
+        return ResponseEntity.ok().body(pagedModel);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<KitchenDTO> findById(@PathVariable Long id) {
         Kitchen entity = kitchenService.findOrFail(id);
-        KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
+        KitchenDTO dto = kitchenDTOAssembler.toModel(entity);
         return ResponseEntity.ok().body(dto);
     }
 
@@ -68,7 +71,7 @@ public class KitchenController {
     public ResponseEntity<KitchenDTO> save(@RequestBody @Valid KitchenInput kitchenInput) {
         Kitchen kitchen = kitchenInputDisassembler.copyToEntity(kitchenInput);
         Kitchen entity = kitchenService.save(kitchen);
-        KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
+        KitchenDTO dto = kitchenDTOAssembler.toModel(entity);
         URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
         return ResponseEntity.created(uri).body(dto);
     }
@@ -78,7 +81,7 @@ public class KitchenController {
         Kitchen entity = kitchenService.findOrFail(id);
         kitchenInputDisassembler.copyToDomainObject(kitchenInput, entity);
         kitchenService.save(entity);
-        KitchenDTO dto = kitchenDTOAssembler.copyToDTO(entity);
+        KitchenDTO dto = kitchenDTOAssembler.toModel(entity);
         return ResponseEntity.ok().body(dto);
     }
 

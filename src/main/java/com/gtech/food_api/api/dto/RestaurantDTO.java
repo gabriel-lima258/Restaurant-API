@@ -2,15 +2,20 @@ package com.gtech.food_api.api.dto;
 
 import java.math.BigDecimal;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import com.fasterxml.jackson.annotation.JsonView;
 import com.gtech.food_api.api.dto.view.RestaurantView;
 
 import lombok.Getter;
 import lombok.Setter;
 
+
+@Relation(collectionRelation = "restaurants")
 @Getter
 @Setter
-public class RestaurantDTO {
+public class RestaurantDTO extends RepresentationModel<RestaurantDTO> {
 
     @JsonView(RestaurantView.Summary.class)
     private Long id;

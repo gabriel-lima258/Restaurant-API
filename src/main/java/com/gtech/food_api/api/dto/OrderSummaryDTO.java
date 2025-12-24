@@ -5,11 +5,15 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import com.gtech.food_api.domain.model.OrderStatus;
 
+@Relation(collectionRelation = "orders")
 @Getter
 @Setter
-public class OrderSummaryDTO {
+public class OrderSummaryDTO extends RepresentationModel<OrderSummaryDTO> {
 
     private String code;
     private BigDecimal subtotal;

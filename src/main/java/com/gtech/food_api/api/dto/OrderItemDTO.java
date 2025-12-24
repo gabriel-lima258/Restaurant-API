@@ -4,11 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
 
+import org.springframework.hateoas.RepresentationModel;
+
 @Getter
 @Setter
-public class OrderItemDTO {
+public class OrderItemDTO extends RepresentationModel<OrderItemDTO> {
 
-    private Long id;
+    private Long productId;
+    private String productName;
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;

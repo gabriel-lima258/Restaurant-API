@@ -7,6 +7,8 @@ import com.gtech.food_api.domain.service.RestaurantService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +34,9 @@ public class RestaurantResponsibleController {
     @GetMapping
     public ResponseEntity<CollectionModel<UserDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
-        CollectionModel<UserDTO> dtoList = userDTOAssembler.toCollectionModel(restaurant.getResponsible());
+        CollectionModel<UserDTO> dtoList = userDTOAssembler.toCollectionModel(restaurant.getResponsible())
+        .removeLinks()
+        .add(linkTo(methodOn(RestaurantResponsibleController.class).listAll(restaurantId)).withSelfRel());
         return ResponseEntity.ok().body(dtoList);
     }
 

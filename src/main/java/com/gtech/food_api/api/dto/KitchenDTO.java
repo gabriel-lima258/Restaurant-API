@@ -1,14 +1,18 @@
 package com.gtech.food_api.api.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import com.fasterxml.jackson.annotation.JsonView;
 import com.gtech.food_api.api.dto.view.RestaurantView;
 
 import lombok.Getter;
 import lombok.Setter;
 
+@Relation(collectionRelation = "kitchens")
 @Getter
 @Setter
-public class KitchenDTO {
+public class KitchenDTO extends RepresentationModel<KitchenDTO> {
 
     @JsonView(RestaurantView.Summary.class)
     private Long id;

@@ -22,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -49,29 +52,34 @@ public class OrderController {
     @Autowired
     private OrderInputDisassembler orderInputDisassembler;
 
+    @Autowired
+    private PagedResourcesAssembler<Order> pagedResourcesAssembler;
+
     /*
     * OrderFilter foi injetado no metodo listAll, para que seja possivel passar o filtro na url, exemplo: /orders?clientId=1&restaurantId=1&creationDateStart=2025-01-01&creationDateEnd=2025-01-01
     * @param filter: filtro de pedidos, exemplo: clientId, restaurantId, creationDateStart, creationDateEnd
     */
     @GetMapping
-    public ResponseEntity<Page<OrderSummaryDTO>> listAll(OrderFilter filter, Pageable pageable){
+    public ResponseEntity<PagedModel<OrderSummaryDTO>> listAll(OrderFilter filter,@PageableDefault(size = 10) Pageable pageable ){
         // atribui a paginação convertida para a paginação
         pageable = convertPageable(pageable);
 
         // lista todos os pedidos com o filtro de specification e a paginação
         Page<Order> orders = orderService.listAll(filter, pageable);
 
-        List<OrderSummaryDTO> dtoContent = orderSummaryDTOAssembler.toCollectionDTO(orders.getContent());
+        PagedModel<OrderSummaryDTO> pagedModel = pagedResourcesAssembler.toModel(orders, orderSummaryDTOAssembler);
 
-        Page<OrderSummaryDTO> orderSummaryPage = new PageImpl<>(dtoContent, pageable, orders.getTotalElements());
+        // List<OrderSummaryDTO> dtoContent = orderSummaryDTOAssembler.toModel(orders.getContent());
 
-        return ResponseEntity.ok().body(orderSummaryPage);
+        // Page<OrderSummaryDTO> orderSummaryPage = new PageImpl<>(dtoContent, pageable, orders.getTotalElements());
+
+        return ResponseEntity.ok().body(pagedModel);
     }
 
     @GetMapping("/{orderCode}")
     public ResponseEntity<OrderDTO> findById(@PathVariable String orderCode) {
         Order entity = orderService.findOrFail(orderCode);
-        OrderDTO dto = orderDTOAssembler.copyToDTO(entity);
+        OrderDTO dto = orderDTOAssembler.toModel(entity);
         return ResponseEntity.ok().body(dto);
     }
 
@@ -85,7 +93,7 @@ public class OrderController {
             order.getClient().setId(1L);
 
             Order newOrder = submitOrderService.submitOrder(order);
-            OrderDTO dto = orderDTOAssembler.copyToDTO(newOrder);
+            OrderDTO dto = orderDTOAssembler.toModel(newOrder);
             
             URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getCode());
 

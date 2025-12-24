@@ -11,6 +11,7 @@ import com.gtech.food_api.domain.service.StateService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -32,16 +33,16 @@ public class StateController {
     private StateInputDisassembler stateInputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<StateDTO>> listAll(){
+    public ResponseEntity<CollectionModel<StateDTO>> listAll(){
         List<State> result = stateService.listAll();
-        List<StateDTO> dtoList = stateDTOAssembler.toCollectionDTO(result);
+        CollectionModel<StateDTO> dtoList = stateDTOAssembler.toCollectionModel(result);
         return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StateDTO> findById(@PathVariable Long id) {
         State entity = stateService.findOrFail(id);
-        StateDTO dto = stateDTOAssembler.copyToDTO(entity);
+        StateDTO dto = stateDTOAssembler.toModelWithSelf(entity);
         return ResponseEntity.ok().body(dto);
     }
 
@@ -49,7 +50,7 @@ public class StateController {
     public ResponseEntity<StateDTO> save(@RequestBody @Valid StateInput stateInput) {
         State state = stateInputDisassembler.copyToEntity(stateInput);
         State entity = stateService.save(state);
-        StateDTO dto = stateDTOAssembler.copyToDTO(entity);
+        StateDTO dto = stateDTOAssembler.toModel(entity);
         URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
         return ResponseEntity.created(uri).body(dto);
     }
@@ -59,7 +60,7 @@ public class StateController {
         State entity = stateService.findOrFail(id);
         stateInputDisassembler.copyToDomainObject(stateInput, entity);
         stateService.save(entity);
-        StateDTO dto = stateDTOAssembler.copyToDTO(entity);
+        StateDTO dto = stateDTOAssembler.toModel(entity);
 
         return ResponseEntity.ok().body(dto);
     }

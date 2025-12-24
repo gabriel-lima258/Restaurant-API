@@ -6,18 +6,14 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;  
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.gtech.food_api.api.controller.GroupController;
 import com.gtech.food_api.api.controller.UserController;
 import com.gtech.food_api.api.controller.UserGroupController;
 import com.gtech.food_api.api.dto.UserDTO;
 import com.gtech.food_api.domain.model.User;
 
-import java.util.stream.Collectors;
 
 /**
  * Assembler para converter User em UserDTO
