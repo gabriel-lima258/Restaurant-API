@@ -39,7 +39,7 @@ public class OrderDTOAssembler extends RepresentationModelAssemblerSupport<Order
         OrderDTO orderDTO = createModelWithId(order.getCode(), order);
         modelMapper.map(order, orderDTO);
 
-        orderDTO.add(linksBuilder.linkToOrders());
+        orderDTO.add(linksBuilder.linkToOrders("orders"));
 
         // adiciona links de confirmação, entrega e cancelamento se o pedido puder ser alterado para o status correspondente
         if (order.canBeConfirmed()) {

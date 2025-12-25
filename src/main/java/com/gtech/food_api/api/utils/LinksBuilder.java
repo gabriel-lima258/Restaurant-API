@@ -36,7 +36,7 @@ public class LinksBuilder {
         new TemplateVariable("sort", TemplateVariable.VariableType.REQUEST_PARAM)
     );
 
-    public Link linkToOrders() {
+    public Link linkToOrders(String rel) {
         TemplateVariables filterVariables = new TemplateVariables(
             new TemplateVariable("clientId", TemplateVariable.VariableType.REQUEST_PARAM),
             new TemplateVariable("restaurantId", TemplateVariable.VariableType.REQUEST_PARAM),
@@ -52,7 +52,7 @@ public class LinksBuilder {
         // UriTemplate.of() combina a URI base com as variáveis de template
         // O link resultante será algo como: /orders{?page,size,sort}
         // Isso permite que o cliente da API construa URLs de paginação facilmente
-        return Link.of(UriTemplate.of(uriTemplate, PAGINATION_VARIABLES.concat(filterVariables)).toString(), "orders");
+        return Link.of(UriTemplate.of(uriTemplate, PAGINATION_VARIABLES.concat(filterVariables)).toString(), rel);
     }
 
     /**
@@ -109,6 +109,14 @@ public class LinksBuilder {
         return linkTo(methodOn(RestaurantPaymentMethodController.class).listAll(restaurantId)).withRel(rel);
     }
 
+    public Link linkToDesassociatePaymentMethodRestaurant(Long restaurantId, Long paymentMethodId) {
+        return linkTo(methodOn(RestaurantPaymentMethodController.class).disassociatePaymentMethod(restaurantId, paymentMethodId)).withRel("desassociate-payment-method");
+    }
+
+    public Link linkToAssociatePaymentMethodRestaurant(Long restaurantId) {
+        return linkTo(methodOn(RestaurantPaymentMethodController.class).associatePaymentMethod(restaurantId, null)).withRel("associate-payment-method");
+    }
+
     public Link linkToOpenRestaurant(Long restaurantId, String rel) {
         return linkTo(methodOn(RestaurantController.class).openRestaurant(restaurantId)).withRel(rel);
     }
@@ -147,6 +155,10 @@ public class LinksBuilder {
 
     public Link linkToPaymentMethod(Long paymentMethodId) {
         return linkToPaymentMethod(paymentMethodId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToPaymentMethods() {
+        return linkTo(PaymentMethodController.class).withRel("payment-methods");
     }
 
     public Link linkToCity(Long cityId, String rel) {

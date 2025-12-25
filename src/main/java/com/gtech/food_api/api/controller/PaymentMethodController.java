@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +41,9 @@ public class PaymentMethodController {
     private PaymentMethodInputDisassembler paymentMethodInputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<PaymentMethodDTO>> listAll(ServletWebRequest request){
+    public ResponseEntity<CollectionModel<PaymentMethodDTO>> listAll(ServletWebRequest request){
         List<PaymentMethod> result = paymentMethodService.listAll();
-        List<PaymentMethodDTO> dtoList = paymentMethodDTOAssembler.toCollectionDTO(result);
+        CollectionModel<PaymentMethodDTO> dtoList = paymentMethodDTOAssembler.toCollectionModel(result);
 
         /* CacheControl.maxAge(10, TimeUnit.SECONDS) é o tempo de expiração do cache em segundos.
          * CacheControl.cachePublic() é o tipo de cache público compartilhado por todos os clientes.
@@ -58,7 +59,7 @@ public class PaymentMethodController {
     @GetMapping("/{id}")
     public ResponseEntity<PaymentMethodDTO> findById(@PathVariable Long id) {
         PaymentMethod entity = paymentMethodService.findOrFail(id);
-        PaymentMethodDTO dto = paymentMethodDTOAssembler.copyToDTO(entity);
+        PaymentMethodDTO dto = paymentMethodDTOAssembler.toModelWithSelf(entity);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
                 .body(dto);
@@ -69,7 +70,7 @@ public class PaymentMethodController {
         try {
             PaymentMethod paymentMethod = paymentMethodInputDisassembler.copyToEntity(paymentMethodInput);
             PaymentMethod entity = paymentMethodService.save(paymentMethod);
-            PaymentMethodDTO dto = paymentMethodDTOAssembler.copyToDTO(entity);
+            PaymentMethodDTO dto = paymentMethodDTOAssembler.toModelWithSelf(entity);
             URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
             return ResponseEntity.created(uri).body(dto);
         } catch (StateNotFoundException e) {
@@ -83,7 +84,7 @@ public class PaymentMethodController {
             PaymentMethod entity = paymentMethodService.findOrFail(id);
             paymentMethodInputDisassembler.copyToDomainObject(paymentMethodInput, entity);
             paymentMethodService.save(entity);
-            PaymentMethodDTO dto = paymentMethodDTOAssembler.copyToDTO(entity);
+            PaymentMethodDTO dto = paymentMethodDTOAssembler.toModelWithSelf(entity);
             return ResponseEntity.ok().body(dto);
         } catch (StateNotFoundException e) { // existe, mas state id não existe
             throw new BusinessException(e.getMessage(), e);
