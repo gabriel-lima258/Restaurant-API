@@ -40,7 +40,13 @@ public class RestaurantResponsibleController {
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
         CollectionModel<UserDTO> dtoList = userDTOAssembler.toCollectionModel(restaurant.getResponsible())
             .removeLinks()
-            .add(linksBuilder.linkToRestaurantResponsible(restaurantId));
+            .add(linksBuilder.linkToRestaurantResponsible(restaurantId))
+            .add(linksBuilder.linkToAddResponsibleRestaurant(restaurantId));
+
+        dtoList.getContent().forEach(userDTO -> {
+            userDTO.add(linksBuilder.linkToRemoveResponsibleRestaurant(restaurantId, userDTO.getId()));
+        });
+
         return ResponseEntity.ok().body(dtoList);
     }
 

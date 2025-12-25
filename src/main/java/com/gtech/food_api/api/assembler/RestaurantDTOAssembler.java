@@ -60,6 +60,8 @@ public class RestaurantDTOAssembler extends RepresentationModelAssemblerSupport<
             restaurantDTO.add(linksBuilder.linkToActivateRestaurant(restaurant.getId(), "activate"));
         }
 
+        restaurantDTO.add(linksBuilder.linkToProducts(restaurant.getId(), "products"));
+
         return restaurantDTO;
     }
 

@@ -101,6 +101,14 @@ public class LinksBuilder {
         return linkTo(methodOn(RestaurantResponsibleController.class).listAll(restaurantId)).withRel(rel);
     }
 
+    public Link linkToAddResponsibleRestaurant(Long restaurantId) {
+        return linkTo(methodOn(RestaurantResponsibleController.class).addResponsible(restaurantId, null)).withRel("add-responsible");
+    }
+
+    public Link linkToRemoveResponsibleRestaurant(Long restaurantId, Long userId) {
+        return linkTo(methodOn(RestaurantResponsibleController.class).removeResponsible(restaurantId, userId)).withRel("remove-responsible");
+    }
+
     public Link linkToRestaurantResponsible(Long restaurantId) {
         return linkTo(methodOn(RestaurantResponsibleController.class).listAll(restaurantId)).withSelfRel();
     }
@@ -191,6 +199,10 @@ public class LinksBuilder {
 
     public Link linkToProduct(Long productId, Long restaurantId) {
         return linkToProduct(productId, restaurantId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToProducts(Long restaurantId, String rel) {
+        return linkTo(methodOn(ProductController.class).listAll(restaurantId, null)).withRel(rel);
     }
 
     public Link linkToConfimOrder(String orderCode, String rel) {

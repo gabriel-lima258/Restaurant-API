@@ -4,6 +4,7 @@ import com.gtech.food_api.api.assembler.ProductDTOAssembler;
 import com.gtech.food_api.api.disassembler.ProductInputDisassembler;
 import com.gtech.food_api.api.dto.ProductDTO;
 import com.gtech.food_api.api.dto.input.ProductInput;
+import com.gtech.food_api.api.utils.LinksBuilder;
 import com.gtech.food_api.api.utils.ResourceUriHelper;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.Restaurant;
@@ -13,6 +14,7 @@ import com.gtech.food_api.domain.service.RestaurantService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,20 +52,25 @@ public class ProductController {
     @Autowired 
     private ProductInputDisassembler productInputDisassembler;
 
+    @Autowired
+    private LinksBuilder linksBuilder;
+
     // active é opcional, se nao for informado, retorna todos os produtos
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> listAll(@PathVariable Long restaurantId,
+    public ResponseEntity<CollectionModel<ProductDTO>> listAll(@PathVariable Long restaurantId,
             @RequestParam(required = false) Boolean active){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
         List<Product> products = productService.listAll(restaurant, active);
-        List<ProductDTO> dtoList = productDTOAssembler.toCollectionDTO(products);
+        CollectionModel<ProductDTO> dtoList = productDTOAssembler.toCollectionModel(products)
+        .add(linksBuilder.linkToProducts(restaurantId, "products"));
+
         return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long productId, @PathVariable Long restaurantId) {
         Product product = productService.findOrFail(productId, restaurantId);
-        ProductDTO productDTO = productDTOAssembler.copyToDTO(product);
+        ProductDTO productDTO = productDTOAssembler.toModel(product);
         return ResponseEntity.ok().body(productDTO);
     }
 
@@ -76,7 +83,7 @@ public class ProductController {
         product.setRestaurant(restaurant); 
         Product entity = productService.save(product);
         // Product -> ProductDTO
-        ProductDTO dto = productDTOAssembler.copyToDTO(entity);
+        ProductDTO dto = productDTOAssembler.toModel(entity);
         URI uri = ResourceUriHelper.addUriInResponseHeader(dto.getId());
 
         return ResponseEntity.created(uri).body(dto);
@@ -88,7 +95,7 @@ public class ProductController {
         // Copy ProductInput values to Product entity
         productInputDisassembler.copyToDomainObject(productInput, product);
         productService.save(product);
-        ProductDTO dto = productDTOAssembler.copyToDTO(product);
+        ProductDTO dto = productDTOAssembler.toModel(product);
         return ResponseEntity.ok().body(dto);
     }
 }
