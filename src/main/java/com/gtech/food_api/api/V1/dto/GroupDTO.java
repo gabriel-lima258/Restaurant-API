@@ -1,15 +1,11 @@
-package com.gtech.food_api.api.dto;
-
-import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.server.core.Relation;
+package com.gtech.food_api.api.V1.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Relation(collectionRelation = "groups")
 @Getter
 @Setter
-public class GroupDTO extends RepresentationModel<GroupDTO> {
+public class GroupDTO {
     private Long id;
     private String name;
 }

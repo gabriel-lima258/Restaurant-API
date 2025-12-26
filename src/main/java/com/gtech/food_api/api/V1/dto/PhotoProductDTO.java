@@ -1,13 +1,11 @@
-package com.gtech.food_api.api.dto;
-
-import org.springframework.hateoas.RepresentationModel;
+package com.gtech.food_api.api.V1.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter 
-public class PhotoProductDTO extends RepresentationModel<PhotoProductDTO> {
+public class PhotoProductDTO {
 
     private String fileName;
     private String description;

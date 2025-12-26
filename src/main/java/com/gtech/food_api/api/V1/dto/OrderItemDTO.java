@@ -1,14 +1,12 @@
-package com.gtech.food_api.api.dto;
+package com.gtech.food_api.api.V1.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
 
-import org.springframework.hateoas.RepresentationModel;
-
 @Getter
 @Setter
-public class OrderItemDTO extends RepresentationModel<OrderItemDTO> {
+public class OrderItemDTO {
 
     private Long productId;
     private String productName;

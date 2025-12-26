@@ -1,4 +1,4 @@
-package com.gtech.food_api.api.dto.report;
+package com.gtech.food_api.api.V1.dto.report;
 
 import java.math.BigDecimal;
 import java.util.Date;

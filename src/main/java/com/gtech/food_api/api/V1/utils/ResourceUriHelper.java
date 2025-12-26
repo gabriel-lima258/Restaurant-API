@@ -1,4 +1,4 @@
-package com.gtech.food_api.api.utils;
+package com.gtech.food_api.api.V1.utils;
 
 import java.net.URI;
 

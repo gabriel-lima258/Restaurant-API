@@ -2,7 +2,7 @@ package com.gtech.food_api.domain.service.report;
 
 import java.util.List;
 
-import com.gtech.food_api.api.dto.report.DailySelling;
+import com.gtech.food_api.api.V1.dto.report.DailySelling;
 import com.gtech.food_api.domain.filter.DailySellingFilter;
 
 /**

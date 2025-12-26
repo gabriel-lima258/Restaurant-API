@@ -1,15 +1,13 @@
-package com.gtech.food_api.api.V1.dto.input;
+package com.gtech.food_api.api.V2.dto.input;
 
+import com.gtech.food_api.core.validation.FileContentType;
+import com.gtech.food_api.core.validation.FileSize;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
-
-import com.gtech.food_api.core.validation.FileContentType;
-import com.gtech.food_api.core.validation.FileSize;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter

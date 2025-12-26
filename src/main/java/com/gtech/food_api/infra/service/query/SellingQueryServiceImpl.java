@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Repository;
 
-import com.gtech.food_api.api.dto.report.DailySelling;
+import com.gtech.food_api.api.V1.dto.report.DailySelling;
 import com.gtech.food_api.domain.filter.DailySellingFilter;
 import com.gtech.food_api.domain.model.Order;
 import com.gtech.food_api.domain.service.report.SellingQueryService;

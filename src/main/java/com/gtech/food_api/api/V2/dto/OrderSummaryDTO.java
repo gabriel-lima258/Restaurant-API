@@ -1,14 +1,13 @@
-package com.gtech.food_api.api.V1.dto;
+package com.gtech.food_api.api.V2.dto;
 
+import com.gtech.food_api.domain.model.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-import com.gtech.food_api.domain.model.OrderStatus;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 @Relation(collectionRelation = "orders")
 @Getter

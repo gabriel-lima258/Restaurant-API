@@ -1,12 +1,11 @@
-package com.gtech.food_api.api.V1.dto;
-
-import java.math.BigDecimal;
-
-import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.server.core.Relation;
+package com.gtech.food_api.api.V2.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
+import java.math.BigDecimal;
 
 @Relation(collectionRelation = "products")
 @Getter

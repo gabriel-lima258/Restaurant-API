@@ -1,12 +1,12 @@
-package com.gtech.food_api.api.V1.dto.input;
-
-import java.util.List;
+package com.gtech.food_api.api.V2.dto.input;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter

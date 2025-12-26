@@ -1,11 +1,11 @@
-package com.gtech.food_api.api.V1.controller.exceptions;
-
-import java.time.OffsetDateTime;
-import java.util.List;
+package com.gtech.food_api.api.V2.controller.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL) // só incluir campos não nulos
 @Getter

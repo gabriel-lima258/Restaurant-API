@@ -2,8 +2,8 @@ package com.gtech.food_api.core.mapper;
 
 import org.springframework.context.annotation.Configuration;
 
-import com.gtech.food_api.api.dto.AddressDTO;
-import com.gtech.food_api.api.dto.input.OrderItemInput;
+import com.gtech.food_api.api.V2.dto.AddressDTO;
+import com.gtech.food_api.api.V2.dto.input.OrderItemInput;
 import com.gtech.food_api.domain.model.Address;
 import com.gtech.food_api.domain.model.OrderItem;
 
@@ -47,6 +47,7 @@ public class ModelMapperConfig {
         addressToAddressDTO.addMapping(
             src -> src.getCity().getState().getName(),
             (dest, value) -> dest.getCity().setState((String) value));
+
 
         /**
          * Mapear o order item input para o order item

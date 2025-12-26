@@ -1,4 +1,4 @@
-package com.gtech.food_api.api.controller.exceptions;
+package com.gtech.food_api.api.V1.controller.exceptions;
 
 import lombok.Getter;
 

@@ -1,10 +1,10 @@
-package com.gtech.food_api.api.V1.dto;
+package com.gtech.food_api.api.V2.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import java.math.BigDecimal;
-
 import org.springframework.hateoas.RepresentationModel;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter

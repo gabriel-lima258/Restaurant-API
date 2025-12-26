@@ -1,10 +1,11 @@
-package com.gtech.food_api.api.V1.dto.report;
+package com.gtech.food_api.api.V2.dto.report;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter

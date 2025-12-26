@@ -1,4 +1,4 @@
-package com.gtech.food_api.api.dto.view;
+package com.gtech.food_api.api.V1.dto.view;
 
 /**
  * view é uma classe que define as views possíveis para um objeto

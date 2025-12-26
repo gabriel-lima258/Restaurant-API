@@ -1,10 +1,9 @@
-package com.gtech.food_api.api.V1.utils;
-
-import java.net.URI;
-
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+package com.gtech.food_api.api.V2.utils;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 /**
  * Esta classe fornece métodos auxiliares para gerar URIs que seguem o padrão REST,
