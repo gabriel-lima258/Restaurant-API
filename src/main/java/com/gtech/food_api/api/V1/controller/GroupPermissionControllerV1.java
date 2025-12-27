@@ -6,7 +6,6 @@ import com.gtech.food_api.domain.model.Group;
 import com.gtech.food_api.domain.service.GroupService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

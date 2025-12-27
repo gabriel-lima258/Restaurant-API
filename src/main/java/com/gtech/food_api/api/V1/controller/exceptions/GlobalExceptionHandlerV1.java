@@ -7,6 +7,8 @@ import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.OffsetDateTime;
 import java.util.List;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
@@ -45,6 +47,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * - Se encontrar, executa o método e retorna uma resposta HTTP padronizada
  * - Se não encontrar, usa os handlers padrão do Spring ou o catch-all (Exception.class)
  */
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandlerV1 extends ResponseEntityExceptionHandler {
 
@@ -85,7 +88,7 @@ public class GlobalExceptionHandlerV1 extends ResponseEntityExceptionHandler {
 
         // Importante: printStackTrace ajuda no debug durante desenvolvimento
         // Em produção, substituir por logging adequado (ex: SLF4J, Logback)
-        ex.printStackTrace();
+        log.error(ex.getMessage(), ex);
 
         ExceptionsDTO body = createBuilder(status, type, detail).build();
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);

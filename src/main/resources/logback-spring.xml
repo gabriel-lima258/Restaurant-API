@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<!-- Inclui o log do spring em modo dev -->
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+
+	<!-- definindo o profile de produção para enviar logs para o loggly -->
+	<springProfile name="production">
+		<!-- definindo a propriedade logglyToken -->
+		<springProperty name="logglyToken" source="logging.loggly.token" />
+
+		<!-- definindo o appender loggly -->
+		<appender name="loggly" class="ch.qos.logback.ext.loggly.LogglyAppender">
+			<endpointUrl>https://logs-01.loggly.com/inputs/${logglyToken}/tag/logback</endpointUrl>
+			<pattern>%d{"ISO8601", UTC} %p %t %c %M - %m%n</pattern>
+		</appender>
+			
+		<!-- definindo o appender logglyAsync para enviar logs de forma assíncrona -->
+		<appender name="logglyAsync" class="ch.qos.logback.classic.AsyncAppender">
+			<appender-ref ref="loggly" />
+		</appender>
+		
+		<!-- definindo o root level -->
+		<root level="info">
+			<appender-ref ref="logglyAsync" />
+		</root>
+	</springProfile>
+	
+</configuration>

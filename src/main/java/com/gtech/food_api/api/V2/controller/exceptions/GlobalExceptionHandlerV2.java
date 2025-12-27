@@ -7,6 +7,9 @@ import com.gtech.food_api.core.validation.ValidationException;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.EntityInUseException;
 import com.gtech.food_api.domain.service.exceptions.ResourceNotFoundException;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +47,7 @@ import java.util.stream.Collectors;
  * - Se encontrar, executa o método e retorna uma resposta HTTP padronizada
  * - Se não encontrar, usa os handlers padrão do Spring ou o catch-all (Exception.class)
  */
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandlerV2 extends ResponseEntityExceptionHandler {
 
@@ -84,7 +88,7 @@ public class GlobalExceptionHandlerV2 extends ResponseEntityExceptionHandler {
 
         // Importante: printStackTrace ajuda no debug durante desenvolvimento
         // Em produção, substituir por logging adequado (ex: SLF4J, Logback)
-        ex.printStackTrace();
+        log.error(ex.getMessage(), ex);
 
         ExceptionsDTO body = createBuilder(status, type, detail).build();
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);

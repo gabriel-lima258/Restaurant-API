@@ -2,7 +2,6 @@ package com.gtech.food_api.api.V1.assembler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.gtech.food_api.api.V1.dto.RestaurantDTO;
 import com.gtech.food_api.api.V1.dto.RestaurantSummaryDTO;
 import com.gtech.food_api.domain.model.Restaurant;
 import org.modelmapper.ModelMapper;

@@ -1,12 +1,8 @@
 package com.gtech.food_api.infra.service.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import com.gtech.food_api.core.email.EmailProperties;
 import com.gtech.food_api.domain.service.email.SendEmailService;
 import com.gtech.food_api.infra.service.email.exceptions.EmailException;
 
