@@ -31,6 +31,7 @@
 		<jasperreports.version>6.21.2</jasperreports.version>
 		<aws.sdk.version>1.12.796</aws.sdk.version>
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
+		<springauthserver.version>1.0.0</springauthserver.version>
 	</properties>
 	<dependencies>
 	
@@ -155,7 +156,28 @@
 			<artifactId>logback-ext-loggly</artifactId>
 			<version>${logback-ext-loggly.version}</version>
 		</dependency>
+
+		<!-- Security é o spring boot para segurança -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- Spring Security OAuth2 Authorization Server é o spring boot para autorização OAuth2 -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-authorization-server</artifactId>
+			<version>${springauthserver.version}</version>
+		</dependency>
 	</dependencies>
+
+	<!-- Spring Security OAuth2 Resource Server é o spring boot para resource server OAuth2 -->
+	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>
+				spring-boot-starter-oauth2-resource-server
+			</artifactId>
+	</dependency>
 
 	<build>
 		<plugins>
