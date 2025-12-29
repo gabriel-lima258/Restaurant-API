@@ -169,15 +169,14 @@
 			<artifactId>spring-security-oauth2-authorization-server</artifactId>
 			<version>${springauthserver.version}</version>
 		</dependency>
-	</dependencies>
 
-	<!-- Spring Security OAuth2 Resource Server é o spring boot para resource server OAuth2 -->
-	<dependency>
+		<!-- Spring Security OAuth2 Resource Server é o spring boot para resource server OAuth2 -->
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>
-				spring-boot-starter-oauth2-resource-server
-			</artifactId>
-	</dependency>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		
+	</dependencies>
 
 	<build>
 		<plugins>

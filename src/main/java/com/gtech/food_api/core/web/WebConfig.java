@@ -2,9 +2,7 @@ package com.gtech.food_api.core.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import jakarta.servlet.Filter;
@@ -21,22 +19,6 @@ import jakarta.servlet.Filter;
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-    /**
-     * Configura os mapeamentos de CORS para todas as rotas da API.
-     * 
-     * Este método é chamado pelo Spring durante a inicialização da aplicação
-     * para configurar quais origens podem fazer requisições para a API.
-     * 
-     * @param registry o registro de configuração CORS do Spring MVC
-     */
-    @Override
-    public void addCorsMappings(@NonNull CorsRegistry registry) {
-        // Configura CORS para todas as rotas da API (/**)
-        registry.addMapping("/**")
-            .allowedOrigins("http://localhost:3000")
-            .allowedMethods("*");
-    }
 
     /*
 	 * ShallowEtagHeaderFilter é um filtro que adiciona o header ETag na resposta HTTP.
