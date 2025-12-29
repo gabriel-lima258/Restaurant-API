@@ -7,12 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -25,8 +28,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class AuthorizationServerConfig {
 
-    
-    
     /**
      * Configura o filtro de segurança específico para o servidor de autorização OAuth2.
      * 
@@ -222,6 +223,17 @@ public class AuthorizationServerConfig {
             .build();
             
         return new InMemoryRegisteredClientRepository(Arrays.asList(webClient, backendClient, analyticsClient));
+    }
 
+    /**
+     * Configura o serviço de autorização OAuth2 usando JDBC para persistir
+     * autorizações (tokens, códigos de autorização, etc.) no banco de dados.
+     * 
+     * A tabela oauth2_authorization é criada pela migration V2.1 e armazena
+     * todas as informações relacionadas às autorizações OAuth2.
+     */
+    @Bean
+    public OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbcOperations, RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationService(jdbcOperations, registeredClientRepository);
     }
 }

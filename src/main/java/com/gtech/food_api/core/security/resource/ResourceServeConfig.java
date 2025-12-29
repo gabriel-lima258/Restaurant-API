@@ -60,6 +60,8 @@ public class ResourceServeConfig {
      * Esta configuração:
      * - Permite acesso público aos endpoints do Authorization Server (/oauth2/**)
      *   para que o Authorization Server possa processar as requisições de token
+     * - Permite acesso público ao endpoint /authorized (callback OAuth2)
+     * - Permite acesso público ao Swagger UI (/swagger-ui/**)
      * - Exige autenticação OAuth2 para todos os outros endpoints da API
      * - Configura o Resource Server para usar tokens opacos (opaque tokens)
      * - Desabilita CSRF para APIs REST (não necessário para APIs stateless)
@@ -74,23 +76,30 @@ public class ResourceServeConfig {
      * - spring.security.oauth2.resourceserver.opaquetoken.introspection-client-id
      * - spring.security.oauth2.resourceserver.opaquetoken.introspection-client-secret
      * 
+     * IMPORTANTE: O clientSecret no application.properties deve estar em texto plano (não hasheado),
+     * pois será usado para fazer Basic Authentication. O Authorization Server irá comparar
+     * automaticamente com o hash BCrypt armazenado no client registrado.
+     * 
      * @param http objeto HttpSecurity usado para configurar a segurança HTTP
+     * @param opaqueTokenIntrospector introspector de tokens injetado pelo Spring
      * @return SecurityFilterChain configurado para o Resource Server
      * @throws Exception caso ocorra algum erro na configuração
      */
     @Bean
     @Order(Ordered.LOWEST_PRECEDENCE - 1)
-    public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain resourceServerFilterChain(HttpSecurity http, OpaqueTokenIntrospector opaqueTokenIntrospector) throws Exception {
         http
             .authorizeHttpRequests(authorize -> 
                 authorize
                     .requestMatchers("/oauth2/**").permitAll() // Permite acesso aos endpoints do Authorization Server
+                    .requestMatchers("/authorized").permitAll() // Permite acesso ao endpoint de callback OAuth2
+                    .requestMatchers("/swagger-ui/**").permitAll() // Permite acesso ao Swagger UI
                     .anyRequest().authenticated() // Exige autenticação para todos os outros endpoints
             )
             .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST stateless
             .oauth2ResourceServer(oauth2 -> 
                 oauth2.opaqueToken(opaqueToken -> 
-                    opaqueToken.introspector(opaqueTokenIntrospector())
+                    opaqueToken.introspector(opaqueTokenIntrospector)
                 )
             );
         
