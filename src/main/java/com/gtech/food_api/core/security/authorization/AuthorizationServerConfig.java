@@ -1,5 +1,7 @@
 package com.gtech.food_api.core.security.authorization;
 
+import java.io.InputStream;
+import java.security.KeyStore;
 import java.time.Duration;
 import java.util.Arrays;
 
@@ -7,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +28,12 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+
 @Configuration
 public class AuthorizationServerConfig {
 
@@ -35,9 +44,7 @@ public class AuthorizationServerConfig {
      * do servidor de autorização (como /oauth2/token, /oauth2/authorize, etc.).
      * 
      * A anotação @Order(Ordered.HIGHEST_PRECEDENCE) garante que esta configuração seja
-     * processada ANTES de qualquer outra configuração de segurança na aplicação. Isso é
-     * crucial porque os endpoints do OAuth2 precisam estar disponíveis antes de qualquer
-     * outra regra de segurança ser aplicada.
+     * processada ANTES de qualquer outra configuração de segurança na aplicação.
      * 
      * O método applyDefaultSecurity() aplica as configurações padrão do Spring Security
      * para um servidor de autorização OAuth2, incluindo:
@@ -64,17 +71,11 @@ public class AuthorizationServerConfig {
      * usadas pelos clients OAuth2 para descobrir e interagir com o servidor.
      * 
      * O "issuer" é a URL base do servidor de autorização. Esta URL é usada para:
-     * - Identificar unicamente o servidor de autorização
-     * - Construir URLs de endpoints (como /oauth2/token)
-     * - Validar tokens emitidos por este servidor
-     * - Descoberta automática de configurações (se implementado)
+     * - Identificar unicamente o servidor de AUTHORIZATION SERVER
      * 
      * Exemplo: Se o issuer for "https://api.exemplo.com", os endpoints serão:
      * - https://api.exemplo.com/oauth2/token
      * - https://api.exemplo.com/oauth2/authorize
-     * 
-     * @param properties propriedades de segurança da aplicação contendo a URL do provedor
-     * @return ProviderSettings configurado com a URL do issuer
      */
     @Bean
     public AuthorizationServerSettings providerSettings(ApiSecurityProperties properties) {
@@ -88,45 +89,12 @@ public class AuthorizationServerConfig {
      * 
      * Fluxo de segurança:
      * User -> Client -> Authorization Server -> Token -> Resource Server
-     * 
-     * Este método cria e registra três clients OAuth2 que têm permissão para solicitar
-     * tokens de acesso ao servidor de autorização. Um cliente OAuth2 é uma aplicação
-     * (como um frontend, mobile app, ou outro backend) que precisa acessar recursos protegidos.
+     * Um cliente OAuth2 é uma aplicação (como um frontend, mobile app, ou outro backend) que precisa acessar recursos     protegidos.
      * Podemos criar quantos clients quisermos.
      * 
      * Neste caso, estamos usando um repositório em memória (InMemoryRegisteredClientRepository),
      * o que significa que os clientes são armazenados apenas durante a execução da aplicação.
      * Para produção, seria recomendado usar um repositório persistente (como banco de dados).
-     * 
-     * Clients registrados:
-     * 
-     * 1. webClient (food-api-users):
-     *    - ID: "1"
-     *    - clientId: "food-api-users"
-     *    - Fluxo: AUTHORIZATION_CODE + REFRESH_TOKEN (fluxo completo com usuário)
-     *    - Scopes: READ e WRITE
-     *    - Redirect URIs: http://localhost:8080/authorized e http://localhost:8080/swagger-ui/oauth2-redirect.html
-     *    - Requer consentimento do usuário: true
-     *    - Tokens: REFERENCE format, 30 minutos de vida, refresh token de 1 dia
-     *    - Uso: Aplicações web que precisam autenticar usuários finais
-     * 
-     * 2. backendClient (client-credencial):
-     *    - ID: "2"
-     *    - clientId: "client-credencial"
-     *    - Fluxo: CLIENT_CREDENTIALS (autenticação direta sem usuário)
-     *    - Scopes: READ apenas
-     *    - Tokens: REFERENCE format, 30 minutos de vida, sem refresh token
-     *    - Uso: Comunicação entre serviços backend (machine-to-machine)
-     * 
-     * 3. analyticsClient (analytics-client):
-     *    - ID: "3"
-     *    - clientId: "analytics-client"
-     *    - Fluxo: AUTHORIZATION_CODE + REFRESH_TOKEN (fluxo completo com usuário)
-     *    - Scopes: READ e WRITE
-     *    - Redirect URI: http://foodanalytics.local:8082
-     *    - Requer consentimento do usuário: false (autorização automática)
-     *    - Tokens: REFERENCE format, 30 minutos de vida, refresh token de 1 dia
-     *    - Uso: Aplicação de analytics que precisa acesso automático sem consentimento
      * 
      * Configurações comuns:
      * 
@@ -148,7 +116,11 @@ public class AuthorizationServerConfig {
      * - tokenSettings: Configurações relacionadas aos tokens emitidos:
      *   * accessTokenFormat: REFERENCE significa que o token é "opaco" (opaque), ou seja,
      *     não contém informações legíveis no payload. Para validar, é necessário consultar
-     *     o servidor de autorização. Alternativa seria SELF_CONTAINED (JWT).
+     *     o servidor de autorização. Precisa de mais infraestrutura para validar, bancos de dados
+     *     e vantagens de revogar tokens.
+     *   * accessTokenFormat: SELF_CONTAINED significa que o refresh token é "transparente" (JWT), ou seja,
+     *     contém informações legíveis no payload do token. Não precisa de mais infraestrutura para validar, não é possivel revogar
+     *     tokens e preciso esperar expirar.
      *   * accessTokenTimeToLive: Tempo de vida do token de acesso (30 minutos)
      *   * reuseRefreshTokens: Define se o refresh token pode ser reutilizado.
      *     false = revoga o antigo quando um novo é emitido
@@ -176,7 +148,7 @@ public class AuthorizationServerConfig {
             .scope("READ") 
             .scope("WRITE")
             .tokenSettings(TokenSettings.builder()
-                .accessTokenFormat(OAuth2TokenFormat.REFERENCE) 
+                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) 
                 .accessTokenTimeToLive(Duration.ofMinutes(30)) 
                 .reuseRefreshTokens(false)
                 .refreshTokenTimeToLive(Duration.ofDays(1))
@@ -196,7 +168,7 @@ public class AuthorizationServerConfig {
             .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
             .scope("READ")
             .tokenSettings(TokenSettings.builder()
-                .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
                 .accessTokenTimeToLive(Duration.ofMinutes(30))
                 .build())
             .build();
@@ -211,7 +183,7 @@ public class AuthorizationServerConfig {
             .scope("READ") 
             .scope("WRITE")
             .tokenSettings(TokenSettings.builder()
-                .accessTokenFormat(OAuth2TokenFormat.REFERENCE) 
+                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) 
                 .accessTokenTimeToLive(Duration.ofMinutes(30)) 
                 .reuseRefreshTokens(false)
                 .refreshTokenTimeToLive(Duration.ofDays(1))
@@ -235,5 +207,70 @@ public class AuthorizationServerConfig {
     @Bean
     public OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbcOperations, RegisteredClientRepository registeredClientRepository) {
         return new JdbcOAuth2AuthorizationService(jdbcOperations, registeredClientRepository);
+    }
+
+    /**
+     * Configura a fonte de chaves JWK (JSON Web Key) para assinatura de tokens JWT.
+     * 
+     * Este método é responsável por carregar o par de chaves RSA (chave privada + certificado público)
+     * do arquivo KeyStore (.jks) e disponibilizá-lo para o Authorization Server usar na assinatura.
+     * 
+     * Gerado em terminal keytool - Chaves publicas e privadas:
+     * keytool -genkeypair -alias algafood -keyalg RSA -keypass senhaprivada -keystore algafood.jks -storepass senhastore -validity 3650
+     * 
+     * Lista as chaves do KeyStore:
+     * keytool -list -keystore algafood.jks
+     * 
+     * Exporta o arquivo binario para um arquivo PEM textual:
+     * keytool -export -rfc -alias algafood -keystore algafood.jks -file algafood-cert.pem
+     * 
+     * Pega a chave publica do arquivo PEM textual:
+     * openssl x509 -pubkey -noout -in algafood-cert.pem > algafood-pkey.pem
+     * 
+     * Fluxo de funcionamento:
+     * 1. Obtém as propriedades de configuração do KeyStore (senha, alias, localização)
+     * 2. Carrega o arquivo KeyStore a partir do recurso configurado
+     * 3. Extrai o par de chaves RSA usando o alias especificado
+     * 4. Cria uma fonte JWK imutável que será usada pelo Authorization Server
+     * 
+     * Importância:
+     * - A chave privada é usada para ASSINAR tokens JWT no Authorization Server
+     * - A chave pública correspondente é exposta publicamente /oauth2/jwks
+     * - O Resource Server usa a chave pública para VALIDAR a assinatura dos tokens recebidos
+     */
+    @Bean
+    public JWKSource<SecurityContext> jwkSource(JwtKeyStoreProperties properties) throws Exception {
+        // Senha para abrir o arquivo KeyStore (.jks)
+        char[] keyStorePass = properties.getPassword().toCharArray();
+        
+        // Nome do par de chave criado no KeyStore
+        // Um KeyStore pode conter múltiplos pares de chaves, cada um com seu próprio alias(nome)
+        String keypairAlias = properties.getKeypairAlias();
+
+        // Obtém a localização do arquivo KeyStore (.jks)
+        Resource jksLocation = properties.getJksLocation();
+        
+        // Abre um stream de entrada para ler o arquivo KeyStore
+        InputStream inputStream = jksLocation.getInputStream();
+        
+        // Cria uma instância de KeyStore do tipo JKS (Java KeyStore)
+        // JKS é o formato padrão de KeyStore da plataforma Java
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        
+        // Carrega o arquivo e senha do KeyStore (.jks)
+        keyStore.load(inputStream, keyStorePass);
+
+        // Extrai o par de chaves RSA do KeyStore usando o alias e a senha
+        // RSAKey contém tanto a chave privada (para assinar) quanto o certificado público (para validar)
+        // A senha é necessária para descriptografar a chave privada dentro do KeyStore
+        RSAKey rsaKey = RSAKey.load(keyStore, keypairAlias, keyStorePass);
+
+        // Cria uma fonte JWK imutável contendo o conjunto de chaves
+        // ImmutableJWKSet garante que as chaves não possam ser modificadas após a criação
+        // JWKSet é o formato padrão JSON para representar conjuntos de chaves públicas
+        // Esta fonte será usada pelo Authorization Server para:
+        // - Assinar tokens JWT usando a chave privada
+        // - Expor a chave pública no endpoint /oauth2/jwks para validação pelos Resource Servers
+        return new ImmutableJWKSet<>(new JWKSet(rsaKey));
     }
 }

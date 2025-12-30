@@ -1,6 +1,6 @@
 package com.gtech.food_api.core.security.resource;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -9,9 +9,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
-import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
  * Configuração do Resource Server OAuth2.
@@ -29,31 +28,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class ResourceServeConfig {
-    
-    @Value("${spring.security.oauth2.resourceserver.opaquetoken.introspection-uri}")
-    private String introspectionUri;
-    
-    @Value("${spring.security.oauth2.resourceserver.opaquetoken.introspection-client-id}")
-    private String clientId;
-    
-    @Value("${spring.security.oauth2.resourceserver.opaquetoken.introspection-client-secret}")
-    private String clientSecret;
-    
-    /**
-     * Configura o introspector de tokens opacos.
-     * 
-     * Este bean é responsável por validar tokens opacos fazendo requisições
-     * ao endpoint de introspecção do Authorization Server.
-     * 
-     * @return OpaqueTokenIntrospector configurado com as credenciais do cliente
-     */
-    @Bean
-    public OpaqueTokenIntrospector opaqueTokenIntrospector() {
-        // Usando construtor direto (deprecado mas funcional até versão futura)
-        // As propriedades são injetadas via @Value do application.properties
-        return new SpringOpaqueTokenIntrospector(introspectionUri, clientId, clientSecret);
-    }
-    
+
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
+
     /**
      * Configura o filtro de segurança para o Resource Server.
      * 
@@ -63,7 +41,7 @@ public class ResourceServeConfig {
      * - Permite acesso público ao endpoint /authorized (callback OAuth2)
      * - Permite acesso público ao Swagger UI (/swagger-ui/**)
      * - Exige autenticação OAuth2 para todos os outros endpoints da API
-     * - Configura o Resource Server para usar tokens opacos (opaque tokens)
+     * - Configura o Resource Server para usar tokens JWT (JSON Web Tokens)
      * - Desabilita CSRF para APIs REST (não necessário para APIs stateless)
      * - Mantém CORS habilitado para permitir requisições do frontend
      * 
@@ -72,36 +50,25 @@ public class ResourceServeConfig {
      * /oauth2/** sejam tratados primeiro.
      * 
      * As propriedades de configuração do Resource Server são lidas do application.properties:
-     * - spring.security.oauth2.resourceserver.opaquetoken.introspection-uri
-     * - spring.security.oauth2.resourceserver.opaquetoken.introspection-client-id
-     * - spring.security.oauth2.resourceserver.opaquetoken.introspection-client-secret
-     * 
-     * IMPORTANTE: O clientSecret no application.properties deve estar em texto plano (não hasheado),
-     * pois será usado para fazer Basic Authentication. O Authorization Server irá comparar
-     * automaticamente com o hash BCrypt armazenado no client registrado.
+     * - spring.security.oauth2.resourceserver.jwt.jwk-set-uri: URI do endpoint JWKS
+     *   do Authorization Server para obter as chaves públicas para validação de tokens JWT
      * 
      * @param http objeto HttpSecurity usado para configurar a segurança HTTP
-     * @param opaqueTokenIntrospector introspector de tokens injetado pelo Spring
      * @return SecurityFilterChain configurado para o Resource Server
      * @throws Exception caso ocorra algum erro na configuração
      */
     @Bean
     @Order(Ordered.LOWEST_PRECEDENCE - 1)
-    public SecurityFilterChain resourceServerFilterChain(HttpSecurity http, OpaqueTokenIntrospector opaqueTokenIntrospector) throws Exception {
+    public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> 
                 authorize
-                    .requestMatchers("/oauth2/**").permitAll() // Permite acesso aos endpoints do Authorization Server
-                    .requestMatchers("/authorized").permitAll() // Permite acesso ao endpoint de callback OAuth2
-                    .requestMatchers("/swagger-ui/**").permitAll() // Permite acesso ao Swagger UI
-                    .anyRequest().authenticated() // Exige autenticação para todos os outros endpoints
+                    .requestMatchers("/oauth2/**").authenticated()
+                    .anyRequest().authenticated()
             )
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST stateless
-            .oauth2ResourceServer(oauth2 -> 
-                oauth2.opaqueToken(opaqueToken -> 
-                    opaqueToken.introspector(opaqueTokenIntrospector)
-                )
-            );
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         
         return http.formLogin(Customizer.withDefaults()).build();
     }

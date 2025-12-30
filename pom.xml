@@ -174,7 +174,23 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+			<exclusions>
+				<!-- Exclui a versão antiga do nimbus-jose-jwt (9.24.4) que não tem a classe JWKSetSource -->
+				<exclusion>
+					<groupId>com.nimbusds</groupId>
+					<artifactId>nimbus-jose-jwt</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		
+		<!-- Nimbus JOSE JWT - versão explícita 9.37.3 para compatibilidade com Spring Boot 3.5.8 -->
+		<!-- Esta versão contém a classe JWKSetSource necessária para validação de tokens JWT -->
+		<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>9.37.3</version>
+		</dependency>
+		
 		<!-- Redis é o spring boot para redis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

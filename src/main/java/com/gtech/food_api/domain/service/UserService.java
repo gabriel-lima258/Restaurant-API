@@ -16,8 +16,6 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private static final String USER_IN_USE_MESSAGE = "Usuário com id %d não pode ser excluído pois está em uso";
-
     @Autowired
     private UserRepository userRepository;
     

@@ -36,3 +36,5 @@ build/
 ## mac
 .DS_Store
 frontend
+
+keystore/
