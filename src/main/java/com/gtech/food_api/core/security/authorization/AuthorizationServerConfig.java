@@ -4,9 +4,14 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
@@ -26,8 +31,11 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.gtech.food_api.domain.repository.UserRepository;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -153,8 +161,8 @@ public class AuthorizationServerConfig {
                 .reuseRefreshTokens(false)
                 .refreshTokenTimeToLive(Duration.ofDays(1))
                 .build())
-            .redirectUri("http://localhost:8080/authorized")
-            .redirectUri("http://localhost:8080/swagger-ui/oauth2-redirect.html")
+            .redirectUri("http://127.0.0.1:8080/authorized")
+            .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
             .clientSettings(ClientSettings.builder()
                 .requireAuthorizationConsent(true)
                 .build())
@@ -272,5 +280,72 @@ public class AuthorizationServerConfig {
         // - Assinar tokens JWT usando a chave privada
         // - Expor a chave pública no endpoint /oauth2/jwks para validação pelos Resource Servers
         return new ImmutableJWKSet<>(new JWKSet(rsaKey));
+    }
+
+    /**
+     * Customiza o payload (claims) do token JWT gerado pelo Authorization Server.
+     * 
+     * Por padrão, o Spring Security gera tokens JWT com claims básicos:
+     * - sub: subject (identificador do usuário)
+     * - iat: issued at (data de emissão)
+     * - exp: expiration (data de expiração)
+     * - scope: escopos autorizados (READ, WRITE)
+     * 
+     * Este customizador ADICIONA claims personalizadas ao token:
+     * - user_id: ID do usuário no banco de dados
+     * - authorities: Lista de permissões/roles do usuário
+     * 
+     * Por que adicionar claims customizadas?
+     * - O Resource Server (API) pode extrair essas informações diretamente do token
+     * - Evita consultas ao banco de dados a cada requisição
+     * - Melhora performance e escalabilidade
+     * - Permite autorização baseada em roles sem estado (stateless)
+     */
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(UserRepository userRepository) {
+        return (context) -> {
+            // Obtém o objeto Authentication que representa o usuário/cliente autenticado
+            Authentication authentication = context.getPrincipal();
+            
+            // Verifica o TIPO de autenticação para decidir quais claims adicionar:
+            // 
+            // 1. User (org.springframework.security.core.userdetails.User):
+            //    - Grant type: AUTHORIZATION_CODE (usuário fez login)
+            //    - Principal: Objeto User retornado pelo JpaUserDetailsService
+            //    - Neste caso, adicionamos user_id e authorities ao token
+            // 
+            // 2. ClientPrincipal (outro tipo):
+            //    - Grant type: CLIENT_CREDENTIALS (autenticação máquina-a-máquina)
+            //    - Principal: Objeto representando o cliente OAuth2
+            //    - Neste caso, NÃO adicionamos claims customizadas (não há usuário)
+            if (authentication.getPrincipal() instanceof User) {
+                User user = (User) authentication.getPrincipal();
+
+                com.gtech.food_api.domain.model.User domainUser = userRepository
+                    .findByEmail(user.getUsername())
+                    .orElseThrow();
+
+                // Extrai as permissões/authorities do usuário autenticado
+                Set<String> authorities = new HashSet<>();
+                for (GrantedAuthority authority : user.getAuthorities()) {
+                    authorities.add(authority.getAuthority());
+                }
+
+                // Adiciona CLAIMS CUSTOMIZADAS ao payload do token JWT
+                // 
+                // Claims são pares chave-valor que ficam dentro do token
+                // Estrutura final do token JWT decodificado:
+                // {
+                //   "sub": "joao@email.com",           // claim padrão
+                //   "iat": 1672531200,                 // claim padrão
+                //   "exp": 1672534800,                 // claim padrão
+                //   "scope": "READ WRITE",             // claim padrão
+                //   "user_id": 123,                    // ← CLAIM CUSTOMIZADA
+                //   "authorities": ["ROLE_ADMIN"]      // ← CLAIM CUSTOMIZADA
+                // }
+                context.getClaims().claim("user_id", domainUser.getId().toString());
+                context.getClaims().claim("authorities", authorities);
+            }
+        };
     }
 }

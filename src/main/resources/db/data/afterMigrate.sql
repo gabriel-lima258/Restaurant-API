@@ -319,230 +319,6 @@ insert into restaurant (
     true, true
 );
 
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    16, 'El Mariachi', 12, 6, 
-    '20020-020', 'Avenida Atlântica', '800', 
-    null, 'Copacabana', 6, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    17, 'Bistro Francês', 16.50, 7, 
-    '01310-100', 'Alameda Santos', '200', 
-    'Sala 10', 'Jardins', 3, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    18, 'Le Petit Paris', 17, 7, 
-    '20020-020', 'Rua Barata Ribeiro', '456', 
-    '1º andar', 'Copacabana', 6, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    19, 'Shawarma Express', 10, 8, 
-    '01310-100', 'Rua Augusta', '3000', 
-    null, 'Consolação', 3, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    20, 'Aladdin Food', 11.50, 8, 
-    '30130-010', 'Rua da Bahia', '800', 
-    'Loja 3', 'Centro', 2, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    21, 'Dragão Dourado', 13, 9, 
-    '01310-100', 'Rua dos Três Irmãos', '600', 
-    '2º andar', 'Vila Madalena', 3, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    22, 'Wok Express', 9.50, 9, 
-    '20020-020', 'Avenida Atlântica', '1500', 
-    null, 'Copacabana', 6, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    23, 'Verde Vida', 8, 10, 
-    '01310-100', 'Rua Harmonia', '400', 
-    'Loja 8', 'Vila Madalena', 3, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    24, 'Natureza Viva', 9, 10, 
-    '30130-010', 'Rua da Bahia', '900', 
-    '1º andar', 'Centro', 2, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    25, 'Spice Garden', 14.50, 2, 
-    '80020-010', 'Avenida Sete de Setembro', '1200', 
-    'Sala 20', 'Centro', 8, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    false, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    26, 'Bella Italia', 12, 3, 
-    '88015-700', 'Avenida Beira Mar Norte', '500', 
-    'Loja 12', 'Centro', 12, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    27, 'Sushi Bar', 16, 4, 
-    '74015-010', 'Avenida T-4', '1500', 
-    '2º andar', 'Setor Bueno', 13, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    false, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    28, 'Acarajé da Bahia', 7.50, 5, 
-    '40020-000', 'Rua Chile', '200', 
-    null, 'Pelourinho', 10, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    29, 'Taco Fiesta', 11, 6, 
-    '50010-000', 'Avenida Boa Viagem', '3000', 
-    'Loja 5', 'Boa Viagem', 14, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    false, true
-);
-
-insert into restaurant (
-    id, name, shipping_fee, kitchen_id, 
-    address_cep, address_public_place, address_number, 
-    address_complement, address_neighborhood, address_city_id, 
-    created_at, updated_at,
-    active, 
-    open
-) values (
-    30, 'Green Garden', 8.50, 10, 
-    '86010-000', 'Avenida Brasil', '1000', 
-    '1º andar', 'Centro', 9, 
-    UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
-);
 
 -- Restaurant Payment Method
 insert into restaurant_payment_method (restaurant_id, payment_method_id) 
@@ -590,50 +366,6 @@ values (14, 1), (14, 2), (14, 4), (14, 5);
 insert into restaurant_payment_method (restaurant_id, payment_method_id) 
 values (15, 1), (15, 2), (15, 4);
 
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (16, 1), (16, 3), (16, 4);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (17, 1), (17, 2), (17, 4), (17, 5);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (18, 1), (18, 2), (18, 4), (18, 5);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (19, 1), (19, 2), (19, 3), (19, 4);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (20, 1), (20, 4);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (21, 1), (21, 2), (21, 4), (21, 5);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (22, 1), (22, 2), (22, 3), (22, 4);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (23, 1), (23, 2), (23, 4), (23, 5), (23, 6);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (24, 1), (24, 2), (24, 4), (24, 5);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (25, 1), (25, 2), (25, 4);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (26, 1), (26, 2), (26, 3), (26, 4);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (27, 1), (27, 2), (27, 4), (27, 5);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (28, 1), (28, 3), (28, 4);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (29, 1), (29, 2), (29, 4);
-
-insert into restaurant_payment_method (restaurant_id, payment_method_id) 
-values (30, 1), (30, 2), (30, 4), (30, 5), (30, 6);
 
 -- Product
 insert into product (name, description, price, active, restaurant_id) 
@@ -680,26 +412,50 @@ insert into product (name, description, price, active, restaurant_id)
 values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 0, 1);
 
 -- User
-insert into `user` (name, email, password, created_at) values ('Gabriel Silva', 'gabriel58221@gmail.com', '123456', UTC_TIMESTAMP);
-insert into `user` (name, email, password, created_at) values ('Maria Oliveira', 'maria.oliveira@example.com', '123456', UTC_TIMESTAMP);
-insert into `user` (name, email, password, created_at) values ('Pedro Santos', 'pedro.santos@example.com', '123456', UTC_TIMESTAMP);
-insert into `user` (name, email, password, created_at) values ('Ana Paula', 'ana.paula@example.com', '123456', UTC_TIMESTAMP);
-insert into `user` (name, email, password, created_at) values ('Carlos Ferreira', 'carlos.ferreira@example.com', '123456', UTC_TIMESTAMP);
-insert into `user` (name, email, password, created_at) values ('Laura Lima', 'laura.lima@example.com', '123456', UTC_TIMESTAMP);
-insert into `user` (name, email, password, created_at) values ('Rafael Oliveira', 'rafael.oliveira@example.com', '123456', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Gabriel Silva', 'gabriel58221@gmail.com', '$2a$12$FVdYUu.BDXhN.hCyxgOoXOd/8l.Ovdite.YNs2MDueL8D0fLmDCU6', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Maria Oliveira', 'maria.oliveira@example.com', '$2a$12$FVdYUu.BDXhN.hCyxgOoXOd/8l.Ovdite.YNs2MDueL8D0fLmDCU6', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Pedro Santos', 'pedro.santos@example.com', '$2a$12$FVdYUu.BDXhN.hCyxgOoXOd/8l.Ovdite.YNs2MDueL8D0fLmDCU6', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Ana Paula', 'ana.paula@example.com', '$2a$12$FVdYUu.BDXhN.hCyxgOoXOd/8l.Ovdite.YNs2MDueL8D0fLmDCU6', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Carlos Ferreira', 'carlos.ferreira@example.com', '$2a$12$FVdYUu.BDXhN.hCyxgOoXOd/8l.Ovdite.YNs2MDueL8D0fLmDCU6', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Laura Lima', 'laura.lima@example.com', '$2a$12$FVdYUu.BDXhN.hCyxgOoXOd/8l.Ovdite.YNs2MDueL8D0fLmDCU6', UTC_TIMESTAMP);
+insert into `user` (name, email, password, created_at) values ('Rafael Oliveira', 'rafael.oliveira@example.com', '$2a$12$FVdYUu.BDXhN.hCyxgOoXOd/8l.Ovdite.YNs2MDueL8D0fLmDCU6', UTC_TIMESTAMP);
 
 -- Permission
-insert into permission (id, name, description) 
-values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
+insert into permission (id, name, description) values (1, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+insert into permission (id, name, description) values (2, 'EDITAR_FORMAS_PAGAMENTO', 'Permite criar ou editar formas de pagamento');
+insert into permission (id, name, description) values (3, 'EDITAR_CIDADES', 'Permite criar ou editar cidades');
+insert into permission (id, name, description) values (4, 'EDITAR_ESTADOS', 'Permite criar ou editar estados');
+insert into permission (id, name, description) values (5, 'CONSULTAR_USUARIOS_GRUPOS_PERMISSOES', 'Permite consultar usuários, grupos e permissões');
+insert into permission (id, name, description) values (6, 'EDITAR_USUARIOS_GRUPOS_PERMISSOES', 'Permite criar ou editar usuários, grupos e permissões');
+insert into permission (id, name, description) values (7, 'EDITAR_RESTAURANTES', 'Permite criar, editar ou gerenciar restaurantes');
+insert into permission (id, name, description) values (8, 'CONSULTAR_PEDIDOS', 'Permite consultar pedidos');
+insert into permission (id, name, description) values (9, 'GERENCIAR_PEDIDOS', 'Permite gerenciar pedidos');
+insert into permission (id, name, description) values (10, 'GERAR_RELATORIOS', 'Permite gerar relatórios');
 
-insert into permission (id, name, description) 
-values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
 
 -- Group
-insert into `group` (name) values ('Administrador'), ('Gerente'), ('Cadastrador');
+insert into `group` (id, name) values (1, 'Gerente'), (2, 'Vendedor'), (3, 'Secretária'), (4, 'Cadastrador');
 
 -- group permission
-insert into group_permission (group_id, permission_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
+
+# Adiciona todas as permissoes no grupo do gerente
+insert into group_permission (group_id, permission_id)
+select 1, id from permission;
+
+# Adiciona permissoes no grupo do vendedor
+insert into group_permission (group_id, permission_id)
+select 2, id from permission where name like 'CONSULTAR_%';
+
+insert into group_permission (group_id, permission_id)
+select 2, id from permission where name = 'EDITAR_RESTAURANTES';
+
+# Adiciona permissoes no grupo do auxiliar
+insert into group_permission (group_id, permission_id)
+select 3, id from permission where name like 'CONSULTAR_%';
+
+# Adiciona permissoes no grupo cadastrador
+insert into group_permission (group_id, permission_id)
+select 4, id from permission where name like '%_RESTAURANTES';
 
 -- group user
 insert into group_user (user_id, group_id) values (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (3, 1), (3, 2), (3, 3);

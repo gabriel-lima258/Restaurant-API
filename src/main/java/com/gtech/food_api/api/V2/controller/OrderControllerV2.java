@@ -9,6 +9,7 @@ import com.gtech.food_api.api.V2.dto.input.OrderInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.data.PageWrapper;
 import com.gtech.food_api.core.data.PageableTranslator;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.domain.filter.OrderFilter;
 import com.gtech.food_api.domain.model.Order;
 import com.gtech.food_api.domain.model.User;
@@ -52,6 +53,9 @@ public class OrderControllerV2 {
     @Autowired
     private PagedResourcesAssembler<Order> pagedResourcesAssembler;
 
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     /*
     * OrderFilter foi injetado no metodo listAll, para que seja possivel passar o filtro na url, exemplo: /orders?clientId=1&restaurantId=1&creationDateStart=2025-01-01&creationDateEnd=2025-01-01
     * @param filter: filtro de pedidos, exemplo: clientId, restaurantId, creationDateStart, creationDateEnd
@@ -88,9 +92,9 @@ public class OrderControllerV2 {
         try {
             Order order = orderInputDisassembler.copyToEntity(orderInput);
 
-            // get user authenticated
+            // atribui o id do usuario dinamicamente com token jwt
             order.setClient(new User());
-            order.getClient().setId(1L);
+            order.getClient().setId(usersJwtSecurity.getUserId());
 
             Order newOrder = submitOrderService.submitOrder(order);
             OrderDTO dto = orderDTOAssembler.toModel(newOrder);

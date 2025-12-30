@@ -7,6 +7,7 @@ import com.gtech.food_api.domain.service.exceptions.BusinessException;
 import com.gtech.food_api.domain.service.exceptions.UserNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,9 @@ public class UserService {
     
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<User> listAll(){
@@ -40,19 +44,25 @@ public class UserService {
                 String.format("Email %s já está em uso", user.getEmail())
             );
         }
+
+        if (user.isNewUser()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
         return userRepository.save(user);
     }
 
     @Transactional
     public void updatePassword(Long id,  String currentPassword, String newPassword){
         User user = findOrFail(id);
-        if (!user.correctPassword(currentPassword, newPassword)) {
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new BusinessException("Current password does not match with the password of the user");
         }
         // Dirty Checking: Como a entidade está gerenciada (carregada do banco), ao alterar user.setPassword(),
         // o JPA detecta automaticamente a mudança. No commit da transação, o flush automático persiste
         // as alterações no banco, por isso não é necessário chamar userRepository.save(user).
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 
     @Transactional
