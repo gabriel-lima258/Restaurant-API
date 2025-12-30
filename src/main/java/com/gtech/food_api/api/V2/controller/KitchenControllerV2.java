@@ -5,6 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.KitchenInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.KitchenDTO;
 import com.gtech.food_api.api.V2.dto.input.KitchenInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.service.KitchenService;
 import jakarta.validation.Valid;
@@ -37,6 +38,7 @@ public class KitchenControllerV2 {
     @Autowired
     private PagedResourcesAssembler<Kitchen> pagedResourcesAssembler;
 
+    @CheckSecurity.Kitchens.CanView
     @GetMapping
     public ResponseEntity<PagedModel<KitchenDTO>> listAll(@PageableDefault(size = 10) Pageable pageable){
         Page<Kitchen> kitchens = kitchenService.listAll(pageable);
@@ -47,6 +49,7 @@ public class KitchenControllerV2 {
         return ResponseEntity.ok().body(pagedModel);
     }
 
+    @CheckSecurity.Kitchens.CanView
     @GetMapping("/{id}")
     public ResponseEntity<KitchenDTO> findById(@PathVariable Long id) {
         Kitchen entity = kitchenService.findOrFail(id);
@@ -54,6 +57,7 @@ public class KitchenControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.Kitchens.CanEdit
     @PostMapping
     public ResponseEntity<KitchenDTO> save(@RequestBody @Valid KitchenInput kitchenInput) {
         Kitchen kitchen = kitchenInputDisassembler.copyToEntity(kitchenInput);
@@ -63,6 +67,7 @@ public class KitchenControllerV2 {
         return ResponseEntity.created(uri).body(dto);
     }
 
+    @CheckSecurity.Kitchens.CanEdit
     @PutMapping("/{id}")
     public ResponseEntity<KitchenDTO> update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput) {
         Kitchen entity = kitchenService.findOrFail(id);
@@ -72,6 +77,7 @@ public class KitchenControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.Kitchens.CanEdit
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         kitchenService.delete(id);

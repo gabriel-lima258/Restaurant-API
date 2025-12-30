@@ -23,6 +23,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 /**
  * Esta classe configura o servidor de recursos (Resource Server) que valida tokens
  * OAuth2 emitidos pelo Authorization Server.
+ * EnableMethodSecurity: habilita preAuthorize e postAuthorize em endpoints
  */
 @Configuration
 @EnableWebSecurity
@@ -61,14 +62,11 @@ public class ResourceServeConfig {
     @Order(Ordered.LOWEST_PRECEDENCE - 1)
     public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(authorize -> 
-                authorize
-                .requestMatchers("/authorized").permitAll() // Permite acesso ao callback OAuth2
-                .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll() // Swagger UI
-                .requestMatchers("/v3/api-docs/**", "/swagger-resources/**").permitAll() // OpenAPI docs
-                .requestMatchers("/oauth2/**").authenticated()
-                .anyRequest().authenticated()
-            )
+            // .authorizeHttpRequests(authorize -> 
+            //     authorize
+            //     .requestMatchers("/oauth2/**").authenticated()
+            //     .anyRequest().authenticated()
+            // )
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST stateless
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
@@ -93,10 +91,6 @@ public class ResourceServeConfig {
             // 
             // JwtGrantedAuthoritiesConverter: Conversor padrão do Spring Security
             // Extrai a claim "scope" do JWT e converte em GrantedAuthority
-            // 
-            // Exemplo de claim "scope" no JWT:
-            // "scope": "READ WRITE"
-            // 
             // Resultado da conversão:
             // [SCOPE_READ, SCOPE_WRITE]
             JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
@@ -131,7 +125,6 @@ public class ResourceServeConfig {
             // - Improvável, mas possível se o usuário não tiver grupos/roles
             if (authorities == null) {
                 // Retorna apenas as authorities dos scopes (SCOPE_READ, SCOPE_WRITE)
-                // Exemplo final: [SCOPE_READ, SCOPE_WRITE]
                 return grantedAuthorities;
             }
     
@@ -156,11 +149,6 @@ public class ResourceServeConfig {
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList()));
     
-            // Retorna a lista UNIFICADA de authorities (scopes + authorities customizadas)
-            // Esta lista será usada pelo Spring Security para:
-            // - @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-            // - @PreAuthorize("hasAuthority('SCOPE_READ')")
-            // - SecurityContext.getAuthentication().getAuthorities()
             return grantedAuthorities;
         });
     

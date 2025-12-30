@@ -458,7 +458,7 @@ insert into group_permission (group_id, permission_id)
 select 4, id from permission where name like '%_RESTAURANTES';
 
 -- group user
-insert into group_user (user_id, group_id) values (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (3, 1), (3, 2), (3, 3);
+insert into group_user (user_id, group_id) values (1, 1), (2, 2), (3, 3);
 
 -- restaurant user responsible
 insert into restaurant_user_responsible (user_id, restaurant_id) values (1, 1), (2, 2), (3, 3);

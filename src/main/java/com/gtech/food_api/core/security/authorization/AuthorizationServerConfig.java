@@ -153,7 +153,7 @@ public class AuthorizationServerConfig {
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) 
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .scope("READ") 
+            .scope("READ") // scopo são limitações ao client idenpendente de usuário
             .scope("WRITE")
             .tokenSettings(TokenSettings.builder()
                 .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) 

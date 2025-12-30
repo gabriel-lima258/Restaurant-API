@@ -11,7 +11,10 @@ public enum ExceptionType {
     INVALID_PATH_VARIABLE("invalid-path-variable", "Invalid path variable"),
     INVALID_DATA("invalid-data", "Invalid data"),
     SYSTEM_ERROR("system-error", "System error"),
-    MAX_UPLOAD_SIZE_EXCEEDED("max-upload-size-exceeded", "Max upload size exceeded");
+    MAX_UPLOAD_SIZE_EXCEEDED("max-upload-size-exceeded", "Max upload size exceeded"),
+    ACCESS_DENIED("access-denied", "Access denied");
+
+
 
     private String uri;
     private String title;

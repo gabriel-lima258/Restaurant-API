@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -117,6 +118,29 @@ public class GlobalExceptionHandlerV1 extends ResponseEntityExceptionHandler {
         String detail = ex.getMessage();
 
         ExceptionsDTO body = createBuilder(status, type, detail).build();
+        return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+    }
+
+    /*
+     * Trata exceções de acesso negado.
+     * 
+     * Exemplo de uso:
+     * - Tentar acessar um recurso que o usuário não tem permissão
+     * 
+     * @param ex Exceção AuthorizationDeniedException lançada pelo Spring Security
+     * @param request Requisição HTTP
+     * @return ResponseEntity com status 403 (Forbidden)
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(AuthorizationDeniedException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        ExceptionType type = ExceptionType.ACCESS_DENIED;
+        String detail = ex.getMessage();
+        String userMessage = String.format("Você não tem permissão para acessar este recurso");
+
+        ExceptionsDTO body = createBuilder(status, type, detail)
+                            .userMessage(userMessage)
+                            .build();
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
     }
 
