@@ -6,6 +6,7 @@ import com.gtech.food_api.api.V2.dto.ProductDTO;
 import com.gtech.food_api.api.V2.dto.input.ProductInput;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.ProductService;
@@ -47,6 +48,7 @@ public class ProductControllerV2 {
     private LinksBuilderV2 linksBuilder;
 
     // active é opcional, se nao for informado, retorna todos os produtos
+    @CheckSecurity.Restaurants.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<ProductDTO>> listAll(@PathVariable Long restaurantId,
                                                                @RequestParam(required = false) Boolean active){
@@ -58,6 +60,7 @@ public class ProductControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @CheckSecurity.Restaurants.CanView
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long productId, @PathVariable Long restaurantId) {
         Product product = productService.findOrFail(productId, restaurantId);
@@ -65,6 +68,7 @@ public class ProductControllerV2 {
         return ResponseEntity.ok().body(productDTO);
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @PostMapping
     public ResponseEntity<ProductDTO> save(@PathVariable Long restaurantId, @RequestBody @Valid ProductInput productInput) {
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
@@ -80,6 +84,7 @@ public class ProductControllerV2 {
         return ResponseEntity.created(uri).body(dto);
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long productId, @PathVariable Long restaurantId, @RequestBody ProductInput productInput) {
         Product product = productService.findOrFail(productId, restaurantId);

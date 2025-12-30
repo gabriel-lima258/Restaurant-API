@@ -9,6 +9,7 @@ import com.gtech.food_api.api.V2.dto.RestaurantDTO;
 import com.gtech.food_api.api.V2.dto.RestaurantSummaryDTO;
 import com.gtech.food_api.api.V2.dto.input.RestaurantInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.core.validation.ValidationException;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
@@ -53,24 +54,14 @@ public class RestaurantControllerV2 {
     @Autowired
     private RestaurantInputDisassemblerV2 restaurantInputDisassembler;
 
+    @CheckSecurity.Restaurants.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<RestaurantSummaryDTO>> listAll(){
         CollectionModel<RestaurantSummaryDTO> dtoList = restaurantSummaryDTOAssembler.toCollectionModel(restaurantService.listAll());
         return ResponseEntity.ok().body(dtoList);
     }
 
-    @PutMapping("/activation")
-    public ResponseEntity<Void> activateMany(@RequestBody List<Long> restaurantIds) {
-        restaurantService.activate(restaurantIds);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/deactivation")
-    public ResponseEntity<Void> deactivateMany(@RequestBody List<Long> restaurantIds) {
-        restaurantService.deactivate(restaurantIds);
-        return ResponseEntity.noContent().build();
-    }
-
+    @CheckSecurity.Restaurants.CanView
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantDTO> findById(@PathVariable Long id) {
         Restaurant entity = restaurantService.findOrFail(id);
@@ -78,8 +69,7 @@ public class RestaurantControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
-    // @Validated(Groups.RegisterRestaurant.class) serve para especificar qual grupo de validação deve ser aplicado
-    // @Valid por padrao é o grupo default, o que pode ser um problema se a classe tiver outros grupos de validação
+    @CheckSecurity.Restaurants.CanEdit
     @PostMapping
     public ResponseEntity<RestaurantDTO> save(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
@@ -98,6 +88,7 @@ public class RestaurantControllerV2 {
         }
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantDTO> update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
@@ -115,37 +106,55 @@ public class RestaurantControllerV2 {
         }
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         restaurantService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-     // idempotente, pois pode ser chamado quantas vezes quiser, o resultado será o mesmo
-     @PutMapping("/{id}/active")
-     public ResponseEntity<Void> activate(@PathVariable Long id) {
+    // idempotente, pois pode ser chamado quantas vezes quiser, o resultado será o mesmo
+    @CheckSecurity.Restaurants.CanEdit
+    @PutMapping("/{id}/active")
+    public ResponseEntity<Void> activate(@PathVariable Long id) {
          restaurantService.activate(id);    
          return ResponseEntity.noContent().build();
-     }
+    }
  
-     // idempotente, por coerencia, o delete é usado para desativar o restaurante, pois remove um recurso
-     @DeleteMapping("/{id}/deactive")
-     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
-         restaurantService.deactivate(id);
-         return ResponseEntity.noContent().build();
-     }
+    @CheckSecurity.Restaurants.CanEdit
+    @DeleteMapping("/{id}/deactive")
+    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+        restaurantService.deactivate(id);
+        return ResponseEntity.noContent().build();
+    }
 
-     @PutMapping("/{id}/opening")
-     public ResponseEntity<Void> openRestaurant(@PathVariable Long id) {
-         restaurantService.open(id);
-         return ResponseEntity.noContent().build();
-     }
+    @CheckSecurity.Restaurants.CanEdit
+    @PutMapping("/activation")
+    public ResponseEntity<Void> activateMany(@RequestBody List<Long> restaurantIds) {
+        restaurantService.activate(restaurantIds);
+        return ResponseEntity.noContent().build();
+    }
 
-     @PutMapping("/{id}/closing")
-     public ResponseEntity<Void> closeRestaurant(@PathVariable Long id) {
-         restaurantService.close(id);
-         return ResponseEntity.noContent().build();
-     }
+    @CheckSecurity.Restaurants.CanEdit
+    @DeleteMapping("/deactivation")
+    public ResponseEntity<Void> deactivateMany(@RequestBody List<Long> restaurantIds) {
+        restaurantService.deactivate(restaurantIds);
+        return ResponseEntity.noContent().build();
+    }
+
+    @CheckSecurity.Restaurants.CanEdit
+    @PutMapping("/{id}/opening")
+    public ResponseEntity<Void> openRestaurant(@PathVariable Long id) {
+        restaurantService.open(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @CheckSecurity.Restaurants.CanEdit
+    @PutMapping("/{id}/closing")
+    public ResponseEntity<Void> closeRestaurant(@PathVariable Long id) {
+        restaurantService.close(id);
+        return ResponseEntity.noContent().build();
+    }
 
     /**
      * Atualização parcial de restaurante (PATCH).

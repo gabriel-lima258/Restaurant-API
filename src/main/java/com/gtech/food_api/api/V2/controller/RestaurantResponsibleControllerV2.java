@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.UserDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.UserDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class RestaurantResponsibleControllerV2 {
     @Autowired
     private LinksBuilderV2 linksBuilder;
 
+    @CheckSecurity.Restaurants.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<UserDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
@@ -45,12 +47,14 @@ public class RestaurantResponsibleControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @PutMapping("/{userId}")
     public ResponseEntity<Void> addResponsible(@PathVariable Long restaurantId, @PathVariable Long userId){
         restaurantService.addResponsible(restaurantId, userId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> removeResponsible(@PathVariable Long restaurantId, @PathVariable Long userId){
         restaurantService.removeResponsible(restaurantId, userId);

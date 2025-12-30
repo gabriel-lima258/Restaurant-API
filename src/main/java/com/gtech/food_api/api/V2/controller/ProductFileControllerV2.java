@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.PhotoProductDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PhotoProductDTO;
 import com.gtech.food_api.api.V2.dto.input.ProductFileInput;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.service.ProductService;
@@ -47,7 +48,7 @@ public class ProductFileControllerV2 {
     @Autowired
     private PhotoProductDTOAssemblerV2 photoProductDTOAssembler;
 
-
+    @CheckSecurity.Restaurants.CanView
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PhotoProductDTO> getPhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
         PhotoProduct photoProduct = photoProductService.findOrFail(restaurantId, productId);
@@ -58,8 +59,9 @@ public class ProductFileControllerV2 {
     /*
     * Request header é o header da requisição, ex: accept: image/jpeg, image/png, image/gif
     * throws HttpMediaTypeNotAcceptableException é uma exceção que é lançada quando o tipo de arquivo não é compatível com o tipo requerido pelo cliente
+    * As fotos dos produtos ficarão públicas (não precisa de autorização para acessá-las)
     */
-    @GetMapping
+    @GetMapping(produces = MediaType.ALL_VALUE)
     public ResponseEntity<InputStreamResource> downloadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId,
         @RequestHeader("accept") String acceptHeader
     ) throws HttpMediaTypeNotAcceptableException {
@@ -91,6 +93,7 @@ public class ProductFileControllerV2 {
         }
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PhotoProductDTO> uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @Valid ProductFileInput input) throws IOException {
 
@@ -113,6 +116,7 @@ public class ProductFileControllerV2 {
         return ResponseEntity.ok().body(photoDTO);
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @DeleteMapping
     public ResponseEntity<PhotoProductDTO> deletePhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
         try {

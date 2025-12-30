@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.PaymentMethodDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PaymentMethodDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class RestaurantPaymentMethodControllerV2 {
     @Autowired
     private LinksBuilderV2 linksBuilder;
 
+    @CheckSecurity.Restaurants.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<PaymentMethodDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
@@ -45,12 +47,14 @@ public class RestaurantPaymentMethodControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @CheckSecurity.Restaurants.CanEdit
     @PutMapping("/{paymentMethodId}")
     public ResponseEntity<Void> associatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
         restaurantService.associatePaymentMethod(restaurantId, paymentMethodId);
         return ResponseEntity.noContent().build();
     }
     
+    @CheckSecurity.Restaurants.CanEdit
     @DeleteMapping("/{paymentMethodId}")
     public ResponseEntity<Void> disassociatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
         restaurantService.disassociatePaymentMethod(restaurantId, paymentMethodId);
