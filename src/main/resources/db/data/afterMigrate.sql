@@ -461,7 +461,7 @@ select 4, id from permission where name like '%_RESTAURANTES';
 insert into group_user (user_id, group_id) values (1, 1), (2, 2), (3, 3);
 
 -- restaurant user responsible
-insert into restaurant_user_responsible (user_id, restaurant_id) values (1, 1), (2, 2), (3, 3), (7, 2);
+insert into restaurant_user_responsible (user_id, restaurant_id) values (1, 1), (2, 2), (3, 3), (7, 3), (6, 4);
 
 -- order
 insert into `order` (id, code, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
@@ -479,7 +479,7 @@ values (2, "31ef66a1-d362-4085-8dd6-7d91815bc0c2", 4, 2, 2, 2, '30130-010', 'Rua
 insert into `order` (id, code, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
     address_public_place, address_number, address_complement, address_neighborhood,
     status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
-values (3, "b0969c7c-3348-441f-bb15-eaf435f7ad83", 1, 3, 3, 1, '38400-000', 'Rua Tiradentes', '500', 'Sala 101', 'Centro',
+values (3, "b0969c7c-3348-441f-bb15-eaf435f7ad83", 1, 7, 3, 1, '38400-000', 'Rua Tiradentes', '500', 'Sala 101', 'Centro',
     'DELIVERED', "2025-12-11 20:35:10", "2025-12-11 20:40:00", null, "2025-12-11 21:00:00", 78.90, 10.00, 88.90);
 
 -- order item

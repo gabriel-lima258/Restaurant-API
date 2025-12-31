@@ -63,11 +63,11 @@ public class UsersJwtSecurity {
         return Long.valueOf(userId.toString());
     }
 
+    // verifica se o usuário autenticado é responsável por um restaurante
     public boolean managerRestaurant(Long restaurantId) {
         if (restaurantId == null) {
             return false;
         }
-
         return restaurantRepository.existsResponsible(restaurantId, getUserId());
     }
 }

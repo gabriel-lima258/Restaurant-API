@@ -10,6 +10,7 @@ import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.data.PageWrapper;
 import com.gtech.food_api.core.data.PageableTranslator;
 import com.gtech.food_api.core.security.UsersJwtSecurity;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.filter.OrderFilter;
 import com.gtech.food_api.domain.model.Order;
 import com.gtech.food_api.domain.model.User;
@@ -80,6 +81,7 @@ public class OrderControllerV2 {
         return ResponseEntity.ok().body(pagedModel);
     }
 
+    @CheckSecurity.Orders.CanView
     @GetMapping("/{orderCode}")
     public ResponseEntity<OrderDTO> findById(@PathVariable String orderCode) {
         Order entity = orderService.findOrFail(orderCode);
