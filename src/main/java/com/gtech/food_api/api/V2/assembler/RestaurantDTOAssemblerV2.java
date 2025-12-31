@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.RestaurantControllerV2;
 import com.gtech.food_api.api.V2.dto.RestaurantDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.Restaurant;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,10 @@ public class RestaurantDTOAssemblerV2 extends RepresentationModelAssemblerSuppor
     private final LinksBuilderV2 linksBuilder;
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     public RestaurantDTOAssemblerV2(LinksBuilderV2 linksBuilder) {
         super(RestaurantControllerV2.class, RestaurantDTO.class);
         this.linksBuilder = linksBuilder;
@@ -32,8 +37,15 @@ public class RestaurantDTOAssemblerV2 extends RepresentationModelAssemblerSuppor
         modelMapper.map(restaurant, restaurantDTO);
         restaurantDTO.getKitchen().add(linksBuilder.linkToKitchen(restaurant.getKitchen().getId()));
         restaurantDTO.getAddress().getCity().add(linksBuilder.linkToCity(restaurant.getAddress().getCity().getId()));
-        restaurantDTO.add(linksBuilder.linkToRestaurantPaymentMethods(restaurant.getId(), "paymentMethods"));
-        restaurantDTO.add(linksBuilder.linkToRestaurantResponsible(restaurant.getId(), "responsible"));
+
+        if (usersJwtSecurity.canViewRestaurants()) {
+            restaurantDTO.add(linksBuilder.linkToRestaurantPaymentMethods(restaurant.getId(), "paymentMethods"));
+        }
+        
+        if (usersJwtSecurity.canEditRestaurants()) {
+            restaurantDTO.add(linksBuilder.linkToRestaurantResponsible(restaurant.getId(), "responsible"));
+        }
+
         if (restaurant.isActive()) {
             restaurantDTO.add(linksBuilder.linkToDeactivateRestaurant(restaurant.getId(), "deactivate"));
         }
@@ -58,7 +70,12 @@ public class RestaurantDTOAssemblerV2 extends RepresentationModelAssemblerSuppor
 
     @Override
     public CollectionModel<RestaurantDTO> toCollectionModel(Iterable<? extends Restaurant> entities) {
-        return super.toCollectionModel(entities)
-            .add(linksBuilder.linkToRestaurants());
+        CollectionModel<RestaurantDTO> collectionModel = super.toCollectionModel(entities);
+    
+        if (usersJwtSecurity.canViewRestaurants()) {
+            collectionModel.add(linksBuilder.linkToRestaurants());
+        }
+        
+        return collectionModel;
     }
 }

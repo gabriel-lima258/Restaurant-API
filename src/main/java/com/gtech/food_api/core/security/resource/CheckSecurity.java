@@ -51,12 +51,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public @interface CheckSecurity {
     
     public @interface Kitchens {
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_COZINHAS')")
+        @PreAuthorize("@usersJwtSecurity.canEditKitchens()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanEdit {
         }
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@usersJwtSecurity.canViewKitchens()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanView {
@@ -64,22 +64,20 @@ public @interface CheckSecurity {
     }
 
     public @interface Restaurants {
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_RESTAURANTES')")
+        @PreAuthorize("@usersJwtSecurity.canEditRestaurants()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanAdminManager {
         }
 
         // @usersJwtSecurity acessa o bean dessa classe utilizando o metodo, #id é o parametro existente no endpoint, é o dono do restaurant or ?
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and "
-                    + "hasAuthority('EDITAR_RESTAURANTES') or "
-                    + "@usersJwtSecurity.managerRestaurant(#restaurantId)")
+        @PreAuthorize("@usersJwtSecurity.canManagerOwnerRestaurant(#restaurantId)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanOnwerManager {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@usersJwtSecurity.canViewRestaurants()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanView {
@@ -104,7 +102,7 @@ public @interface CheckSecurity {
          * - returnObject.body.client = UserDTO (cliente que fez o pedido)
          * - returnObject.body.restaurant = RestaurantDTO (restaurante do pedido)
          */
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@usersJwtSecurity.canViewOrders()")
         @PostAuthorize("hasAuthority('CONSULTAR_PEDIDOS') or "
                     + "@usersJwtSecurity.userAuthenticatedEquals(returnObject.body.client.id) or "
                     + "@usersJwtSecurity.managerRestaurant(returnObject.body.restaurant.id)")
@@ -113,24 +111,19 @@ public @interface CheckSecurity {
         public @interface CanView {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated() and "
-                    + "hasAuthority('CONSULTAR_PEDIDOS') or "
-                    + "@usersJwtSecurity.userAuthenticatedEquals(#filter.clientId) or "
-                    + "@usersJwtSecurity.managerRestaurant(#filter.restaurantId)")
+        @PreAuthorize("@usersJwtSecurity.canViewOrdersList(#filter.clientId, #filter.restaurantId)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanViewList {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated()")
+        @PreAuthorize("@usersJwtSecurity.canAddOrders()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanAddOrders {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated() and "
-                    + "hasAuthority('GERENCIAR_PEDIDOS') or "
-                    + "@usersJwtSecurity.isOrderManagedBy(#orderCode)")
+        @PreAuthorize("@usersJwtSecurity.canManagerOrder(#orderCode)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanManageOrder {
@@ -138,12 +131,12 @@ public @interface CheckSecurity {
     }
 
     public @interface Payments {
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@usersJwtSecurity.canViewPayments()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanView {
         }
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_FORMAS_PAGAMENTO')")
+        @PreAuthorize("@usersJwtSecurity.canEditPayments()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanEdit {
@@ -151,12 +144,12 @@ public @interface CheckSecurity {
     }
 
     public @interface Cities {
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@usersJwtSecurity.canViewCities()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanView {
         }
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_CIDADES')")
+        @PreAuthorize("@usersJwtSecurity.canEditCities()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanEdit {
@@ -164,12 +157,12 @@ public @interface CheckSecurity {
     }
 
     public @interface States {
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@usersJwtSecurity.canViewStates()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanView {
         }
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_ESTADOS')")
+        @PreAuthorize("@usersJwtSecurity.canEditStates()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanEdit {
@@ -192,15 +185,13 @@ public @interface CheckSecurity {
         public @interface CanUpdateUser {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated() and "
-                    + "hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @PreAuthorize("@usersJwtSecurity.canEditUsersGroupsPermissions()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanEdit {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated() and "
-                    + "hasAuthority('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @PreAuthorize("@usersJwtSecurity.canViewUsersGroupsPermissions()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanView {
@@ -208,8 +199,7 @@ public @interface CheckSecurity {
     }
 
     public @interface Reports {
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated() and "
-                    + "hasAuthority('GERAR_RELATORIOS')")
+        @PreAuthorize("@usersJwtSecurity.canGenerateReports()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanGenerateReports {

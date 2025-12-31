@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.PermissionDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PermissionDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.Group;
 import com.gtech.food_api.domain.service.GroupService;
@@ -25,18 +26,23 @@ public class GroupPermissionControllerV2 {
     @Autowired
     private LinksBuilderV2 linksBuilder;
 
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     @CheckSecurity.UsersGroupsPermissions.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<PermissionDTO>> listAll(@PathVariable Long groupId){
         Group group = groupService.findOrFail(groupId);
         CollectionModel<PermissionDTO> dtoList = permissionDTOAssembler.toCollectionModel(group.getPermissions());
+        if (usersJwtSecurity.canViewUsersGroupsPermissions()) {
         dtoList.removeLinks()
-            .add(linksBuilder.linkToGroupPermissions(groupId))
-            .add(linksBuilder.linkToAssociatePermissionGroup(groupId));
+                .add(linksBuilder.linkToGroupPermissions(groupId))
+                .add(linksBuilder.linkToAssociatePermissionGroup(groupId));
 
-        dtoList.getContent().forEach(permissionDTO -> {
-            permissionDTO.add(linksBuilder.linkToRemovePermissionGroup(groupId, permissionDTO.getId()));
-        });
+            dtoList.getContent().forEach(permissionDTO -> {
+                permissionDTO.add(linksBuilder.linkToRemovePermissionGroup(groupId, permissionDTO.getId()));
+            });
+        }
 
         return ResponseEntity.ok().body(dtoList);
     }

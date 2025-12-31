@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.KitchenControllerV2;
 import com.gtech.food_api.api.V2.dto.KitchenDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.Kitchen;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,10 @@ public class KitchenDTOAssemblerV2 extends RepresentationModelAssemblerSupport<K
     
     @Autowired
     private LinksBuilderV2 linksBuilder;
+
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     public KitchenDTOAssemblerV2() {
         super(KitchenControllerV2.class, KitchenDTO.class);
     }
@@ -30,7 +35,10 @@ public class KitchenDTOAssemblerV2 extends RepresentationModelAssemblerSupport<K
         KitchenDTO kitchenDTO = createModelWithId(kitchen.getId(), kitchen);
         modelMapper.map(kitchen, kitchenDTO);
         
-        kitchenDTO.add(linksBuilder.linkToKitchens());
+        if (usersJwtSecurity.canViewKitchens()) {
+            kitchenDTO.add(linksBuilder.linkToKitchens());
+        }
+        
         return kitchenDTO;
     }
 }

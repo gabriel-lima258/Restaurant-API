@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 /**
  * Assembler para converter Group em GroupDTO
  * 
@@ -23,6 +24,10 @@ public class GroupDTOAssemblerV2 extends RepresentationModelAssemblerSupport<Gro
     
     @Autowired
     private LinksBuilderV2 linksBuilder;
+
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     public GroupDTOAssemblerV2() {
         super(GroupControllerV2.class, GroupDTO.class);
     }
@@ -30,7 +35,9 @@ public class GroupDTOAssemblerV2 extends RepresentationModelAssemblerSupport<Gro
     public GroupDTO toModel(Group group) {
         GroupDTO groupDTO = createModelWithId(group.getId(), group);
         modelMapper.map(group, groupDTO);
-        groupDTO.add(linksBuilder.linkToGroupPermissions(group.getId()));
+        if (usersJwtSecurity.canViewUsersGroupsPermissions()) {
+            groupDTO.add(linksBuilder.linkToGroupPermissions(group.getId()));
+        }
         return groupDTO;
     }
 
@@ -42,7 +49,10 @@ public class GroupDTOAssemblerV2 extends RepresentationModelAssemblerSupport<Gro
 
     @Override
     public CollectionModel<GroupDTO> toCollectionModel(Iterable<? extends Group> entities) {
-        return super.toCollectionModel(entities)
-            .add(linksBuilder.linkToGroups());
+        CollectionModel<GroupDTO> collectionModel = super.toCollectionModel(entities);
+        if (usersJwtSecurity.canViewUsersGroupsPermissions()) {
+            collectionModel.add(linksBuilder.linkToGroups());
+        }
+        return collectionModel;
     }
 }

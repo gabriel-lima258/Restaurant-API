@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.UserDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.UserDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
@@ -31,18 +32,23 @@ public class RestaurantResponsibleControllerV2 {
     @Autowired
     private LinksBuilderV2 linksBuilder;
 
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     @CheckSecurity.Restaurants.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<UserDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
         CollectionModel<UserDTO> dtoList = userDTOAssembler.toCollectionModel(restaurant.getResponsible())
             .removeLinks()
-            .add(linksBuilder.linkToRestaurantResponsible(restaurantId))
-            .add(linksBuilder.linkToAddResponsibleRestaurant(restaurantId));
+            .add(linksBuilder.linkToRestaurantResponsible(restaurantId));
 
-        dtoList.getContent().forEach(userDTO -> {
-            userDTO.add(linksBuilder.linkToRemoveResponsibleRestaurant(restaurantId, userDTO.getId()));
-        });
+        if (usersJwtSecurity.canManagerOwnerRestaurant(restaurantId)) {
+            dtoList.add(linksBuilder.linkToAddResponsibleRestaurant(restaurantId));
+            dtoList.getContent().forEach(userDTO -> {
+                userDTO.add(linksBuilder.linkToRemoveResponsibleRestaurant(restaurantId, userDTO.getId()));
+            });
+        }
 
         return ResponseEntity.ok().body(dtoList);
     }

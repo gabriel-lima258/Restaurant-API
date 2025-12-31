@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
-
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 
 /**
  * Assembler para converter User em UserDTO
@@ -26,7 +26,10 @@ public class UserDTOAssemblerV2 extends RepresentationModelAssemblerSupport<User
 
     @Autowired
     private LinksBuilderV2 linksBuilder;
-   
+
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     public UserDTOAssemblerV2() {
         super(UserControllerV2.class, UserDTO.class);
     }
@@ -37,20 +40,26 @@ public class UserDTOAssemblerV2 extends RepresentationModelAssemblerSupport<User
         modelMapper.map(user, userDTO);
 
         userDTO.add(linksBuilder.linkToUserGroups(user.getId()));
+        
         return userDTO;
     }
 
     public UserDTO toModelWithSelf(User user) {
         UserDTO userDTO = toModel(user);
 
-        userDTO.add(linksBuilder.linkToUsers());
+        if (usersJwtSecurity.canViewUsersGroupsPermissions()) {
+            userDTO.add(linksBuilder.linkToUsers());
+        }
  
         return userDTO;
     }
 
     @Override
     public CollectionModel<UserDTO> toCollectionModel(Iterable<? extends User> entities) {
-        return super.toCollectionModel(entities)
-            .add(linksBuilder.linkToUsers());
+        CollectionModel<UserDTO> collectionModel = super.toCollectionModel(entities);
+        if (usersJwtSecurity.canViewUsersGroupsPermissions()) {
+            collectionModel.add(linksBuilder.linkToUsers());
+        }
+        return collectionModel;
     }
 }

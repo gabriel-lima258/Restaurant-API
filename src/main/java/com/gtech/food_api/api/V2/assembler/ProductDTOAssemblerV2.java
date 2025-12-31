@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.ProductControllerV2;
 import com.gtech.food_api.api.V2.dto.ProductDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.Product;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class ProductDTOAssemblerV2 extends RepresentationModelAssemblerSupport<P
     @Autowired
     private LinksBuilderV2 linksBuilder;
 
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     public ProductDTOAssemblerV2() {
         super(ProductControllerV2.class, ProductDTO.class);
     }
@@ -28,9 +32,10 @@ public class ProductDTOAssemblerV2 extends RepresentationModelAssemblerSupport<P
             product.getId(), product, product.getRestaurant().getId());
         modelMapper.map(product, productDTO);
 
-        productDTO.add(linksBuilder.linkToProducts(product.getRestaurant().getId(), "products"));
-
-        productDTO.add(linksBuilder.linkToPhotoProduct(product.getId(), product.getRestaurant().getId(), "photo"));
+        if (usersJwtSecurity.canViewRestaurants()) {
+            productDTO.add(linksBuilder.linkToProducts(product.getRestaurant().getId(), "products"));
+            productDTO.add(linksBuilder.linkToPhotoProduct(product.getId(), product.getRestaurant().getId(), "photo"));
+        }
 
         return productDTO;
     }

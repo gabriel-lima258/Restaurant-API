@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.PaymentMethodDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PaymentMethodDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;
@@ -31,18 +32,23 @@ public class RestaurantPaymentMethodControllerV2 {
     @Autowired
     private LinksBuilderV2 linksBuilder;
 
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     @CheckSecurity.Restaurants.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<PaymentMethodDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
         CollectionModel<PaymentMethodDTO> dtoList = paymentMethodDTOAssembler.toCollectionModel(restaurant.getPaymentMethods())
         .removeLinks()
-        .add(linksBuilder.linkToRestaurantPaymentMethods(restaurantId, "payment-methods"))
-        .add(linksBuilder.linkToAssociatePaymentMethodRestaurant(restaurantId));
+        .add(linksBuilder.linkToRestaurantPaymentMethods(restaurantId, "payment-methods"));
 
-        dtoList.getContent().forEach(paymentMethodDTO -> {
-            paymentMethodDTO.add(linksBuilder.linkToDesassociatePaymentMethodRestaurant(restaurantId, paymentMethodDTO.getId()));
-        });
+        if (usersJwtSecurity.canManagerOwnerRestaurant(restaurantId)) {
+            dtoList.add(linksBuilder.linkToAssociatePaymentMethodRestaurant(restaurantId));
+            dtoList.getContent().forEach(paymentMethodDTO -> {
+                paymentMethodDTO.add(linksBuilder.linkToDesassociatePaymentMethodRestaurant(restaurantId, paymentMethodDTO.getId()));
+            });
+        }
 
         return ResponseEntity.ok().body(dtoList);
     }

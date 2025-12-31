@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.OrderControllerV2;
 import com.gtech.food_api.api.V2.dto.OrderDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 public class OrderDTOAssemblerV2 extends RepresentationModelAssemblerSupport<Order, OrderDTO> {
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
     
     @Autowired
     private LinksBuilderV2 linksBuilder;
@@ -29,22 +33,37 @@ public class OrderDTOAssemblerV2 extends RepresentationModelAssemblerSupport<Ord
     public OrderDTO toModel(Order order) {
         OrderDTO orderDTO = createModelWithId(order.getCode(), order);
         modelMapper.map(order, orderDTO);
-        orderDTO.add(linksBuilder.linkToOrders("orders"));
-        // adiciona links de confirmação, entrega e cancelamento se o pedido puder ser alterado para o status correspondente
-        if (order.canBeConfirmed()) {
+    
+        if (usersJwtSecurity.canViewOrders()) {
+            orderDTO.add(linksBuilder.linkToOrders("orders"));
+        }
+        
+        if (usersJwtSecurity.canManagerOrder(order.getCode())) {
             orderDTO.add(linksBuilder.linkToConfimOrder(order.getCode(), "confirm"));
-        }
-        if (order.canBeDelivered()) {
             orderDTO.add(linksBuilder.linkToDeliverOrder(order.getCode(), "deliver"));
-        }
-        if (order.canBeCanceled()) {
             orderDTO.add(linksBuilder.linkToCancelOrder(order.getCode(), "cancel"));
         }
-        orderDTO.getRestaurant().add(linksBuilder.linkToRestaurant(order.getRestaurant().getId()));
-        orderDTO.getClient().add(linksBuilder.linkToUser(order.getClient().getId()));
-        orderDTO.getPaymentMethod().add(linksBuilder.linkToPaymentMethod(order.getPaymentMethod().getId()));
-        orderDTO.getDeliveryAddress().getCity().add(linksBuilder.linkToCity(order.getDeliveryAddress().getCity().getId()));
-        orderDTO.getItems().forEach(item -> item.add(linksBuilder.linkToProduct(item.getProductId(), orderDTO.getRestaurant().getId(), "product")));
+
+        if (usersJwtSecurity.canViewRestaurants()) {
+            orderDTO.getRestaurant().add(linksBuilder.linkToRestaurant(order.getRestaurant().getId()));
+        }
+
+        if (usersJwtSecurity.canViewUsersGroupsPermissions()) {
+            orderDTO.getClient().add(linksBuilder.linkToUser(order.getClient().getId()));
+        }
+
+        if (usersJwtSecurity.canViewPayments()) {
+            orderDTO.getPaymentMethod().add(linksBuilder.linkToPaymentMethod(order.getPaymentMethod().getId()));
+        }
+
+        if (usersJwtSecurity.canViewCities()) {
+            orderDTO.getDeliveryAddress().getCity().add(linksBuilder.linkToCity(order.getDeliveryAddress().getCity().getId()));
+        }
+
+        if (usersJwtSecurity.canViewRestaurants()) {
+            orderDTO.getItems().forEach(item -> item.add(linksBuilder.linkToProduct(item.getProductId(), orderDTO.getRestaurant().getId(), "product")));
+        }
+
         return orderDTO;
     }
 }

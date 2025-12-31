@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.PaymentMethodControllerV2;
 import com.gtech.food_api.api.V2.dto.PaymentMethodDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.PaymentMethod;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,10 @@ public class PaymentMethodDTOAssemblerV2 extends RepresentationModelAssemblerSup
     
     @Autowired
     private LinksBuilderV2 linksBuilder;
+
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     public PaymentMethodDTOAssemblerV2() {
         super(PaymentMethodControllerV2.class, PaymentMethodDTO.class);
     }
@@ -35,13 +40,18 @@ public class PaymentMethodDTOAssemblerV2 extends RepresentationModelAssemblerSup
 
     public PaymentMethodDTO toModelWithSelf(PaymentMethod paymentMethod) {
         PaymentMethodDTO paymentMethodDTO = toModel(paymentMethod);
-        paymentMethodDTO.add(linksBuilder.linkToPaymentMethods());
+        if (usersJwtSecurity.canViewPayments()) {
+            paymentMethodDTO.add(linksBuilder.linkToPaymentMethods());
+        }
         return paymentMethodDTO;
     }
 
     @Override
     public CollectionModel<PaymentMethodDTO> toCollectionModel(Iterable<? extends PaymentMethod> entities) {
-        return super.toCollectionModel(entities)
-            .add(linksBuilder.linkToPaymentMethods());
+        CollectionModel<PaymentMethodDTO> collectionModel = super.toCollectionModel(entities);
+        if (usersJwtSecurity.canViewPayments()) {
+            collectionModel.add(linksBuilder.linkToPaymentMethods());
+        }
+        return collectionModel;
     }
 }

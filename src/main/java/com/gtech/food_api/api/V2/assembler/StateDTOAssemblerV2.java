@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 @Component
 public class StateDTOAssemblerV2 extends RepresentationModelAssemblerSupport<State, StateDTO> {
     @Autowired
@@ -16,6 +17,10 @@ public class StateDTOAssemblerV2 extends RepresentationModelAssemblerSupport<Sta
     
     @Autowired
     private LinksBuilderV2 linksBuilder;
+
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     public StateDTOAssemblerV2() {
         super(StateControllerV2.class, StateDTO.class);
     }
@@ -28,13 +33,18 @@ public class StateDTOAssemblerV2 extends RepresentationModelAssemblerSupport<Sta
 
     public StateDTO toModelWithSelf(State state) {
         StateDTO stateDTO = toModel(state);
-        stateDTO.add(linksBuilder.linkToStates());
+        if (usersJwtSecurity.canViewStates()) {
+            stateDTO.add(linksBuilder.linkToStates());
+        }
         return stateDTO;
     }
 
     @Override
     public CollectionModel<StateDTO> toCollectionModel(Iterable<? extends State> entities) {
-        return super.toCollectionModel(entities)
-            .add(linksBuilder.linkToStates());
+        CollectionModel<StateDTO> collectionModel = super.toCollectionModel(entities);
+        if (usersJwtSecurity.canViewStates()) {
+            collectionModel.add(linksBuilder.linkToStates());
+        }   
+        return collectionModel;
     }
 }

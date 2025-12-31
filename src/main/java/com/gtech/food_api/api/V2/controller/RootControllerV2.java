@@ -1,6 +1,8 @@
 package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.UsersJwtSecurity;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.MediaType;
@@ -54,20 +56,45 @@ public class RootControllerV2 {
     @Autowired
     private LinksBuilderV2 linksBuilder;
 
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
+
     @GetMapping
     public RootEntryPointModel root() {
         var rootEntryPointModel = new RootEntryPointModel();
+        if (usersJwtSecurity.canViewKitchens()) {
+            rootEntryPointModel.add(linksBuilder.linkToKitchens());
+        }
 
-        rootEntryPointModel.add(linksBuilder.linkToKitchens());
-        rootEntryPointModel.add(linksBuilder.linkToRestaurants());
-        rootEntryPointModel.add(linksBuilder.linkToPaymentMethods());
-        rootEntryPointModel.add(linksBuilder.linkToPermissions());
-        rootEntryPointModel.add(linksBuilder.linkToGroups());
-        rootEntryPointModel.add(linksBuilder.linkToUsers());
-        rootEntryPointModel.add(linksBuilder.linkToCities());
-        rootEntryPointModel.add(linksBuilder.linkToStates());
-        rootEntryPointModel.add(linksBuilder.linkToOrders("orders"));
-        rootEntryPointModel.add(linksBuilder.linkToReports("reports"));
+        if (usersJwtSecurity.canViewRestaurants()) {
+            rootEntryPointModel.add(linksBuilder.linkToRestaurants());
+        }
+
+        if (usersJwtSecurity.canViewPayments()) {
+            rootEntryPointModel.add(linksBuilder.linkToPaymentMethods());
+        }
+
+        if (usersJwtSecurity.canViewUsersGroupsPermissions()) {
+            rootEntryPointModel.add(linksBuilder.linkToPermissions());
+            rootEntryPointModel.add(linksBuilder.linkToGroups());
+            rootEntryPointModel.add(linksBuilder.linkToUsers());
+        }
+
+        if (usersJwtSecurity.canViewCities()) {
+            rootEntryPointModel.add(linksBuilder.linkToCities());
+        }
+
+        if (usersJwtSecurity.canViewStates()) {
+            rootEntryPointModel.add(linksBuilder.linkToStates());
+        }
+
+        if (usersJwtSecurity.canViewOrders()) {
+            rootEntryPointModel.add(linksBuilder.linkToOrders("orders"));
+        }
+
+        if (usersJwtSecurity.canGenerateReports()) {
+            rootEntryPointModel.add(linksBuilder.linkToReports("reports"));
+        }
 
         return rootEntryPointModel;
     }

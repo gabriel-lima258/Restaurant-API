@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
-
+import com.gtech.food_api.core.security.UsersJwtSecurity;
 /**
  * Assembler responsável por converter entidades City em DTOs CityDTO com links HATEOAS.
  * 
@@ -39,6 +39,9 @@ public class CityDTOAssemblerV2 extends RepresentationModelAssemblerSupport<City
 
     @Autowired
     private LinksBuilderV2 linksBuilder;
+
+    @Autowired
+    private UsersJwtSecurity usersJwtSecurity;
 
     /**
      * Construtor do assembler que configura o controller e o tipo de DTO.
@@ -92,7 +95,9 @@ public class CityDTOAssemblerV2 extends RepresentationModelAssemblerSupport<City
         modelMapper.map(city, cityDTO);
 
         // Adiciona link self ao estado relacionado
-        cityDTO.getState().add(linksBuilder.linkToState(city.getState().getId()));
+        if (usersJwtSecurity.canViewStates()) {
+            cityDTO.getState().add(linksBuilder.linkToState(city.getState().getId()));
+        }
 
         return cityDTO;
     }
@@ -124,7 +129,10 @@ public class CityDTOAssemblerV2 extends RepresentationModelAssemblerSupport<City
      */
     @Override
     public CollectionModel<CityDTO> toCollectionModel(Iterable<? extends City> entities) {
-        return super.toCollectionModel(entities)
-            .add(linksBuilder.linkToCities());
+        CollectionModel<CityDTO> collectionModel = super.toCollectionModel(entities);
+        if (usersJwtSecurity.canViewCities()) {
+            collectionModel.add(linksBuilder.linkToCities());
+        }
+        return collectionModel;
     }
 }
