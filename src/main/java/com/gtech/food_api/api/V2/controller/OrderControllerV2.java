@@ -61,6 +61,7 @@ public class OrderControllerV2 {
     * OrderFilter foi injetado no metodo listAll, para que seja possivel passar o filtro na url, exemplo: /orders?clientId=1&restaurantId=1&creationDateStart=2025-01-01&creationDateEnd=2025-01-01
     * @param filter: filtro de pedidos, exemplo: clientId, restaurantId, creationDateStart, creationDateEnd
     */
+    @CheckSecurity.Orders.CanViewList
     @GetMapping
     public ResponseEntity<PagedModel<OrderSummaryDTO>> listAll(OrderFilter filter, @PageableDefault(size = 10) Pageable pageable ){
         // traduz a paginação para o nome da entidade Ex: nameClient -> client.name

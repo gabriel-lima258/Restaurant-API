@@ -5,6 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.PaymentMethodInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.PaymentMethodDTO;
 import com.gtech.food_api.api.V2.dto.input.PaymentMethodInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.PaymentMethod;
 import com.gtech.food_api.domain.service.PaymentMethodService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -35,6 +36,7 @@ public class PaymentMethodControllerV2 {
     @Autowired
     private PaymentMethodInputDisassemblerV2 paymentMethodInputDisassembler;
 
+    @CheckSecurity.Payments.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<PaymentMethodDTO>> listAll(ServletWebRequest request){
         List<PaymentMethod> result = paymentMethodService.listAll();
@@ -51,6 +53,7 @@ public class PaymentMethodControllerV2 {
                 .body(dtoList);
     }
 
+    @CheckSecurity.Payments.CanView
     @GetMapping("/{id}")
     public ResponseEntity<PaymentMethodDTO> findById(@PathVariable Long id) {
         PaymentMethod entity = paymentMethodService.findOrFail(id);
@@ -60,6 +63,7 @@ public class PaymentMethodControllerV2 {
                 .body(dto);
     }
 
+    @CheckSecurity.Payments.CanEdit
     @PostMapping
     public ResponseEntity<PaymentMethodDTO> save(@RequestBody @Valid PaymentMethodInput paymentMethodInput) {
         try {
@@ -73,6 +77,7 @@ public class PaymentMethodControllerV2 {
         }
     }
 
+    @CheckSecurity.Payments.CanEdit
     @PutMapping("/{id}")
     public ResponseEntity<PaymentMethodDTO> update(@PathVariable Long id, @RequestBody @Valid PaymentMethodInput paymentMethodInput) {
         try {
@@ -86,6 +91,7 @@ public class PaymentMethodControllerV2 {
         }
     }
 
+    @CheckSecurity.Payments.CanEdit
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         paymentMethodService.delete(id);

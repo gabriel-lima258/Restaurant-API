@@ -86,15 +86,7 @@ public @interface CheckSecurity {
         }
     }
 
-    /**
-     * REGRAS DE NEGÓCIO:
-     * Um pedido pode ser consultado apenas por:
-     * 1. Administradores com permissão 'CONSULTAR_PEDIDOS'
-     * 2. O cliente que fez o pedido
-     * 3. O responsável/gerente do restaurante onde o pedido foi feito
-     */
     public @interface Orders {
-        
         /**
          * Anotação para verificar permissão de visualização de pedidos.
          * 1️⃣ @PreAuthorize (ANTES da execução do método):
@@ -111,17 +103,6 @@ public @interface CheckSecurity {
          * - returnObject.body = OrderDTO (dados reais do pedido)
          * - returnObject.body.client = UserDTO (cliente que fez o pedido)
          * - returnObject.body.restaurant = RestaurantDTO (restaurante do pedido)
-         * 
-         * CONDIÇÕES DE AUTORIZAÇÃO (qualquer uma permite acesso):
-         * 
-         * ✅ Condição 1: hasAuthority('CONSULTAR_PEDIDOS')
-         *    → Usuário admin com permissão de consultar qualquer pedido
-         * 
-         * ✅ Condição 2: @usersJwtSecurity.getUserId() == returnObject.body.client.id
-         *    → Usuário logado é o cliente que fez o pedido
-         * 
-         * ✅ Condição 3: @usersJwtSecurity.managerRestaurant(returnObject.body.restaurant.id)
-         *    → Usuário logado é responsável/gerente do restaurante
          */
         @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
         @PostAuthorize("hasAuthority('CONSULTAR_PEDIDOS') or "
@@ -130,6 +111,28 @@ public @interface CheckSecurity {
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanView {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated() and "
+                    + "hasAuthority('CONSULTAR_PEDIDOS') or "
+                    + "@usersJwtSecurity.getUserId() == #filter.clientId or "
+                    + "@usersJwtSecurity.managerRestaurant(#filter.restaurantId)")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanViewList {
+        }
+    }
+
+    public @interface Payments {
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanView {
+        }
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_FORMAS_PAGAMENTO')")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanEdit {
         }
     }
 
