@@ -5,6 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.StateInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.StateDTO;
 import com.gtech.food_api.api.V2.dto.input.StateInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.service.StateService;
 import jakarta.validation.Valid;
@@ -30,6 +31,7 @@ public class StateControllerV2 {
     @Autowired
     private StateInputDisassemblerV2 stateInputDisassembler;
 
+    @CheckSecurity.States.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<StateDTO>> listAll(){
         List<State> result = stateService.listAll();
@@ -37,6 +39,7 @@ public class StateControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @CheckSecurity.States.CanView
     @GetMapping("/{id}")
     public ResponseEntity<StateDTO> findById(@PathVariable Long id) {
         State entity = stateService.findOrFail(id);
@@ -44,6 +47,7 @@ public class StateControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.States.CanEdit
     @PostMapping
     public ResponseEntity<StateDTO> save(@RequestBody @Valid StateInput stateInput) {
         State state = stateInputDisassembler.copyToEntity(stateInput);
@@ -53,6 +57,7 @@ public class StateControllerV2 {
         return ResponseEntity.created(uri).body(dto);
     }
 
+    @CheckSecurity.States.CanEdit
     @PutMapping("/{id}")
     public ResponseEntity<StateDTO> update(@PathVariable Long id, @RequestBody @Valid StateInput stateInput) {
         State entity = stateService.findOrFail(id);
@@ -63,6 +68,7 @@ public class StateControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.States.CanEdit
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         stateService.delete(id);

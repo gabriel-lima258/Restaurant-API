@@ -5,6 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.CityInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.CityDTO;
 import com.gtech.food_api.api.V2.dto.input.CityInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;
@@ -34,6 +35,7 @@ public class CityControllerV2 {
     private CityInputDisassemblerV2 cityInputDisassembler;
 
     // usamos CollectionModel para retornar uma lista de DTOs com links HATEOAS
+    @CheckSecurity.Cities.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<CityDTO>> listAll(){
         List<City> result = cityService.listAll();
@@ -42,6 +44,7 @@ public class CityControllerV2 {
         return ResponseEntity.ok().body(dtoCollectionModel);
     }
 
+    @CheckSecurity.Cities.CanView
     @GetMapping("/{id}")
     public ResponseEntity<CityDTO> findById(@PathVariable Long id) {
         City entity = cityService.findOrFail(id);
@@ -50,6 +53,7 @@ public class CityControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.Cities.CanEdit
     @PostMapping
     public ResponseEntity<CityDTO> save(@RequestBody @Valid CityInput cityInput) {
         try {
@@ -64,6 +68,7 @@ public class CityControllerV2 {
         }
     }
 
+    @CheckSecurity.Cities.CanEdit
     @PutMapping("/{id}")
     public ResponseEntity<CityDTO> update(@PathVariable Long id, @RequestBody @Valid CityInput cityInput) {
         try {
@@ -77,6 +82,7 @@ public class CityControllerV2 {
         }
     }
 
+    @CheckSecurity.Cities.CanEdit
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         cityService.delete(id);
