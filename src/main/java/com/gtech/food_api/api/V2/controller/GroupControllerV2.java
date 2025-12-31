@@ -5,6 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.GroupInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.GroupDTO;
 import com.gtech.food_api.api.V2.dto.input.GroupInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.Group;
 import com.gtech.food_api.domain.service.GroupService;
 import jakarta.validation.Valid;
@@ -30,6 +31,7 @@ public class GroupControllerV2 {
     @Autowired
     private GroupInputDisassemblerV2 groupInputDisassembler;
 
+    @CheckSecurity.UsersGroupsPermissions.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<GroupDTO>> listAll(){
         List<Group> result = groupService.listAll();
@@ -37,6 +39,7 @@ public class GroupControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanView
     @GetMapping("/{id}")
     public ResponseEntity<GroupDTO> findById(@PathVariable Long id) {
         Group entity = groupService.findOrFail(id);
@@ -44,6 +47,7 @@ public class GroupControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanEdit
     @PostMapping
     public ResponseEntity<GroupDTO> save(@RequestBody @Valid GroupInput groupInput) {
         Group group = groupInputDisassembler.copyToEntity(groupInput);
@@ -54,6 +58,7 @@ public class GroupControllerV2 {
         return ResponseEntity.created(uri).body(dto);
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanEdit
     @PutMapping("/{id}")
     public ResponseEntity<GroupDTO> update(@PathVariable Long id, @RequestBody @Valid GroupInput groupInput) {
         Group entity = groupService.findOrFail(id);
@@ -63,6 +68,7 @@ public class GroupControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanEdit
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         groupService.delete(id);

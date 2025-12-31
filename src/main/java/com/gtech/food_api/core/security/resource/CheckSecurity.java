@@ -176,4 +176,44 @@ public @interface CheckSecurity {
         }
     }
 
+    public @interface UsersGroupsPermissions {
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated() and "
+                    + "@usersJwtSecurity.getUserId() == #id")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanUpdatePassword {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated() and "
+                    + "hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES') or "
+                    + "@usersJwtSecurity.getUserId() == #id")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanUpdateUser {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated() and "
+                    + "hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanEdit {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated() and "
+                    + "hasAuthority('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanView {
+        }
+    }
+
+    public @interface Reports {
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated() and "
+                    + "hasAuthority('GERAR_RELATORIOS')")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanGenerateReports {
+        }
+    }
+
 }

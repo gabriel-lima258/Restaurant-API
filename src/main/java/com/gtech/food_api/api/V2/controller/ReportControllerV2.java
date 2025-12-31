@@ -2,6 +2,7 @@ package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V1.dto.report.DailySelling;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.filter.DailySellingFilter;
 import com.gtech.food_api.domain.service.report.SellingQueryService;
 import com.gtech.food_api.domain.service.report.SellingReportService;
@@ -33,6 +34,7 @@ public class ReportControllerV2 {
     private LinksBuilderV2 linksBuilder;
 
     // classe controller de todas estatisticas
+    @CheckSecurity.Reports.CanGenerateReports
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ReportsModel reports() {
 		var reportsModel = new ReportsModel();
@@ -42,6 +44,7 @@ public class ReportControllerV2 {
 		return reportsModel;
 	}
 
+    @CheckSecurity.Reports.CanGenerateReports
     @GetMapping(value = "/daily-selling", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DailySelling>> queryDailySelling(DailySellingFilter filter, @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
 
@@ -50,6 +53,7 @@ public class ReportControllerV2 {
         return ResponseEntity.ok().body(dailySelling);
     }
 
+    @CheckSecurity.Reports.CanGenerateReports
     @GetMapping(value = "/daily-selling", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> queryDailySellingPDF(DailySellingFilter filter, @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
         // gera o relatório em PDF

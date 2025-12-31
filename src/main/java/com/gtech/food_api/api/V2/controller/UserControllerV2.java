@@ -7,6 +7,7 @@ import com.gtech.food_api.api.V2.dto.input.UserInput;
 import com.gtech.food_api.api.V2.dto.input.UserPasswordInput;
 import com.gtech.food_api.api.V2.dto.input.UserWithPasswordInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.service.UserService;
 import jakarta.validation.Valid;
@@ -32,6 +33,7 @@ public class UserControllerV2 {
     @Autowired
     private UserInputDisassemblerV2 userInputDisassembler;
 
+    @CheckSecurity.UsersGroupsPermissions.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<UserDTO>> listAll(){
         List<User> result = userService.listAll();
@@ -39,6 +41,7 @@ public class UserControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanView
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         User entity = userService.findOrFail(id);
@@ -46,6 +49,7 @@ public class UserControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    // acesso publico não precisa de permissão
     @PostMapping
     public ResponseEntity<UserDTO> save(@RequestBody @Valid UserWithPasswordInput userWithPasswordInput) {
         User user = userInputDisassembler.copyToEntity(userWithPasswordInput);
@@ -55,6 +59,7 @@ public class UserControllerV2 {
         return ResponseEntity.created(uri).body(dto);
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanUpdateUser
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody @Valid UserInput userInput) {
         User entity = userService.findOrFail(id);
@@ -64,6 +69,7 @@ public class UserControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanUpdatePassword
     @PutMapping("/{id}/password")
     public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody @Valid UserPasswordInput userPasswordInput) {
         userService.updatePassword(id, userPasswordInput.getCurrentPassword(), userPasswordInput.getNewPassword());

@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.GroupDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.GroupDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.resource.CheckSecurity;
 import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class UserGroupControllerV2 {
     @Autowired
     private LinksBuilderV2 linksBuilder;
    
+    @CheckSecurity.UsersGroupsPermissions.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<GroupDTO>> listAll(@PathVariable Long userId){
         User user = userService.findOrFail(userId);
@@ -38,12 +40,14 @@ public class UserGroupControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanEdit
     @PutMapping("/{groupId}")
     public ResponseEntity<Void> associateGroup(@PathVariable Long userId, @PathVariable Long groupId){
         userService.associateGroup(userId, groupId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UsersGroupsPermissions.CanEdit
     @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> disassociateGroup(@PathVariable Long userId, @PathVariable Long groupId){
         userService.disassociateGroup(userId, groupId);

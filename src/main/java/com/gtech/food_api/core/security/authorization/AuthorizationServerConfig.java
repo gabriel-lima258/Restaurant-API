@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -76,7 +77,7 @@ public class AuthorizationServerConfig {
      * Configura as propriedades do provedor client OAuth2.
      * 
      * O ProviderSettings define informações sobre o servidor de autorização que serão
-     * usadas pelos clients OAuth2 para descobrir e interagir com o servidor.
+     * usadas pelos clients OAuth2 para descobrir e interagir com o resource server.
      * 
      * O "issuer" é a URL base do servidor de autorização. Esta URL é usada para:
      * - Identificar unicamente o servidor de AUTHORIZATION SERVER
@@ -93,7 +94,7 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * Configura o repositório de clientes OAuth2 registrados.
+     * Configura o repositório de clientes OAuth2 registrados manualmente sem DB. Ideal para api sem varios clients
      * 
      * Fluxo de segurança:
      * User -> Client -> Authorization Server -> Token -> Resource Server
@@ -140,69 +141,50 @@ public class AuthorizationServerConfig {
      * - clientSettings: Configurações específicas do cliente:
      *   * requireAuthorizationConsent: Define se o usuário precisa aprovar explicitamente
      *     o acesso aos escopos solicitados
-     * 
-     * @param passwordEncoder encoder de senha usado para criptografar o clientSecret
-     * @return RegisteredClientRepository contendo os três clientes registrados
      */
-    @Bean
-    public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
-        RegisteredClient webClient = RegisteredClient
-            .withId("1") 
-            .clientId("food-api-users") 
-            .clientSecret(passwordEncoder.encode("123456")) 
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) 
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .scope("READ") // scopo são limitações ao client idenpendente de usuário
-            .scope("WRITE")
-            .tokenSettings(TokenSettings.builder()
-                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) 
-                .accessTokenTimeToLive(Duration.ofMinutes(30)) 
-                .reuseRefreshTokens(false)
-                .refreshTokenTimeToLive(Duration.ofDays(1))
-                .build())
-            .redirectUri("http://127.0.0.1:8080/authorized")
-            .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
-            .clientSettings(ClientSettings.builder()
-                .requireAuthorizationConsent(true)
-                .build())
-            .build();
+    // @Bean
+    // public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
+    //     RegisteredClient webClient = RegisteredClient
+    //         .withId("1") 
+    //         .clientId("food-api-users") 
+    //         .clientSecret(passwordEncoder.encode("123456")) 
+    //         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+    //         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) 
+    //         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+    //         .scope("READ") // scopo são limitações ao client idenpendente de usuário
+    //         .scope("WRITE")
+    //         .tokenSettings(TokenSettings.builder()
+    //             .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) 
+    //             .accessTokenTimeToLive(Duration.ofMinutes(30)) 
+    //             .reuseRefreshTokens(false)
+    //             .refreshTokenTimeToLive(Duration.ofDays(1))
+    //             .build())
+    //         .redirectUri("http://127.0.0.1:8080/authorized")
+    //         .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
+    //         .clientSettings(ClientSettings.builder()
+    //             .requireAuthorizationConsent(true)
+    //             .build())
+    //         .build();
             
-        RegisteredClient backendClient = RegisteredClient
-            .withId("2")
-            .clientId("client-credencial")
-            .clientSecret(passwordEncoder.encode("123456"))
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-            .scope("READ")
-            .tokenSettings(TokenSettings.builder()
-                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-                .accessTokenTimeToLive(Duration.ofMinutes(30))
-                .build())
-            .build();
+    //     RegisteredClient backendClient = RegisteredClient
+    //         .withId("2")
+    //         .clientId("client-credencial")
+    //         .clientSecret(passwordEncoder.encode("123456"))
+    //         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+    //         .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+    //         .scope("READ")
+    //         .tokenSettings(TokenSettings.builder()
+    //             .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+    //             .accessTokenTimeToLive(Duration.ofMinutes(30))
+    //             .build())
+    //         .build();
+    //     return new InMemoryRegisteredClientRepository(Arrays.asList(webClient, backendClient));
+    // }
 
-        RegisteredClient analyticsClient = RegisteredClient
-            .withId("3")
-            .clientId("analytics-client")
-            .clientSecret(passwordEncoder.encode("123456"))
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) 
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .scope("READ") 
-            .scope("WRITE")
-            .tokenSettings(TokenSettings.builder()
-                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) 
-                .accessTokenTimeToLive(Duration.ofMinutes(30)) 
-                .reuseRefreshTokens(false)
-                .refreshTokenTimeToLive(Duration.ofDays(1))
-                .build())
-            .redirectUri("http://foodanalytics.local:8082")
-            .clientSettings(ClientSettings.builder()
-                .requireAuthorizationConsent(false)
-                .build())
-            .build();
-            
-        return new InMemoryRegisteredClientRepository(Arrays.asList(webClient, backendClient, analyticsClient));
+    // Cria clients em DB, ideal para api com varios clients
+    @Bean
+    public RegisteredClientRepository registeredClientRepository(JdbcOperations jdbcOperations) {
+        return new JdbcRegisteredClientRepository(jdbcOperations);  
     }
 
     /**
