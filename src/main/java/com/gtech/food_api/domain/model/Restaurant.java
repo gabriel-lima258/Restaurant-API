@@ -67,8 +67,8 @@ public class Restaurant {
 
     @ManyToMany
     @JoinTable(name = "restaurant_user_responsible",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "restaurant_id"))
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> responsible = new HashSet<>();
 
     @OneToMany(mappedBy = "restaurant")

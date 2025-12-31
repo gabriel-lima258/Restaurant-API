@@ -93,7 +93,7 @@ public class ProductFileControllerV2 {
         }
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanOnwerManager
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PhotoProductDTO> uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @Valid ProductFileInput input) throws IOException {
 
@@ -116,7 +116,7 @@ public class ProductFileControllerV2 {
         return ResponseEntity.ok().body(photoDTO);
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanOnwerManager
     @DeleteMapping
     public ResponseEntity<PhotoProductDTO> deletePhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
         try {

@@ -68,7 +68,7 @@ public class ProductControllerV2 {
         return ResponseEntity.ok().body(productDTO);
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanOnwerManager
     @PostMapping
     public ResponseEntity<ProductDTO> save(@PathVariable Long restaurantId, @RequestBody @Valid ProductInput productInput) {
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
@@ -84,7 +84,7 @@ public class ProductControllerV2 {
         return ResponseEntity.created(uri).body(dto);
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanOnwerManager
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long productId, @PathVariable Long restaurantId, @RequestBody ProductInput productInput) {
         Product product = productService.findOrFail(productId, restaurantId);

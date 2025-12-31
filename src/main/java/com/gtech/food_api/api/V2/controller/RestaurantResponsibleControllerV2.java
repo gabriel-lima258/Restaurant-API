@@ -47,14 +47,14 @@ public class RestaurantResponsibleControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanAdminManager
     @PutMapping("/{userId}")
     public ResponseEntity<Void> addResponsible(@PathVariable Long restaurantId, @PathVariable Long userId){
         restaurantService.addResponsible(restaurantId, userId);
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanAdminManager
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> removeResponsible(@PathVariable Long restaurantId, @PathVariable Long userId){
         restaurantService.removeResponsible(restaurantId, userId);

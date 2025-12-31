@@ -47,14 +47,14 @@ public class RestaurantPaymentMethodControllerV2 {
         return ResponseEntity.ok().body(dtoList);
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanOnwerManager
     @PutMapping("/{paymentMethodId}")
     public ResponseEntity<Void> associatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
         restaurantService.associatePaymentMethod(restaurantId, paymentMethodId);
         return ResponseEntity.noContent().build();
     }
     
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanOnwerManager
     @DeleteMapping("/{paymentMethodId}")
     public ResponseEntity<Void> disassociatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
         restaurantService.disassociatePaymentMethod(restaurantId, paymentMethodId);

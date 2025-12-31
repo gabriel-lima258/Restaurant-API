@@ -461,7 +461,7 @@ select 4, id from permission where name like '%_RESTAURANTES';
 insert into group_user (user_id, group_id) values (1, 1), (2, 2), (3, 3);
 
 -- restaurant user responsible
-insert into restaurant_user_responsible (user_id, restaurant_id) values (1, 1), (2, 2), (3, 3);
+insert into restaurant_user_responsible (user_id, restaurant_id) values (1, 1), (2, 2), (3, 3), (7, 2);
 
 -- order
 insert into `order` (id, code, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 

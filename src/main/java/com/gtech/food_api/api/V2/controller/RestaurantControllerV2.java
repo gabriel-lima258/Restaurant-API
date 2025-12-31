@@ -62,14 +62,14 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanView
-    @GetMapping("/{id}")
-    public ResponseEntity<RestaurantDTO> findById(@PathVariable Long id) {
-        Restaurant entity = restaurantService.findOrFail(id);
+    @GetMapping("/{restaurantId}")
+    public ResponseEntity<RestaurantDTO> findById(@PathVariable Long restaurantId) {
+        Restaurant entity = restaurantService.findOrFail(restaurantId);
         RestaurantDTO dto = restaurantDTOAssembler.toModelWithSelf(entity);
         return ResponseEntity.ok().body(dto);
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanAdminManager
     @PostMapping
     public ResponseEntity<RestaurantDTO> save(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
@@ -88,12 +88,12 @@ public class RestaurantControllerV2 {
         }
     }
 
-    @CheckSecurity.Restaurants.CanEdit
-    @PutMapping("/{id}")
-    public ResponseEntity<RestaurantDTO> update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput) {
+    @CheckSecurity.Restaurants.CanAdminManager
+    @PutMapping("/{restaurantId}")
+    public ResponseEntity<RestaurantDTO> update(@PathVariable Long restaurantId, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
             // busca o restaurante existente
-            Restaurant restaurant = restaurantService.findOrFail(id);
+            Restaurant restaurant = restaurantService.findOrFail(restaurantId);
             // recebe dto input e converte para entity e atualiza a entity existente    
             restaurantInputDisassembler.copyToDomainObject(restaurantInput, restaurant);
             // salva a entity atualizada
@@ -106,53 +106,53 @@ public class RestaurantControllerV2 {
         }
     }
 
-    @CheckSecurity.Restaurants.CanEdit
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        restaurantService.delete(id);
+    @CheckSecurity.Restaurants.CanAdminManager
+    @DeleteMapping("/{restaurantId}")
+    public ResponseEntity<Void> delete(@PathVariable Long restaurantId) {
+        restaurantService.delete(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
     // idempotente, pois pode ser chamado quantas vezes quiser, o resultado será o mesmo
-    @CheckSecurity.Restaurants.CanEdit
-    @PutMapping("/{id}/active")
-    public ResponseEntity<Void> activate(@PathVariable Long id) {
-         restaurantService.activate(id);    
+    @CheckSecurity.Restaurants.CanAdminManager
+    @PutMapping("/{restaurantId}/active")
+    public ResponseEntity<Void> activate(@PathVariable Long restaurantId) {
+         restaurantService.activate(restaurantId);    
          return ResponseEntity.noContent().build();
     }
  
-    @CheckSecurity.Restaurants.CanEdit
-    @DeleteMapping("/{id}/deactive")
-    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
-        restaurantService.deactivate(id);
+    @CheckSecurity.Restaurants.CanAdminManager
+    @DeleteMapping("/{restaurantId}/deactive")
+    public ResponseEntity<Void> deactivate(@PathVariable Long restaurantId) {
+        restaurantService.deactivate(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanAdminManager
     @PutMapping("/activation")
     public ResponseEntity<Void> activateMany(@RequestBody List<Long> restaurantIds) {
         restaurantService.activate(restaurantIds);
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecurity.Restaurants.CanEdit
+    @CheckSecurity.Restaurants.CanAdminManager
     @DeleteMapping("/deactivation")
     public ResponseEntity<Void> deactivateMany(@RequestBody List<Long> restaurantIds) {
         restaurantService.deactivate(restaurantIds);
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecurity.Restaurants.CanEdit
-    @PutMapping("/{id}/opening")
-    public ResponseEntity<Void> openRestaurant(@PathVariable Long id) {
-        restaurantService.open(id);
+    @CheckSecurity.Restaurants.CanOnwerManager
+    @PutMapping("/{restaurantId}/opening")
+    public ResponseEntity<Void> openRestaurant(@PathVariable Long restaurantId) {
+        restaurantService.open(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecurity.Restaurants.CanEdit
-    @PutMapping("/{id}/closing")
-    public ResponseEntity<Void> closeRestaurant(@PathVariable Long id) {
-        restaurantService.close(id);
+    @CheckSecurity.Restaurants.CanOnwerManager
+    @PutMapping("/{restaurantId}/closing")
+    public ResponseEntity<Void> closeRestaurant(@PathVariable Long restaurantId) {
+        restaurantService.close(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
@@ -165,10 +165,10 @@ public class RestaurantControllerV2 {
      * @param request HttpServletRequest para tratamento de erros
      * @return ResponseEntity 200 OK
      */
-    @PatchMapping("/{id}")
-    public ResponseEntity<RestaurantDTO> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields, HttpServletRequest request) {
+    @PatchMapping("/{restaurantId}")
+    public ResponseEntity<RestaurantDTO> partialUpdate(@PathVariable Long restaurantId, @RequestBody Map<String, Object> fields, HttpServletRequest request) {
         // Busca restaurante existente
-        Restaurant currentRestaurant = restaurantService.findOrFail(id);
+        Restaurant currentRestaurant = restaurantService.findOrFail(restaurantId);
         
         // Mescla campos do Map com o objeto existente
         merge(fields, currentRestaurant, request);

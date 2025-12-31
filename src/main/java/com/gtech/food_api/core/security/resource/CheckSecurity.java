@@ -66,8 +66,18 @@ public @interface CheckSecurity {
         @PreAuthorize("hasAuthority('EDITAR_RESTAURANTES') and hasAuthority('SCOPE_WRITE')")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
-        public @interface CanEdit {
+        public @interface CanAdminManager {
         }
+
+        // @usersJwtSecurity acessa o bean dessa classe utilizando o metodo, #id é o parametro existente no endpoint
+        @PreAuthorize("hasAuthority('EDITAR_RESTAURANTES') and "
+                    + "hasAuthority('SCOPE_WRITE') or "
+                    + "@usersJwtSecurity.managerRestaurant(#restaurantId)")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanOnwerManager {
+        }
+
         @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)

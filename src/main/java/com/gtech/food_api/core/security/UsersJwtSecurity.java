@@ -1,9 +1,12 @@
 package com.gtech.food_api.core.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
+
+import com.gtech.food_api.domain.repository.RestaurantRepository;
 
 /**
  * Utilitário para acessar informações do usuário autenticado via JWT.
@@ -23,6 +26,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UsersJwtSecurity {
     
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
     /**
      * Obtém o objeto Authentication do usuário autenticado na requisição atual.
      * 
@@ -46,20 +52,6 @@ public class UsersJwtSecurity {
     }
 
     // Extrai o ID do usuário autenticado da claim customizada "user_id" do JWT.
-    // PASSO 1: Obtém o Authentication da thread atual
-    // PASSO 2: Extrai o Principal (o objeto principal do usuário autenticado)
-    // O que é Principal?
-    // - No caso de autenticação JWT, o Principal é um objeto Jwt
-    // - Jwt contém todas as claims do token (sub, exp, user_id, authorities, etc.)
-    // - Cast (Jwt) é seguro porque sabemos que usamos JWT no Resource Server
-    // PASSO 3: Extrai a claim "user_id" do payload do JWT
-    // jwt.getClaim("user_id"): Retorna Object porque claims podem ser de qualquer tipo
-    // - String, Long, List, Map, etc.
-    // PASSO 4: Verificar se a claim existe
-    // Quando userId é null?
-    // - Token gerado com grant_type=CLIENT_CREDENTIALS (sem usuário, apenas cliente)
-    // Quando userId existe?
-    // - Token gerado com AUTHORIZATION_CODE (usuário fez login)
     public Long getUserId() {
         Jwt jwt = (Jwt) getAuthentication().getPrincipal();
         Object userId = jwt.getClaim("user_id");
@@ -69,5 +61,13 @@ public class UsersJwtSecurity {
         }
 
         return Long.valueOf(userId.toString());
+    }
+
+    public boolean managerRestaurant(Long restaurantId) {
+        if (restaurantId == null) {
+            return false;
+        }
+
+        return restaurantRepository.existsResponsible(restaurantId, getUserId());
     }
 }
