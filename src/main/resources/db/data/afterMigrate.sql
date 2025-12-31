@@ -482,6 +482,24 @@ insert into `order` (id, code, restaurant_id, client_id, payment_method_id, addr
 values (3, "b0969c7c-3348-441f-bb15-eaf435f7ad83", 1, 7, 3, 1, '38400-000', 'Rua Tiradentes', '500', 'Sala 101', 'Centro',
     'DELIVERED', "2025-12-11 20:35:10", "2025-12-11 20:40:00", null, "2025-12-11 21:00:00", 78.90, 10.00, 88.90);
 
+insert into `order` (id, code, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
+    address_public_place, address_number, address_complement, address_neighborhood,
+    status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
+values (4, "c3a5e8b2-4f1c-4d8e-a5f2-9c8e7d6f5b4a", 5, 3, 1, 4, '13083-000', 'Rua Barão de Jaguara', '500', null, 'Centro',
+    'CREATED', "2025-12-20 18:20:00", null, null, null, 64.00, 14.00, 78.00);
+
+insert into `order` (id, code, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
+    address_public_place, address_number, address_complement, address_neighborhood,
+    status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
+values (5, "d7b9f4c1-5e2d-4a9f-b6c3-8d7e6f5a4b3c", 9, 4, 2, 6, '20020-020', 'Avenida Atlântica', '1234', 'Loja 2', 'Copacabana',
+    'CONFIRMED', "2025-12-22 19:15:00", "2025-12-22 19:20:00", null, null, 150.00, 12.00, 162.00);
+
+insert into `order` (id, code, restaurant_id, client_id, payment_method_id, address_city_id, address_cep, 
+    address_public_place, address_number, address_complement, address_neighborhood,
+    status, created_at, confirmed_at, canceled_at, delivered_at, subtotal, fee_shipping, total_value)
+values (6, "e8c2f5d3-6f4e-5b1a-c7d4-9e8f7a6b5c4d", 11, 5, 4, 3, '01310-100', 'Avenida Paulista', '2000', 'Sala 15', 'Bela Vista',
+    'CREATED', "2025-12-25 20:00:00", null, null, null, 200.00, 18.00, 218.00);
+
 -- order item
 insert into order_item (id, order_id, product_id, quantity, unit_price, total_price, observation)
 values (1, 1, 2, 1, 110.00, 110.00, 'Sem pimenta');

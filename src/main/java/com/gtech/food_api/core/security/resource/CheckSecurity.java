@@ -121,6 +121,20 @@ public @interface CheckSecurity {
         @Target(ElementType.METHOD)
         public @interface CanViewList {
         }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated()")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanAddOrders {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated() and "
+                    + "hasAuthority('GERENCIAR_PEDIDOS') or "
+                    + "@usersJwtSecurity.isOrderManagedBy(#orderCode)")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanManageOrder {
+        }
     }
 
     public @interface Payments {

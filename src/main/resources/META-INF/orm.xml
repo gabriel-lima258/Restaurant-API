@@ -19,4 +19,15 @@
         </query>
     </named-query>
 
+    <named-query name="Order.isOrderManagedBy">
+        <query>
+        SELECT CASE WHEN COUNT(1) > 0 THEN true ELSE false END 
+        FROM Order o
+        JOIN o.restaurant r
+        JOIN r.responsible u
+        WHERE o.code = :orderCode 
+        AND u.id = :userId
+        </query>
+    </named-query> 
+
 </entity-mappings>

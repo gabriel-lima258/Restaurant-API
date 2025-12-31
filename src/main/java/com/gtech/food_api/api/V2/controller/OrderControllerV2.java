@@ -90,6 +90,7 @@ public class OrderControllerV2 {
         return ResponseEntity.ok().body(dto);
     }
 
+    @CheckSecurity.Orders.CanAddOrders
     @PostMapping
     public ResponseEntity<OrderDTO> save(@RequestBody @Valid OrderInput orderInput) {
         try {

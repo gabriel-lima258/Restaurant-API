@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
+import com.gtech.food_api.domain.repository.OrderRepository;
 import com.gtech.food_api.domain.repository.RestaurantRepository;
 
 /**
@@ -28,6 +29,9 @@ public class UsersJwtSecurity {
     
     @Autowired
     private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     /**
      * Obtém o objeto Authentication do usuário autenticado na requisição atual.
@@ -69,5 +73,9 @@ public class UsersJwtSecurity {
             return false;
         }
         return restaurantRepository.existsResponsible(restaurantId, getUserId());
+    }
+
+    public boolean isOrderManagedBy(String orderCode) {
+        return orderRepository.isOrderManagedBy(orderCode, getUserId());
     }
 }
