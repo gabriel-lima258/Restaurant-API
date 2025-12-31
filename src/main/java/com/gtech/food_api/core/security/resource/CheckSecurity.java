@@ -106,7 +106,7 @@ public @interface CheckSecurity {
          */
         @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
         @PostAuthorize("hasAuthority('CONSULTAR_PEDIDOS') or "
-                    + "@usersJwtSecurity.getUserId() == returnObject.body.client.id or "
+                    + "@usersJwtSecurity.userAuthenticatedEquals(returnObject.body.client.id) or "
                     + "@usersJwtSecurity.managerRestaurant(returnObject.body.restaurant.id)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
@@ -115,7 +115,7 @@ public @interface CheckSecurity {
 
         @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated() and "
                     + "hasAuthority('CONSULTAR_PEDIDOS') or "
-                    + "@usersJwtSecurity.getUserId() == #filter.clientId or "
+                    + "@usersJwtSecurity.userAuthenticatedEquals(#filter.clientId) or "
                     + "@usersJwtSecurity.managerRestaurant(#filter.restaurantId)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
@@ -178,7 +178,7 @@ public @interface CheckSecurity {
 
     public @interface UsersGroupsPermissions {
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated() and "
-                    + "@usersJwtSecurity.getUserId() == #id")
+                    + "@usersJwtSecurity.userAuthenticatedEquals(#id)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanUpdatePassword {
@@ -186,7 +186,7 @@ public @interface CheckSecurity {
 
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated() and "
                     + "hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES') or "
-                    + "@usersJwtSecurity.getUserId() == #id")
+                    + "@usersJwtSecurity.userAuthenticatedEquals(#id)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanUpdateUser {

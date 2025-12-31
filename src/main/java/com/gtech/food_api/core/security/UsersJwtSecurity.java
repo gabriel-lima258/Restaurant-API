@@ -67,6 +67,13 @@ public class UsersJwtSecurity {
         return Long.valueOf(userId.toString());
     }
 
+    // verifica se o usuário autenticado é igual ao usuário passado como parâmetro
+    // evita vulnerabilidades de segurança casos de clients seja credentials
+    public boolean userAuthenticatedEquals(Long userId) {
+		return getUserId() != null && userId != null
+				&& getUserId().equals(userId);
+	}
+
     // verifica se o usuário autenticado é responsável por um restaurante
     public boolean managerRestaurant(Long restaurantId) {
         if (restaurantId == null) {
