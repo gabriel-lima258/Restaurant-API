@@ -61,7 +61,7 @@ public class ResourceServeConfig {
     @Bean
     @Order(Ordered.LOWEST_PRECEDENCE - 1)
     public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
-        http.formLogin(Customizer.withDefaults())
+        http.formLogin(form -> form.loginPage("/login"))
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST stateless
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
