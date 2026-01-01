@@ -1,0 +1,2 @@
+# Classe para carregar o protocolo base64 para o spring antes de iniciar a aplicação
+org.springframework.context.ApplicationContextInitializer=com.gtech.food_api.core.io.Base64ProtocolResolver
