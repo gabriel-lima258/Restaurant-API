@@ -91,6 +91,7 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
+		<!-- Rest-assured é uma biblioteca para testar APIs REST -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
