@@ -35,12 +35,13 @@ public class WebConfig implements WebMvcConfigurer {
 		return new ShallowEtagHeaderFilter();
 	}
 
-	// Adiciona o view controller para a página de login criada no templates/pages/login.html
+	// Adiciona o view controller para as páginas de login e cadastro criadas no templates/pages/
 	// O view controller é um componente que adiciona uma view ao contexto do Spring MVC.
 	// Criado com Thymeleaf.
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("/login").setViewName("pages/login");
+		registry.addViewController("/register").setViewName("pages/register");
 		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 	}
 }
