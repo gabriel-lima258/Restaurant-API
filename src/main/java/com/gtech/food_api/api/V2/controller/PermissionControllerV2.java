@@ -2,7 +2,7 @@ package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V2.assembler.PermissionDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PermissionDTO;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.Permission;
 import com.gtech.food_api.domain.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

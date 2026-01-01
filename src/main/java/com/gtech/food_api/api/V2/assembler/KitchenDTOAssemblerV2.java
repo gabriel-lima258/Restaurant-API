@@ -3,7 +3,7 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.KitchenControllerV2;
 import com.gtech.food_api.api.V2.dto.KitchenDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
-import com.gtech.food_api.core.security.UsersJwtSecurity;
+import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.Kitchen;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

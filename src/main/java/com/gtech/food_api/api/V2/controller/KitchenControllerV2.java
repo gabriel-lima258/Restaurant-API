@@ -5,7 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.KitchenInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.KitchenDTO;
 import com.gtech.food_api.api.V2.dto.input.KitchenInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.Kitchen;
 import com.gtech.food_api.domain.service.KitchenService;
 import jakarta.validation.Valid;

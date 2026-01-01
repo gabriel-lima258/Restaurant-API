@@ -1,4 +1,4 @@
-package com.gtech.food_api.core.security.resource;
+package com.gtech.food_api.core.security.resource.validations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -23,7 +23,7 @@ public class NotificateClientCanceledOrderListener {
         // Monta a mensagem de email com os dados do pedido
         var message = SendEmailService.Message.builder()
         .subject(order.getClient().getName() + " - Pedido cancelado")
-        .body("canceled-order.html") // escolhe o template de email
+        .body("emails/canceled-order.html") // escolhe o template de email
         .variable("order", order) // passa as variáveis para o template
         .recipient(order.getClient().getEmail())
         .build();

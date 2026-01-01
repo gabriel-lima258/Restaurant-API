@@ -23,7 +23,7 @@ public class NotificateClientDeliveredOrderListener {
         // Monta a mensagem de email com os dados do pedido
         var message = SendEmailService.Message.builder()
         .subject(order.getClient().getName() + " - Pedido entregue")
-        .body("delivered-order.html") // escolhe o template de email
+        .body("emails/delivered-order.html") // escolhe o template de email
         .variable("order", order) // passa as variáveis para o template
         .recipient(order.getClient().getEmail())
         .build();

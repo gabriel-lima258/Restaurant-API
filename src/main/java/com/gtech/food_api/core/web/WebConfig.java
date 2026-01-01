@@ -2,7 +2,9 @@ package com.gtech.food_api.core.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import jakarta.servlet.Filter;
@@ -31,6 +33,15 @@ public class WebConfig implements WebMvcConfigurer {
 	@Bean
 	public Filter shallowEtagHeaderFilter() {
 		return new ShallowEtagHeaderFilter();
+	}
+
+	// Adiciona o view controller para a página de login criada no templates/pages/login.html
+	// O view controller é um componente que adiciona uma view ao contexto do Spring MVC.
+	// Criado com Thymeleaf.
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/login").setViewName("pages/login");
+		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 	}
 }
 

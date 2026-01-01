@@ -5,7 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.StateInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.StateDTO;
 import com.gtech.food_api.api.V2.dto.input.StateInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.State;
 import com.gtech.food_api.domain.service.StateService;
 import jakarta.validation.Valid;

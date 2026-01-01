@@ -90,7 +90,7 @@ public class NotificateClientConfirmedOrderListener {
         // Monta a mensagem de email com os dados do pedido
         var message = SendEmailService.Message.builder()
         .subject(order.getClient().getName() + " - Pedido confirmado")
-        .body("confirmed-order.html") // escolhe o template de email
+        .body("emails/confirmed-order.html") // escolhe o template de email
         .variable("order", order) // passa as variáveis para o template
         .recipient(order.getClient().getEmail())
         .build();

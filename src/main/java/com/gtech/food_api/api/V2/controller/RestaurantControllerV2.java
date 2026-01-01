@@ -9,7 +9,7 @@ import com.gtech.food_api.api.V2.dto.RestaurantDTO;
 import com.gtech.food_api.api.V2.dto.RestaurantSummaryDTO;
 import com.gtech.food_api.api.V2.dto.input.RestaurantInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.core.validation.ValidationException;
 import com.gtech.food_api.domain.model.Restaurant;
 import com.gtech.food_api.domain.service.RestaurantService;

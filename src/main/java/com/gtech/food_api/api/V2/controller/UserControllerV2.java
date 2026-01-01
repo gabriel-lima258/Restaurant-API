@@ -7,7 +7,7 @@ import com.gtech.food_api.api.V2.dto.input.UserInput;
 import com.gtech.food_api.api.V2.dto.input.UserPasswordInput;
 import com.gtech.food_api.api.V2.dto.input.UserWithPasswordInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.User;
 import com.gtech.food_api.domain.service.UserService;
 import jakarta.validation.Valid;

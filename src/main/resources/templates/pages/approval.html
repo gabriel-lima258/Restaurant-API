@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Autorização de Acesso - Food API</title>
+	
+	<!-- Tailwind CSS via CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	
+	<style>
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		
+		.animate-fade-in {
+			animation: fadeIn 0.5s ease-out;
+		}
+		
+		.gradient-bg {
+			background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+		}
+	</style>
+	
+	<script>
+		function cancelConsent() {
+			document.consent_form.reset();
+			document.consent_form.submit();
+		}
+	</script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-500 via-green-600 to-teal-600 p-4">
+	<div class="w-full max-w-2xl animate-fade-in">
+		<!-- Card Container -->
+		<div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+			<!-- Header with Gradient -->
+			<div class="gradient-bg px-8 py-10 text-center">
+				<div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4 backdrop-blur-sm">
+					<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+					</svg>
+				</div>
+				<h1 class="text-3xl font-bold text-white mb-2">Autorização de Acesso</h1>
+				<p class="text-emerald-50 text-sm">Revise as permissões solicitadas</p>
+			</div>
+			
+			<!-- Content Container -->
+			<div class="px-8 py-10">
+				<!-- Application Info -->
+				<div class="mb-8 text-center">
+					<p class="text-gray-700 text-lg mb-2">
+						A aplicação
+						<span class="font-bold text-emerald-600" th:text="${clientId}">client-id</span>
+						deseja acessar sua conta
+						<span class="font-bold text-gray-900" th:text="${principalName}">usuário</span>
+					</p>
+					<p class="text-gray-500 text-sm mt-4">
+						A aplicação solicitou as seguintes permissões:
+					</p>
+				</div>
+				
+				<!-- Form -->
+				<form name="consent_form" method="post" th:action="@{/oauth2/authorize}" class="space-y-6">
+					<input type="hidden" name="client_id" th:value="${clientId}">
+					<input type="hidden" name="state" th:value="${state}">
+					
+					<!-- Permissões para Aprovar -->
+					<div th:if="${not #lists.isEmpty(scopesParaAprovar)}" class="space-y-4">
+						<h3 class="text-lg font-semibold text-gray-800 mb-4">Permissões Solicitadas</h3>
+						<div class="space-y-3">
+							<div th:each="scope: ${scopesParaAprovar}" 
+								 class="flex items-center p-4 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition duration-200">
+								<input 
+									type="checkbox"
+									name="scope"
+									th:value="${scope}"
+									th:id="${scope}"
+									class="w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+									checked
+								>
+								<label 
+									th:for="${scope}" 
+									class="ml-3 flex-1 text-gray-700 font-medium cursor-pointer"
+									th:text="${scope}">
+									Scope
+								</label>
+								<div class="ml-2">
+									<svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+									</svg>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Permissões Já Aprovadas -->
+					<div th:if="${not #lists.isEmpty(scopesAprovadosAnteriormente)}" class="space-y-4 mt-6">
+						<h3 class="text-lg font-semibold text-gray-600 mb-4">Permissões Já Autorizadas</h3>
+						<div class="space-y-3">
+							<div th:each="scope: ${scopesAprovadosAnteriormente}" 
+								 class="flex items-center p-4 bg-emerald-50 rounded-lg border-2 border-emerald-200 opacity-75">
+								<input 
+									type="checkbox"
+									th:id="${scope}"
+									disabled
+									checked
+									class="w-5 h-5 text-emerald-600 border-gray-300 rounded cursor-not-allowed"
+								>
+								<label 
+									th:for="${scope}" 
+									class="ml-3 flex-1 text-gray-600 font-medium"
+									th:text="${scope}">
+									Scope
+								</label>
+								<div class="ml-2">
+									<svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+									</svg>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Divider -->
+					<div class="my-8">
+						<div class="relative">
+							<div class="absolute inset-0 flex items-center">
+								<div class="w-full border-t border-gray-300"></div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Action Buttons -->
+					<div class="flex flex-col sm:flex-row gap-4">
+						<button 
+							type="submit"
+							id="submit-consent"
+							class="flex-1 gradient-bg text-white py-3 px-6 rounded-lg font-semibold text-base hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transform transition duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+						>
+							<div class="flex items-center justify-center">
+								<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+								</svg>
+								Autorizar
+							</div>
+						</button>
+						
+						<button 
+							type="button"
+							id="cancel-consent"
+							onclick="cancelConsent();"
+							class="flex-1 bg-white text-gray-700 py-3 px-6 rounded-lg font-semibold text-base border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transform transition duration-200 hover:scale-[1.02] active:scale-[0.98]"
+						>
+							<div class="flex items-center justify-center">
+								<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+								Cancelar
+							</div>
+						</button>
+					</div>
+				</form>
+				
+				<!-- Footer Info -->
+				<div class="mt-8 pt-6 border-t border-gray-200">
+					<p class="text-center text-sm text-gray-500">
+						<svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+						Seu consentimento é necessário para esta autorização.
+						<br class="hidden sm:inline">
+						Se você não deseja aprovar, clique em Cancelar.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

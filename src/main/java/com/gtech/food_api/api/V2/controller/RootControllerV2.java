@@ -1,7 +1,7 @@
 package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
-import com.gtech.food_api.core.security.UsersJwtSecurity;
+import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;

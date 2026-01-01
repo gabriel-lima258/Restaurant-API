@@ -1,4 +1,4 @@
-package com.gtech.food_api.core.security;
+package com.gtech.food_api.core.security.resource.validations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

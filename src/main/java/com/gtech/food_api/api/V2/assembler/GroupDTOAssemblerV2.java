@@ -3,13 +3,13 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.GroupControllerV2;
 import com.gtech.food_api.api.V2.dto.GroupDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.Group;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import com.gtech.food_api.core.security.UsersJwtSecurity;
 /**
  * Assembler para converter Group em GroupDTO
  * 

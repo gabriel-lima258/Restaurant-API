@@ -3,7 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.PhotoProductDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PhotoProductDTO;
 import com.gtech.food_api.api.V2.dto.input.ProductFileInput;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.model.Product;
 import com.gtech.food_api.domain.service.ProductService;

@@ -3,13 +3,13 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.StateControllerV2;
 import com.gtech.food_api.api.V2.dto.StateDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.State;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import com.gtech.food_api.core.security.UsersJwtSecurity;
 @Component
 public class StateDTOAssemblerV2 extends RepresentationModelAssemblerSupport<State, StateDTO> {
     @Autowired

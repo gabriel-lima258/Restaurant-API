@@ -5,7 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.CityInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.CityDTO;
 import com.gtech.food_api.api.V2.dto.input.CityInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.City;
 import com.gtech.food_api.domain.service.CityService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;

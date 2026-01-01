@@ -2,7 +2,7 @@ package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V1.dto.report.DailySelling;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.filter.DailySellingFilter;
 import com.gtech.food_api.domain.service.report.SellingQueryService;
 import com.gtech.food_api.domain.service.report.SellingReportService;

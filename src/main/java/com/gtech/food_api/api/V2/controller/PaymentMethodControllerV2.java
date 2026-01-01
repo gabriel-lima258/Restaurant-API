@@ -5,7 +5,7 @@ import com.gtech.food_api.api.V2.disassembler.PaymentMethodInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.PaymentMethodDTO;
 import com.gtech.food_api.api.V2.dto.input.PaymentMethodInput;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
-import com.gtech.food_api.core.security.resource.CheckSecurity;
+import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.PaymentMethod;
 import com.gtech.food_api.domain.service.PaymentMethodService;
 import com.gtech.food_api.domain.service.exceptions.BusinessException;

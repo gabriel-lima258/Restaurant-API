@@ -3,12 +3,12 @@ package com.gtech.food_api.api.V2.assembler;
 import com.gtech.food_api.api.V2.controller.ProductFileControllerV2;
 import com.gtech.food_api.api.V2.dto.PhotoProductDTO;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
+import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
 import com.gtech.food_api.domain.model.PhotoProduct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
-import com.gtech.food_api.core.security.UsersJwtSecurity;
 @Component
 public class PhotoProductDTOAssemblerV2 extends RepresentationModelAssemblerSupport<PhotoProduct, PhotoProductDTO> {
 
