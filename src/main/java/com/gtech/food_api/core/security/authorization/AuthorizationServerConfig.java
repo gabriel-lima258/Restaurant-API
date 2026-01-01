@@ -16,9 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -32,6 +30,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import com.gtech.food_api.core.security.authorization.consents.JdbcOAuth2AuthorizationQueryService;
+import com.gtech.food_api.core.security.authorization.consents.OAuth2AuthorizationQueryService;
 import com.gtech.food_api.domain.repository.UserRepository;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -204,17 +204,17 @@ public class AuthorizationServerConfig {
         return new JdbcRegisteredClientRepository(jdbcOperations);  
     }
 
+    // Armazena o consentimento do usuário no banco de dados
     @Bean
-    public OAuth2AuthorizationConsentService consentService() {
-        return new InMemoryOAuth2AuthorizationConsentService();
+    public OAuth2AuthorizationConsentService consentService(JdbcOperations jdbcOperations,
+        RegisteredClientRepository registeredClientRepository
+    ) {
+        return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, registeredClientRepository);
     }
     
     /**
      * Configura o serviço de autorização OAuth2 usando JDBC para persistir
      * autorizações (tokens, códigos de autorização, etc.) no banco de dados.
-     * 
-     * A tabela oauth2_authorization é criada pela migration V2.1 e armazena
-     * todas as informações relacionadas às autorizações OAuth2.
      */
     @Bean
     public OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbcOperations, RegisteredClientRepository registeredClientRepository) {
@@ -351,5 +351,22 @@ public class AuthorizationServerConfig {
                 context.getClaims().claim("authorities", authorities);
             }
         };
+    }
+
+    /**
+     * Configura o serviço de consulta de autorizações OAuth2 usando JDBC.
+     * 
+     * Este serviço permite fazer consultas personalizadas nas tabelas OAuth2 que não
+     * estão disponíveis nas APIs padrão do Spring Security, como:
+     * - Listar todos os clientes autorizados por um usuário
+     * - Buscar histórico de autorizações com filtros personalizados
+     * 
+     * É usado principalmente pelo AuthorizedClientsController para implementar
+     * a funcionalidade de "Aplicações Conectadas" onde o usuário pode ver e
+     * gerenciar as apps que autorizou.
+     */
+    @Bean
+    public OAuth2AuthorizationQueryService oAuth2AuthorizationQueryService(JdbcOperations jdbcOperations, RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationQueryService(jdbcOperations, registeredClientRepository);
     }
 }

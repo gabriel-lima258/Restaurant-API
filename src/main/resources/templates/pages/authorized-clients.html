@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Aplicações Conectadas - Food API</title>
+	
+	<!-- Tailwind CSS via CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	
+	<style>
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		
+		.animate-fade-in {
+			animation: fadeIn 0.5s ease-out;
+		}
+		
+		.gradient-bg {
+			background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+		}
+	</style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-emerald-500 via-green-600 to-teal-600 p-4">
+	<div class="w-full max-w-4xl mx-auto animate-fade-in">
+		<!-- Card Container -->
+		<div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+			<!-- Header with Gradient -->
+			<div class="gradient-bg px-8 py-10 text-center">
+				<div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4 backdrop-blur-sm">
+					<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+					</svg>
+				</div>
+				<h1 class="text-3xl font-bold text-white mb-2">Aplicações Conectadas</h1>
+				<p class="text-emerald-50 text-sm">Gerencie as aplicações que têm acesso à sua conta</p>
+			</div>
+			
+			<!-- Content Container -->
+			<div class="px-8 py-10">
+				<!-- Empty State -->
+				<div th:if="${#lists.isEmpty(clients)}" class="text-center py-12">
+					<svg class="w-24 h-24 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+					</svg>
+					<p class="text-gray-500 text-lg font-medium">Nenhuma aplicação autorizada</p>
+					<p class="text-gray-400 text-sm mt-2">Você ainda não autorizou nenhuma aplicação para acessar sua conta.</p>
+				</div>
+				
+				<!-- Applications List -->
+				<div th:if="${not #lists.isEmpty(clients)}" class="space-y-4">
+					<div th:each="client,iterStat : ${clients}" 
+						 class="flex items-center justify-between p-6 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition duration-200">
+						<div class="flex items-center space-x-4 flex-1">
+							<!-- Application Icon -->
+							<div class="flex-shrink-0">
+								<div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+									<svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+									</svg>
+								</div>
+							</div>
+							
+							<!-- Application Info -->
+							<div class="flex-1 min-w-0">
+								<div class="flex items-center space-x-2">
+									<span class="text-xs font-semibold text-gray-400 bg-gray-200 px-2 py-1 rounded">
+										#<span th:text="${iterStat.count}">1</span>
+									</span>
+									<h3 class="text-lg font-semibold text-gray-900 truncate" th:text="${client.clientName}">
+										Nome da Aplicação
+									</h3>
+								</div>
+								<p class="text-sm text-gray-500 mt-1 truncate" th:text="${client.clientId}">
+									client-id
+								</p>
+							</div>
+						</div>
+						
+						<!-- Revoke Button -->
+						<div class="flex-shrink-0 ml-4">
+							<button 
+								type="button"
+								class="js-btn-on-click-revoke px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transform transition duration-200 hover:scale-105 active:scale-95 shadow-md"
+								th:data-clientid="${client.clientId}"
+							>
+								<div class="flex items-center space-x-2">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+									</svg>
+									<span>Revogar</span>
+								</div>
+							</button>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Info Footer -->
+				<div th:if="${not #lists.isEmpty(clients)}" class="mt-8 pt-6 border-t border-gray-200">
+					<div class="flex items-start space-x-3 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+						<svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+						</svg>
+						<div class="flex-1">
+							<p class="text-sm text-blue-700">
+								<strong>Importante:</strong> Ao revogar o acesso de uma aplicação, todos os tokens ativos serão invalidados e a aplicação não poderá mais acessar seus dados até que você autorize novamente.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Back Link -->
+		<div class="mt-6 text-center">
+			<a href="/" class="text-white/90 text-sm hover:text-white font-medium transition duration-200">
+				← Voltar para o início
+			</a>
+		</div>
+	</div>
+	
+	<!-- Hidden Form for Revoke -->
+	<form id="revokeForm" style="display: none" action="/oauth2/authorized-clients/revoke" method="POST">
+		<input id="clientIdInput" name="client_id" type="hidden">
+	</form>
+	
+	<script>
+		const elements = document.querySelectorAll('.js-btn-on-click-revoke');
+		const form = document.getElementById('revokeForm');
+		const input = document.getElementById('clientIdInput');
+		
+		elements.forEach(element => {
+			element.addEventListener('click', (e) => {
+				// Confirmação antes de revogar
+				if (confirm('Tem certeza que deseja revogar o acesso desta aplicação? Todos os tokens ativos serão invalidados.')) {
+					input.value = element.dataset.clientid;
+					form.submit();
+				}
+			});
+		});
+	</script>
+</body>
+</html>
