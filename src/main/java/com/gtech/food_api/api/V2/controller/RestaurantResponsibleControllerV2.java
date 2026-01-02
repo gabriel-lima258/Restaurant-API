@@ -2,6 +2,7 @@ package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V2.assembler.UserDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.UserDTO;
+import com.gtech.food_api.api.V2.openai.controller.RestaurantResponsibleControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(value = "/v2/restaurants/{restaurantId}/responsibles", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RestaurantResponsibleControllerV2 {
+public class RestaurantResponsibleControllerV2 implements RestaurantResponsibleControllerOpenAi {
 
     @Autowired
     private RestaurantService restaurantService;
@@ -36,6 +37,7 @@ public class RestaurantResponsibleControllerV2 {
     private UsersJwtSecurity usersJwtSecurity;
 
     @CheckSecurity.Restaurants.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<UserDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
@@ -54,13 +56,15 @@ public class RestaurantResponsibleControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanAdminManager
+    @Override
     @PutMapping("/{userId}")
     public ResponseEntity<Void> addResponsible(@PathVariable Long restaurantId, @PathVariable Long userId){
         restaurantService.addResponsible(restaurantId, userId);
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecurity.Restaurants.CanAdminManager
+    @CheckSecurity.Restaurants.CanAdminManager  
+    @Override
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> removeResponsible(@PathVariable Long restaurantId, @PathVariable Long userId){
         restaurantService.removeResponsible(restaurantId, userId);

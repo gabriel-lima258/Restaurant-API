@@ -2,6 +2,7 @@ package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V2.assembler.PermissionDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PermissionDTO;
+import com.gtech.food_api.api.V2.openai.controller.PermissionControllerOpenAi;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.Permission;
 import com.gtech.food_api.domain.repository.PermissionRepository;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v2/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PermissionControllerV2 {
+public class PermissionControllerV2 implements PermissionControllerOpenAi {
 
     @Autowired
     private PermissionRepository permissionRepository;
@@ -27,6 +28,7 @@ public class PermissionControllerV2 {
     private PermissionDTOAssemblerV2 permissionDTOAssembler;
 
     @CheckSecurity.UsersGroupsPermissions.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<PermissionDTO>> listAll(){
         List<Permission> permissions = permissionRepository.findAll();

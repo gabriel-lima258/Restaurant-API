@@ -6,6 +6,7 @@ import com.gtech.food_api.api.V2.dto.UserDTO;
 import com.gtech.food_api.api.V2.dto.input.UserInput;
 import com.gtech.food_api.api.V2.dto.input.UserPasswordInput;
 import com.gtech.food_api.api.V2.dto.input.UserWithPasswordInput;
+import com.gtech.food_api.api.V2.openai.controller.UserControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.User;
@@ -22,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v2/users", produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserControllerV2 {
+public class UserControllerV2 implements UserControllerOpenAi {
 
     @Autowired
     private UserService userService;
@@ -34,6 +35,7 @@ public class UserControllerV2 {
     private UserInputDisassemblerV2 userInputDisassembler;
 
     @CheckSecurity.UsersGroupsPermissions.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<UserDTO>> listAll(){
         List<User> result = userService.listAll();
@@ -42,6 +44,7 @@ public class UserControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanView
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         User entity = userService.findOrFail(id);
@@ -60,6 +63,7 @@ public class UserControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanUpdateUser
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody @Valid UserInput userInput) {
         User entity = userService.findOrFail(id);
@@ -70,6 +74,7 @@ public class UserControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanUpdatePassword
+    @Override
     @PutMapping("/{id}/password")
     public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody @Valid UserPasswordInput userPasswordInput) {
         userService.updatePassword(id, userPasswordInput.getCurrentPassword(), userPasswordInput.getNewPassword());

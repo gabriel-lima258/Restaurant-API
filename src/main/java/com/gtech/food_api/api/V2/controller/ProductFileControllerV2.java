@@ -3,6 +3,7 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.assembler.PhotoProductDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PhotoProductDTO;
 import com.gtech.food_api.api.V2.dto.input.ProductFileInput;
+import com.gtech.food_api.api.V2.openai.controller.ProductFileControllerOpenAi;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.PhotoProduct;
 import com.gtech.food_api.domain.model.Product;
@@ -34,7 +35,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/v2/restaurants/{restaurantId}/products/{productId}/photo")
-public class ProductFileControllerV2 {
+public class ProductFileControllerV2 implements ProductFileControllerOpenAi {
 
     @Autowired
     private ProductService productService;
@@ -49,6 +50,7 @@ public class ProductFileControllerV2 {
     private PhotoProductDTOAssemblerV2 photoProductDTOAssembler;
 
     @CheckSecurity.Restaurants.CanView
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PhotoProductDTO> getPhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
         PhotoProduct photoProduct = photoProductService.findOrFail(restaurantId, productId);
@@ -62,6 +64,7 @@ public class ProductFileControllerV2 {
     * As fotos dos produtos ficarão públicas (não precisa de autorização para acessá-las)
     */
     @GetMapping(produces = MediaType.ALL_VALUE)
+    @Override
     public ResponseEntity<InputStreamResource> downloadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId,
         @RequestHeader("accept") String acceptHeader
     ) throws HttpMediaTypeNotAcceptableException {
@@ -95,6 +98,7 @@ public class ProductFileControllerV2 {
 
     @CheckSecurity.Restaurants.CanOnwerManager
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Override
     public ResponseEntity<PhotoProductDTO> uploadPhoto(@PathVariable Long productId, @PathVariable Long restaurantId, @Valid ProductFileInput input) throws IOException {
 
         Product product = productService.findOrFail(productId, restaurantId);
@@ -118,6 +122,7 @@ public class ProductFileControllerV2 {
 
     @CheckSecurity.Restaurants.CanOnwerManager
     @DeleteMapping
+    @Override
     public ResponseEntity<PhotoProductDTO> deletePhoto(@PathVariable Long productId, @PathVariable Long restaurantId) {
         try {
             photoProductService.delete(restaurantId, productId);

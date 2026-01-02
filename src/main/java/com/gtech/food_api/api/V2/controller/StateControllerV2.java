@@ -4,6 +4,7 @@ import com.gtech.food_api.api.V2.assembler.StateDTOAssemblerV2;
 import com.gtech.food_api.api.V2.disassembler.StateInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.StateDTO;
 import com.gtech.food_api.api.V2.dto.input.StateInput;
+import com.gtech.food_api.api.V2.openai.controller.StateControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.State;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v2/states", produces = MediaType.APPLICATION_JSON_VALUE)
-public class StateControllerV2 {
+public class StateControllerV2 implements StateControllerOpenAi {
 
     @Autowired
     private StateService stateService;
@@ -32,6 +33,7 @@ public class StateControllerV2 {
     private StateInputDisassemblerV2 stateInputDisassembler;
 
     @CheckSecurity.States.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<StateDTO>> listAll(){
         List<State> result = stateService.listAll();
@@ -40,6 +42,7 @@ public class StateControllerV2 {
     }
 
     @CheckSecurity.States.CanView
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<StateDTO> findById(@PathVariable Long id) {
         State entity = stateService.findOrFail(id);
@@ -48,6 +51,7 @@ public class StateControllerV2 {
     }
 
     @CheckSecurity.States.CanEdit
+    @Override
     @PostMapping
     public ResponseEntity<StateDTO> save(@RequestBody @Valid StateInput stateInput) {
         State state = stateInputDisassembler.copyToEntity(stateInput);
@@ -58,6 +62,7 @@ public class StateControllerV2 {
     }
 
     @CheckSecurity.States.CanEdit
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<StateDTO> update(@PathVariable Long id, @RequestBody @Valid StateInput stateInput) {
         State entity = stateService.findOrFail(id);
@@ -69,6 +74,7 @@ public class StateControllerV2 {
     }
 
     @CheckSecurity.States.CanEdit
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         stateService.delete(id);

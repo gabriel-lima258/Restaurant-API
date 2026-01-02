@@ -1,5 +1,6 @@
 package com.gtech.food_api.api.V2.controller;
 
+import com.gtech.food_api.api.V2.openai.controller.StatusOrderControllerOpenAi;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.service.StatusOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v2/orders/{orderCode}")
-public class StatusOrderControllerV2 {
+public class StatusOrderControllerV2 implements StatusOrderControllerOpenAi {
 
     @Autowired
     private StatusOrderService statusOrderService;
 
     @CheckSecurity.Orders.CanManageOrder
+    @Override
     @PutMapping("/confirm")
     public ResponseEntity<Void> confirm(@PathVariable String orderCode){
         statusOrderService.confirmOrder(orderCode);
@@ -24,6 +26,7 @@ public class StatusOrderControllerV2 {
     }
 
     @CheckSecurity.Orders.CanManageOrder
+    @Override
     @PutMapping("/deliver")
     public ResponseEntity<Void> deliver(@PathVariable String orderCode){
         statusOrderService.deliverOrder(orderCode);
@@ -31,6 +34,7 @@ public class StatusOrderControllerV2 {
     }
 
     @CheckSecurity.Orders.CanManageOrder
+    @Override
     @PutMapping("/cancel")
     public ResponseEntity<Void> cancel(@PathVariable String orderCode){
         statusOrderService.cancelOrder(orderCode);

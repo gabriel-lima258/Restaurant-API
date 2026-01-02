@@ -8,6 +8,7 @@ import com.gtech.food_api.api.V2.disassembler.RestaurantInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.RestaurantDTO;
 import com.gtech.food_api.api.V2.dto.RestaurantSummaryDTO;
 import com.gtech.food_api.api.V2.dto.input.RestaurantInput;
+import com.gtech.food_api.api.V2.openai.controller.RestaurantControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.core.validation.ValidationException;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/v2/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RestaurantControllerV2 {
+public class RestaurantControllerV2 implements RestaurantControllerOpenAi {
 
     @Autowired
     private RestaurantService restaurantService;
@@ -55,6 +56,7 @@ public class RestaurantControllerV2 {
     private RestaurantInputDisassemblerV2 restaurantInputDisassembler;
 
     @CheckSecurity.Restaurants.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<RestaurantSummaryDTO>> listAll(){
         CollectionModel<RestaurantSummaryDTO> dtoList = restaurantSummaryDTOAssembler.toCollectionModel(restaurantService.listAll());
@@ -62,6 +64,7 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanView
+    @Override
     @GetMapping("/{restaurantId}")
     public ResponseEntity<RestaurantDTO> findById(@PathVariable Long restaurantId) {
         Restaurant entity = restaurantService.findOrFail(restaurantId);
@@ -70,6 +73,7 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanAdminManager
+    @Override
     @PostMapping
     public ResponseEntity<RestaurantDTO> save(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
@@ -89,6 +93,7 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanAdminManager
+    @Override
     @PutMapping("/{restaurantId}")
     public ResponseEntity<RestaurantDTO> update(@PathVariable Long restaurantId, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
@@ -107,6 +112,7 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanAdminManager
+    @Override
     @DeleteMapping("/{restaurantId}")
     public ResponseEntity<Void> delete(@PathVariable Long restaurantId) {
         restaurantService.delete(restaurantId);
@@ -115,6 +121,7 @@ public class RestaurantControllerV2 {
 
     // idempotente, pois pode ser chamado quantas vezes quiser, o resultado será o mesmo
     @CheckSecurity.Restaurants.CanAdminManager
+    @Override
     @PutMapping("/{restaurantId}/active")
     public ResponseEntity<Void> activate(@PathVariable Long restaurantId) {
          restaurantService.activate(restaurantId);    
@@ -122,6 +129,7 @@ public class RestaurantControllerV2 {
     }
  
     @CheckSecurity.Restaurants.CanAdminManager
+    @Override
     @DeleteMapping("/{restaurantId}/deactive")
     public ResponseEntity<Void> deactivate(@PathVariable Long restaurantId) {
         restaurantService.deactivate(restaurantId);
@@ -129,6 +137,7 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanAdminManager
+    @Override
     @PutMapping("/activation")
     public ResponseEntity<Void> activateMany(@RequestBody List<Long> restaurantIds) {
         restaurantService.activate(restaurantIds);
@@ -136,6 +145,7 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanAdminManager
+    @Override
     @DeleteMapping("/deactivation")
     public ResponseEntity<Void> deactivateMany(@RequestBody List<Long> restaurantIds) {
         restaurantService.deactivate(restaurantIds);
@@ -143,6 +153,7 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanOnwerManager
+    @Override
     @PutMapping("/{restaurantId}/opening")
     public ResponseEntity<Void> openRestaurant(@PathVariable Long restaurantId) {
         restaurantService.open(restaurantId);
@@ -150,6 +161,7 @@ public class RestaurantControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanOnwerManager
+    @Override
     @PutMapping("/{restaurantId}/closing")
     public ResponseEntity<Void> closeRestaurant(@PathVariable Long restaurantId) {
         restaurantService.close(restaurantId);

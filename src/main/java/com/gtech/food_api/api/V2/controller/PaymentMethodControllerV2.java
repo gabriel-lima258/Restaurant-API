@@ -4,6 +4,7 @@ import com.gtech.food_api.api.V2.assembler.PaymentMethodDTOAssemblerV2;
 import com.gtech.food_api.api.V2.disassembler.PaymentMethodInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.PaymentMethodDTO;
 import com.gtech.food_api.api.V2.dto.input.PaymentMethodInput;
+import com.gtech.food_api.api.V2.openai.controller.PaymentMethodControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.PaymentMethod;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/v2/payment-methods", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PaymentMethodControllerV2 {
+public class PaymentMethodControllerV2 implements PaymentMethodControllerOpenAi {
 
     @Autowired
     private PaymentMethodService paymentMethodService;
@@ -37,6 +38,7 @@ public class PaymentMethodControllerV2 {
     private PaymentMethodInputDisassemblerV2 paymentMethodInputDisassembler;
 
     @CheckSecurity.Payments.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<PaymentMethodDTO>> listAll(ServletWebRequest request){
         List<PaymentMethod> result = paymentMethodService.listAll();
@@ -54,6 +56,7 @@ public class PaymentMethodControllerV2 {
     }
 
     @CheckSecurity.Payments.CanView
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<PaymentMethodDTO> findById(@PathVariable Long id) {
         PaymentMethod entity = paymentMethodService.findOrFail(id);
@@ -64,6 +67,7 @@ public class PaymentMethodControllerV2 {
     }
 
     @CheckSecurity.Payments.CanEdit
+    @Override
     @PostMapping
     public ResponseEntity<PaymentMethodDTO> save(@RequestBody @Valid PaymentMethodInput paymentMethodInput) {
         try {
@@ -78,6 +82,7 @@ public class PaymentMethodControllerV2 {
     }
 
     @CheckSecurity.Payments.CanEdit
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<PaymentMethodDTO> update(@PathVariable Long id, @RequestBody @Valid PaymentMethodInput paymentMethodInput) {
         try {
@@ -92,6 +97,7 @@ public class PaymentMethodControllerV2 {
     }
 
     @CheckSecurity.Payments.CanEdit
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         paymentMethodService.delete(id);

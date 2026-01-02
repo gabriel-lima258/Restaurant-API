@@ -1,6 +1,7 @@
 package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V1.dto.report.DailySelling;
+import com.gtech.food_api.api.V2.openai.controller.ReportControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.filter.DailySellingFilter;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v2/reports")
-public class ReportControllerV2 {
+public class ReportControllerV2 implements ReportControllerOpenAi {
 
     @Autowired
     private SellingQueryService sellingQueryService;
@@ -35,6 +36,7 @@ public class ReportControllerV2 {
 
     // classe controller de todas estatisticas
     @CheckSecurity.Reports.CanGenerateReports
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ReportsModel reports() {
 		var reportsModel = new ReportsModel();
@@ -45,6 +47,7 @@ public class ReportControllerV2 {
 	}
 
     @CheckSecurity.Reports.CanGenerateReports
+    @Override
     @GetMapping(value = "/daily-selling", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DailySelling>> queryDailySelling(DailySellingFilter filter, @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
 
@@ -54,6 +57,7 @@ public class ReportControllerV2 {
     }
 
     @CheckSecurity.Reports.CanGenerateReports
+    @Override
     @GetMapping(value = "/daily-selling", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> queryDailySellingPDF(DailySellingFilter filter, @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
         // gera o relatório em PDF

@@ -4,6 +4,7 @@ import com.gtech.food_api.api.V2.assembler.CityDTOAssemblerV2;
 import com.gtech.food_api.api.V2.disassembler.CityInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.CityDTO;
 import com.gtech.food_api.api.V2.dto.input.CityInput;
+import com.gtech.food_api.api.V2.openai.controller.CityControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.City;
@@ -23,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v2/cities", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CityControllerV2 {
+public class CityControllerV2 implements CityControllerOpenAi {
 
     @Autowired
     private CityService cityService;
@@ -35,6 +36,7 @@ public class CityControllerV2 {
     private CityInputDisassemblerV2 cityInputDisassembler;
 
     // usamos CollectionModel para retornar uma lista de DTOs com links HATEOAS
+    @Override
     @CheckSecurity.Cities.CanView
     @GetMapping
     public ResponseEntity<CollectionModel<CityDTO>> listAll(){
@@ -45,6 +47,7 @@ public class CityControllerV2 {
     }
 
     @CheckSecurity.Cities.CanView
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<CityDTO> findById(@PathVariable Long id) {
         City entity = cityService.findOrFail(id);
@@ -54,6 +57,7 @@ public class CityControllerV2 {
     }
 
     @CheckSecurity.Cities.CanEdit
+    @Override
     @PostMapping
     public ResponseEntity<CityDTO> save(@RequestBody @Valid CityInput cityInput) {
         try {
@@ -69,6 +73,7 @@ public class CityControllerV2 {
     }
 
     @CheckSecurity.Cities.CanEdit
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<CityDTO> update(@PathVariable Long id, @RequestBody @Valid CityInput cityInput) {
         try {
@@ -83,6 +88,7 @@ public class CityControllerV2 {
     }
 
     @CheckSecurity.Cities.CanEdit
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         cityService.delete(id);

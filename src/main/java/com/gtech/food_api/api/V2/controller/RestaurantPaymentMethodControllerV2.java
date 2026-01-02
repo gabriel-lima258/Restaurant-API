@@ -2,6 +2,7 @@ package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V2.assembler.PaymentMethodDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PaymentMethodDTO;
+import com.gtech.food_api.api.V2.openai.controller.RestaurantPaymentMethodControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(value = "/v2/restaurants/{restaurantId}/payment-methods", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RestaurantPaymentMethodControllerV2 {
+public class RestaurantPaymentMethodControllerV2 implements RestaurantPaymentMethodControllerOpenAi {
 
     @Autowired
     private RestaurantService restaurantService;
@@ -36,6 +37,7 @@ public class RestaurantPaymentMethodControllerV2 {
     private UsersJwtSecurity usersJwtSecurity;
 
     @CheckSecurity.Restaurants.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<PaymentMethodDTO>> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
@@ -54,6 +56,7 @@ public class RestaurantPaymentMethodControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanOnwerManager
+    @Override
     @PutMapping("/{paymentMethodId}")
     public ResponseEntity<Void> associatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
         restaurantService.associatePaymentMethod(restaurantId, paymentMethodId);
@@ -61,6 +64,7 @@ public class RestaurantPaymentMethodControllerV2 {
     }
     
     @CheckSecurity.Restaurants.CanOnwerManager
+    @Override
     @DeleteMapping("/{paymentMethodId}")
     public ResponseEntity<Void> disassociatePaymentMethod(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId){
         restaurantService.disassociatePaymentMethod(restaurantId, paymentMethodId);

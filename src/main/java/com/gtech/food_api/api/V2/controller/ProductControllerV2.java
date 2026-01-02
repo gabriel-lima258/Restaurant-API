@@ -4,6 +4,7 @@ import com.gtech.food_api.api.V2.assembler.ProductDTOAssemblerV2;
 import com.gtech.food_api.api.V2.disassembler.ProductInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.ProductDTO;
 import com.gtech.food_api.api.V2.dto.input.ProductInput;
+import com.gtech.food_api.api.V2.openai.controller.ProductControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
@@ -30,7 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/v2/restaurants/{restaurantId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ProductControllerV2 {
+public class ProductControllerV2 implements ProductControllerOpenAi {
 
     @Autowired
     private ProductService productService;
@@ -49,6 +50,7 @@ public class ProductControllerV2 {
 
     // active é opcional, se nao for informado, retorna todos os produtos
     @CheckSecurity.Restaurants.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<ProductDTO>> listAll(@PathVariable Long restaurantId,
                                                                @RequestParam(required = false) Boolean active){
@@ -61,6 +63,7 @@ public class ProductControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanView
+    @Override
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long productId, @PathVariable Long restaurantId) {
         Product product = productService.findOrFail(productId, restaurantId);
@@ -69,6 +72,7 @@ public class ProductControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanOnwerManager
+    @Override
     @PostMapping
     public ResponseEntity<ProductDTO> save(@PathVariable Long restaurantId, @RequestBody @Valid ProductInput productInput) {
         Restaurant restaurant = restaurantService.findOrFail(restaurantId);
@@ -85,6 +89,7 @@ public class ProductControllerV2 {
     }
 
     @CheckSecurity.Restaurants.CanOnwerManager
+    @Override
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long productId, @PathVariable Long restaurantId, @RequestBody ProductInput productInput) {
         Product product = productService.findOrFail(productId, restaurantId);

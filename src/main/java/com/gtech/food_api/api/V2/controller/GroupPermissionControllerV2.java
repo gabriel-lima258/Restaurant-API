@@ -2,6 +2,7 @@ package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V2.assembler.PermissionDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.PermissionDTO;
+import com.gtech.food_api.api.V2.openai.controller.GroupPermissionControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/v2/groups/{groupId}/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
-public class GroupPermissionControllerV2 {
+public class GroupPermissionControllerV2 implements GroupPermissionControllerOpenAi {
 
     @Autowired
     private GroupService groupService;
@@ -30,6 +31,7 @@ public class GroupPermissionControllerV2 {
     private UsersJwtSecurity usersJwtSecurity;
 
     @CheckSecurity.UsersGroupsPermissions.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<PermissionDTO>> listAll(@PathVariable Long groupId){
         Group group = groupService.findOrFail(groupId);
@@ -48,6 +50,7 @@ public class GroupPermissionControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanEdit
+    @Override
     @PutMapping("/{permissionId}")
     public ResponseEntity<Void> addPermission(@PathVariable Long groupId, @PathVariable Long permissionId) {
         groupService.addPermission(groupId, permissionId);
@@ -55,6 +58,7 @@ public class GroupPermissionControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanEdit
+    @Override
     @DeleteMapping("/{permissionId}")
     public ResponseEntity<Void> removePermission(@PathVariable Long groupId, @PathVariable Long permissionId) {
         groupService.removePermission(groupId, permissionId);

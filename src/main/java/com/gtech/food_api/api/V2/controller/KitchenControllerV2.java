@@ -4,6 +4,7 @@ import com.gtech.food_api.api.V2.assembler.KitchenDTOAssemblerV2;
 import com.gtech.food_api.api.V2.disassembler.KitchenInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.KitchenDTO;
 import com.gtech.food_api.api.V2.dto.input.KitchenInput;
+import com.gtech.food_api.api.V2.openai.controller.KitchenControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.Kitchen;
@@ -23,7 +24,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/v2/kitchens", produces = MediaType.APPLICATION_JSON_VALUE)
-public class KitchenControllerV2 {
+public class KitchenControllerV2 implements KitchenControllerOpenAi {
 
     @Autowired
     private KitchenService kitchenService;
@@ -39,6 +40,7 @@ public class KitchenControllerV2 {
     private PagedResourcesAssembler<Kitchen> pagedResourcesAssembler;
 
     @CheckSecurity.Kitchens.CanView
+    @Override
     @GetMapping
     public ResponseEntity<PagedModel<KitchenDTO>> listAll(@PageableDefault(size = 10) Pageable pageable){
         Page<Kitchen> kitchens = kitchenService.listAll(pageable);
@@ -50,6 +52,7 @@ public class KitchenControllerV2 {
     }
 
     @CheckSecurity.Kitchens.CanView
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<KitchenDTO> findById(@PathVariable Long id) {
         Kitchen entity = kitchenService.findOrFail(id);
@@ -58,6 +61,7 @@ public class KitchenControllerV2 {
     }
 
     @CheckSecurity.Kitchens.CanEdit
+    @Override
     @PostMapping
     public ResponseEntity<KitchenDTO> save(@RequestBody @Valid KitchenInput kitchenInput) {
         Kitchen kitchen = kitchenInputDisassembler.copyToEntity(kitchenInput);
@@ -68,6 +72,7 @@ public class KitchenControllerV2 {
     }
 
     @CheckSecurity.Kitchens.CanEdit
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<KitchenDTO> update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput) {
         Kitchen entity = kitchenService.findOrFail(id);
@@ -78,6 +83,7 @@ public class KitchenControllerV2 {
     }
 
     @CheckSecurity.Kitchens.CanEdit
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         kitchenService.delete(id);

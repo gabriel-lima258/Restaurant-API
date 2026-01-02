@@ -2,6 +2,7 @@ package com.gtech.food_api.api.V2.controller;
 
 import com.gtech.food_api.api.V2.assembler.GroupDTOAssemblerV2;
 import com.gtech.food_api.api.V2.dto.GroupDTO;
+import com.gtech.food_api.api.V2.openai.controller.UserGroupControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/v2/users/{userId}/groups", produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserGroupControllerV2 {
+public class UserGroupControllerV2 implements UserGroupControllerOpenAi {
 
     @Autowired
     private UserService userService;
@@ -28,8 +29,9 @@ public class UserGroupControllerV2 {
 
     @Autowired
     private UsersJwtSecurity usersJwtSecurity;
-   
+    
     @CheckSecurity.UsersGroupsPermissions.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<GroupDTO>> listAll(@PathVariable Long userId){
         User user = userService.findOrFail(userId);
@@ -46,6 +48,7 @@ public class UserGroupControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanEdit
+    @Override
     @PutMapping("/{groupId}")
     public ResponseEntity<Void> associateGroup(@PathVariable Long userId, @PathVariable Long groupId){
         userService.associateGroup(userId, groupId);
@@ -53,6 +56,7 @@ public class UserGroupControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanEdit
+    @Override
     @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> disassociateGroup(@PathVariable Long userId, @PathVariable Long groupId){
         userService.disassociateGroup(userId, groupId);

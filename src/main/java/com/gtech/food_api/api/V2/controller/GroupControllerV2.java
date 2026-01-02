@@ -4,6 +4,7 @@ import com.gtech.food_api.api.V2.assembler.GroupDTOAssemblerV2;
 import com.gtech.food_api.api.V2.disassembler.GroupInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.GroupDTO;
 import com.gtech.food_api.api.V2.dto.input.GroupInput;
+import com.gtech.food_api.api.V2.openai.controller.GroupControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.security.resource.validations.CheckSecurity;
 import com.gtech.food_api.domain.model.Group;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v2/groups", produces = MediaType.APPLICATION_JSON_VALUE)
-public class GroupControllerV2 {
+public class GroupControllerV2 implements GroupControllerOpenAi {
 
     @Autowired
     private GroupService groupService;
@@ -32,6 +33,7 @@ public class GroupControllerV2 {
     private GroupInputDisassemblerV2 groupInputDisassembler;
 
     @CheckSecurity.UsersGroupsPermissions.CanView
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<GroupDTO>> listAll(){
         List<Group> result = groupService.listAll();
@@ -40,6 +42,7 @@ public class GroupControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanView
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<GroupDTO> findById(@PathVariable Long id) {
         Group entity = groupService.findOrFail(id);
@@ -48,6 +51,7 @@ public class GroupControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanEdit
+    @Override
     @PostMapping
     public ResponseEntity<GroupDTO> save(@RequestBody @Valid GroupInput groupInput) {
         Group group = groupInputDisassembler.copyToEntity(groupInput);
@@ -59,6 +63,7 @@ public class GroupControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanEdit
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<GroupDTO> update(@PathVariable Long id, @RequestBody @Valid GroupInput groupInput) {
         Group entity = groupService.findOrFail(id);
@@ -69,6 +74,7 @@ public class GroupControllerV2 {
     }
 
     @CheckSecurity.UsersGroupsPermissions.CanEdit
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         groupService.delete(id);

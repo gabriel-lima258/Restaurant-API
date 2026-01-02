@@ -6,6 +6,7 @@ import com.gtech.food_api.api.V2.disassembler.OrderInputDisassemblerV2;
 import com.gtech.food_api.api.V2.dto.OrderDTO;
 import com.gtech.food_api.api.V2.dto.OrderSummaryDTO;
 import com.gtech.food_api.api.V2.dto.input.OrderInput;
+import com.gtech.food_api.api.V2.openai.controller.OrderControllerOpenAi;
 import com.gtech.food_api.api.V2.utils.ResourceUriHelper;
 import com.gtech.food_api.core.data.PageWrapper;
 import com.gtech.food_api.core.data.PageableTranslator;
@@ -34,7 +35,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/v2/orders", produces = MediaType.APPLICATION_JSON_VALUE)
-public class OrderControllerV2 {
+public class OrderControllerV2 implements OrderControllerOpenAi {
 
     @Autowired
     private OrderService orderService;
@@ -62,6 +63,7 @@ public class OrderControllerV2 {
     * @param filter: filtro de pedidos, exemplo: clientId, restaurantId, creationDateStart, creationDateEnd
     */
     @CheckSecurity.Orders.CanViewList
+    @Override
     @GetMapping
     public ResponseEntity<PagedModel<OrderSummaryDTO>> listAll(OrderFilter filter, @PageableDefault(size = 10) Pageable pageable ){
         // traduz a paginação para o nome da entidade Ex: nameClient -> client.name
@@ -83,6 +85,7 @@ public class OrderControllerV2 {
     }
 
     @CheckSecurity.Orders.CanView
+    @Override
     @GetMapping("/{orderCode}")
     public ResponseEntity<OrderDTO> findById(@PathVariable String orderCode) {
         Order entity = orderService.findOrFail(orderCode);
@@ -91,6 +94,7 @@ public class OrderControllerV2 {
     }
 
     @CheckSecurity.Orders.CanAddOrders
+    @Override
     @PostMapping
     public ResponseEntity<OrderDTO> save(@RequestBody @Valid OrderInput orderInput) {
         try {
