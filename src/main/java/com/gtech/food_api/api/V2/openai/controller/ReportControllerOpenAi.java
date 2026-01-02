@@ -7,6 +7,7 @@ import com.gtech.food_api.api.V1.dto.report.DailySelling;
 import com.gtech.food_api.domain.filter.DailySellingFilter;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,10 +21,16 @@ public interface ReportControllerOpenAi {
     ReportsModel reports();
 
     @Operation(summary = "Get daily selling report (JSON)", description = "Generates a daily selling report in JSON format. Supports filtering by restaurant ID and date range. Time offset is optional (default: +00:00). Example: Get daily selling report for restaurant ID 1 from 2025-01-01 to 2025-01-31.")
-    ResponseEntity<List<DailySelling>> queryDailySelling(DailySellingFilter filter, String timeOffset);
+    ResponseEntity<List<DailySelling>> queryDailySelling(
+        @Parameter(description = "Filter parameters: restaurantId, creationDateStart, creationDateEnd", required = false) DailySellingFilter filter,
+        @Parameter(description = "Time zone offset (default: +00:00). Example: -03:00 for Brazil timezone", required = false, example = "-03:00") String timeOffset
+    );
 
     @Operation(summary = "Get daily selling report (PDF)", description = "Generates a daily selling report in PDF format for download. Supports filtering by restaurant ID and date range. Time offset is optional (default: +00:00). Example: Download PDF report for restaurant ID 1 from 2025-01-01 to 2025-01-31.")
-    ResponseEntity<byte[]> queryDailySellingPDF(DailySellingFilter filter, String timeOffset);
+    ResponseEntity<byte[]> queryDailySellingPDF(
+        @Parameter(description = "Filter parameters: restaurantId, creationDateStart, creationDateEnd", required = false) DailySellingFilter filter,
+        @Parameter(description = "Time zone offset (default: +00:00). Example: -03:00 for Brazil timezone", required = false, example = "-03:00") String timeOffset
+    );
     
 }
 
