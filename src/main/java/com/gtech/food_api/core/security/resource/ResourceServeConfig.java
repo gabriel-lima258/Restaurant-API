@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -62,6 +61,46 @@ public class ResourceServeConfig {
     @Order(Ordered.LOWEST_PRECEDENCE - 1)
     public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
         http.formLogin(form -> form.loginPage("/login"))
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+            .authorizeHttpRequests(authorize -> authorize
+                // Public endpoints for frontend (no authentication required)
+                .requestMatchers("/api/v1/kitchens/**").permitAll()
+                .requestMatchers("/api/v1/restaurants/**").permitAll()
+                .requestMatchers("/api/v1/cities/**").permitAll()
+                .requestMatchers("/api/v1/states/**").permitAll()
+                .requestMatchers("/api/v1/payment-methods/**").permitAll()
+                
+                // Public API v2 endpoints
+                .requestMatchers("/api/v2/kitchens/**").permitAll()
+                .requestMatchers("/api/v2/restaurants/**").permitAll()
+                .requestMatchers("/api/v2/cities/**").permitAll()
+                .requestMatchers("/api/v2/states/**").permitAll()
+                .requestMatchers("/api/v2/payment-methods/**").permitAll()
+                
+                // Public endpoints for registration
+                .requestMatchers("/api/v1/users").permitAll()
+                .requestMatchers("/api/v2/users").permitAll()
+                
+                // Public logout endpoint
+                .requestMatchers("/logout").permitAll()
+                
+                // Public Swagger UI
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-ui.html").permitAll()
+                
+                // Public static resources
+                .requestMatchers("/", "/index.html", "/login", "/register", "/callback", "/assets/**").permitAll()
+                
+                // All other endpoints require authentication
+                .anyRequest().authenticated()
+            )
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST stateless
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));

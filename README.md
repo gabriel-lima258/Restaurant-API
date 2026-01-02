@@ -290,6 +290,34 @@ food-api/
 - **Validation**: Custom validation rules
 - **Utilities**: Shared utilities and helpers
 
+## 🌐 Acessando a Aplicação
+
+### **Interface Principal (Recomendado)**
+
+🎨 **Frontend React - SPA Moderna**
+```
+http://localhost:8081
+```
+- ✅ Interface completa e moderna
+- ✅ OAuth2 + PKCE (mais seguro)
+- ✅ Navegação fluida (SPA)
+- ✅ Design responsivo
+
+### **Interfaces Alternativas**
+
+📚 **Swagger UI - Documentação da API**
+```
+http://localhost:8080/swagger-ui.html
+```
+
+🔐 **Login Fallback - Apenas para Debug**
+```
+http://localhost:8080/login
+```
+⚠️ Use apenas para testes internos
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites

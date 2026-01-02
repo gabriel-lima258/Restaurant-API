@@ -42,8 +42,10 @@ public class CorsConfig {
 	@Bean
 	public FilterRegistrationBean<CorsFilter> corsFilterRegistrationBean() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(false);
-		config.setAllowedOrigins(Collections.singletonList("*"));
+		config.setAllowCredentials(true);
+		// When allowCredentials is true, allowedOrigins cannot be "*"
+		config.addAllowedOrigin("http://localhost:8081");
+		config.addAllowedOrigin("http://127.0.0.1:8081");
 		config.setAllowedMethods(Collections.singletonList("*"));
 		config.setAllowedHeaders(Collections.singletonList("*"));
 
