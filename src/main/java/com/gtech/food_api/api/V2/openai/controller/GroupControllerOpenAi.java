@@ -9,33 +9,58 @@ import com.gtech.food_api.api.V2.dto.GroupDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @SecurityRequirement(name = "security_auth")
 @Tag(name = "Groups")
 public interface GroupControllerOpenAi {
     
-    @Operation(summary = "List all groups", description = "Retrieves a complete list of all user groups in the system. Example: Administrators, Managers, Customers.")
+    @Operation(summary = "List all groups", description = "Retrieves a complete list of all user groups in the system. Example: Administrators, Managers, Customers.",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "List of groups retrieved successfully")
+    })
     ResponseEntity<CollectionModel<GroupDTO>> listAll();
 
-    @Operation(summary = "Find group by ID", description = "Retrieves detailed information about a specific group by its ID, including associated permissions. Example: Get group ID 1 to see 'Administrators' group details.")
+    @Operation(summary = "Find group by ID", description = "Retrieves detailed information about a specific group by its ID, including associated permissions. Example: Get group ID 1 to see 'Administrators' group details.",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "Group found successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid group ID format", content = @Content(schema = @Schema(ref = "Exceptions"))),
+        @ApiResponse(responseCode = "404", description = "Group not found", content = @Content(schema = @Schema(ref = "Exceptions")))
+    })
     ResponseEntity<GroupDTO> findById(
         @Parameter(description = "ID of the group", required = true, example = "1") Long id
     );
 
-    @Operation(summary = "Create a new group", description = "Creates a new user group in the system. Requires only the group name. Example: Create 'Managers' group.")
+    @Operation(summary = "Create a new group", description = "Creates a new user group in the system. Requires only the group name. Example: Create 'Managers' group.",
+    responses = {
+        @ApiResponse(responseCode = "201", description = "Group created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data or validation errors", content = @Content(schema = @Schema(ref = "Exceptions")))
+    })
     ResponseEntity<GroupDTO> save(
         @RequestBody(description = "Group data containing the name", required = true) GroupInput groupInput
     );
 
-    @Operation(summary = "Update group", description = "Updates the name of an existing group. Example: Update group ID 2 to change its name from 'Users' to 'Regular Users'.")
+    @Operation(summary = "Update group", description = "Updates the name of an existing group. Example: Update group ID 2 to change its name from 'Users' to 'Regular Users'.",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "Group updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data or validation errors", content = @Content(schema = @Schema(ref = "Exceptions"))),
+        @ApiResponse(responseCode = "404", description = "Group not found", content = @Content(schema = @Schema(ref = "Exceptions")))
+    })
     ResponseEntity<GroupDTO> update(
         @Parameter(description = "ID of the group to update", required = true, example = "2") Long id,
         @RequestBody(description = "Group data with updated name", required = true) GroupInput groupInput
     );
 
-    @Operation(summary = "Delete group", description = "Removes a group from the system. Note: The group can only be deleted if no users are associated with it. Example: Delete group ID 5 if it's no longer needed.")
+    @Operation(summary = "Delete group", description = "Removes a group from the system. Note: The group can only be deleted if no users are associated with it. Example: Delete group ID 5 if it's no longer needed.",
+    responses = {
+        @ApiResponse(responseCode = "204", description = "Group deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Group cannot be deleted (entity in use)", content = @Content(schema = @Schema(ref = "Exceptions"))),
+        @ApiResponse(responseCode = "404", description = "Group not found", content = @Content(schema = @Schema(ref = "Exceptions")))
+    })
     ResponseEntity<Void> delete(
         @Parameter(description = "ID of the group to delete", required = true, example = "5") Long id
     );

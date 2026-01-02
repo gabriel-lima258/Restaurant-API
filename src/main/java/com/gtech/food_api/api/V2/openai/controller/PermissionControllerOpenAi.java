@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import com.gtech.food_api.api.V2.dto.PermissionDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -13,7 +14,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Permissions")
 public interface PermissionControllerOpenAi {
     
-    @Operation(summary = "List all permissions", description = "Retrieves a complete list of all available permissions in the system. Example: READ_RESTAURANTS, WRITE_ORDERS, MANAGE_USERS, DELETE_PRODUCTS.")
+    @Operation(summary = "List all permissions", description = "Retrieves a complete list of all available permissions in the system. Example: READ_RESTAURANTS, WRITE_ORDERS, MANAGE_USERS, DELETE_PRODUCTS.",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "List of permissions retrieved successfully")
+    })
     ResponseEntity<CollectionModel<PermissionDTO>> listAll();
     
 }
