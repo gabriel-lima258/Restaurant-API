@@ -6,16 +6,17 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "OrderItemInput", description = "Order item input data")
 @Getter
 @Setter
 public class OrderItemInput {
-    @Schema(example = "1")
+    @Schema(description = "Product ID", example = "1")
     @NotNull
     private Long productId;
-    @Schema(example = "2")
+    @Schema(description = "Item quantity", example = "2")
     @NotNull
     @Positive
     private Integer quantity;
-    @Schema(example = "No onions, please", required = false)
+    @Schema(description = "Item observation", example = "No onions, please")
     private String observation;
 }

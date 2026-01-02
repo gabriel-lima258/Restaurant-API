@@ -7,23 +7,25 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "AddressInput", description = "Address input data")
 @Getter
 @Setter
 public class AddressInput {
-    @Schema(example = "13000-000")
+    @Schema(description = "ZIP code", example = "13000-000")
     @NotBlank
     private String cep;
-    @Schema(example = "Rua das Flores")
+    @Schema(description = "Public place (street, avenue, etc.)", example = "Rua das Flores")
     @NotBlank
     private String publicPlace;
-    @Schema(example = "123")
+    @Schema(description = "Address number", example = "123")
     @NotBlank
     private String number;
-    @Schema(example = "Apto 45", required = false)
+    @Schema(description = "Address complement", example = "Apto 45")
     private String complement;
-    @Schema(example = "Centro")
+    @Schema(description = "Neighborhood", example = "Centro")
     @NotBlank
     private String neighborhood;
+    @Schema(description = "City information")
     @Valid
     @NotNull
     private CityIdInput city;

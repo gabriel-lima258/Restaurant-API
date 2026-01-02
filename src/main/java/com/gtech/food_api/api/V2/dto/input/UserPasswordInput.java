@@ -5,13 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "UserPasswordInput", description = "User password change input data")
 @Getter
 @Setter
 public class UserPasswordInput {
-    @Schema(example = "OldPassword123!")
+    @Schema(description = "Current password", example = "OldPassword123!")
     @NotBlank
     private String currentPassword;
-    @Schema(example = "NewSecurePassword456!")
+    @Schema(description = "New password", example = "NewSecurePassword456!")
     @NotBlank
     private String newPassword;
 }

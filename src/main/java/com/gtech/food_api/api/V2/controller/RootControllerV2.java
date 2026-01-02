@@ -3,6 +3,8 @@ package com.gtech.food_api.api.V2.controller;
 import com.gtech.food_api.api.V2.utils.LinksBuilderV2;
 import com.gtech.food_api.core.security.resource.validations.UsersJwtSecurity;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.MediaType;
@@ -59,6 +61,7 @@ public class RootControllerV2 {
     @Autowired
     private UsersJwtSecurity usersJwtSecurity;
 
+    @Operation(hidden = true)
     @GetMapping
     public RootEntryPointModel root() {
         var rootEntryPointModel = new RootEntryPointModel();

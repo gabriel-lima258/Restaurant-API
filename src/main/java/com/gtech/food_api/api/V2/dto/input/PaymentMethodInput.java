@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "PaymentMethodInput", description = "Payment method input data")
 @Getter
 @Setter
 public class PaymentMethodInput {
-    @Schema(example = "Credit Card")
+    @Schema(description = "Payment method description", example = "Credit Card")
     @NotBlank
     private String description;
     

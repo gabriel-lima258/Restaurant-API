@@ -10,23 +10,26 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+@Schema(name = "RestaurantInput", description = "Restaurant input data")
 @Getter
 @Setter
 public class RestaurantInput {
-    @Schema(example = "Pizza Palace")
+    @Schema(description = "Restaurant name", example = "Pizza Palace")
     @NotBlank
     private String name;
 
-    @Schema(example = "5.50")
+    @Schema(description = "Shipping fee", example = "5.50")
     @NotNull
     @PositiveOrZero
     private BigDecimal shippingFee;
 
+    @Schema(description = "Kitchen information")
     // validacao em cascata, valida a kitchen do restaurant
     @Valid
     @NotNull
     private KitchenIdInput kitchen;
 
+    @Schema(description = "Restaurant address")
     @Valid
     @NotNull
     private AddressInput address;

@@ -5,6 +5,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
 import com.gtech.food_api.api.V2.dto.input.OrderInput;
+import com.gtech.food_api.core.springdoc.PageableParameters;
 import com.gtech.food_api.api.V2.dto.OrderDTO;
 import com.gtech.food_api.api.V2.dto.OrderSummaryDTO;
 import com.gtech.food_api.domain.filter.OrderFilter;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Tag(name = "Orders")
 public interface OrderControllerOpenAi {
     
+    @PageableParameters
     @Operation(summary = "List orders with filters", description = "Retrieves a paginated list of orders with optional filters. Supports filtering by client ID, restaurant ID, and date range. Supports pagination and sorting. Example: Get orders from restaurant ID 1 between 2025-01-01 and 2025-01-31, page 0, size 10.",
     responses = {
         @ApiResponse(responseCode = "200", description = "Paginated list of orders retrieved successfully")

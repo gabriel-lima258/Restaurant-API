@@ -5,11 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "CityIdInput", description = "City ID input")
 @Getter
 @Setter
 public class CityIdInput {
     
-    @Schema(example = "1")
+    @Schema(description = "City ID", example = "1")
     @NotNull
     private Long id;
 }

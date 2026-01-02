@@ -24,7 +24,13 @@ public interface ProductFileControllerOpenAi {
     
     @Operation(summary = "Get product photo metadata", description = "Retrieves metadata information about a product's photo in JSON format. Example: Get photo information for product ID 5 from restaurant ID 1 to see file name, size, and content type.",
     responses = {
-        @ApiResponse(responseCode = "200", description = "Photo metadata retrieved successfully"),
+        @ApiResponse(responseCode = "200", 
+        description = "Photo metadata retrieved successfully",
+        content = {
+            @Content(mediaType = "application/json", schema = @Schema(ref = "PhotoProductDTO")),
+            @Content(mediaType = "image/jpeg", schema = @Schema(type = "string", format = "binary")),
+            @Content(mediaType = "image/png", schema = @Schema(type = "string", format = "binary"))
+        }),
         @ApiResponse(responseCode = "404", description = "Product, restaurant, or photo not found", content = @Content(schema = @Schema(ref = "Exceptions")))
     })
     ResponseEntity<PhotoProductDTO> getPhoto(
@@ -32,13 +38,7 @@ public interface ProductFileControllerOpenAi {
         @Parameter(description = "ID of the restaurant", required = true, example = "1") Long restaurantId
     );
 
-    @Operation(summary = "Download product photo", description = "Downloads the actual product photo image. The Accept header determines the response format (image/jpeg, image/png, etc.). Example: Download photo for product ID 5 from restaurant ID 1 with Accept: image/jpeg.",
-    responses = {
-        @ApiResponse(responseCode = "200", description = "Photo downloaded successfully", content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "image/jpeg")),
-        @ApiResponse(responseCode = "302", description = "Photo URL redirect (if stored externally)"),
-        @ApiResponse(responseCode = "406", description = "Media type not acceptable"),
-        @ApiResponse(responseCode = "404", description = "Product, restaurant, or photo not found", content = @Content(schema = @Schema(ref = "Exceptions")))
-    })
+    @Operation(hidden = true)
     ResponseEntity<InputStreamResource> downloadPhoto(
         @Parameter(description = "ID of the product", required = true, example = "5") Long productId,
         @Parameter(description = "ID of the restaurant", required = true, example = "1") Long restaurantId,

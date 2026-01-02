@@ -6,13 +6,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "UserInput", description = "User input data")
 @Getter
 @Setter
 public class UserInput {
-    @Schema(example = "John Doe")
+    @Schema(description = "User name", example = "John Doe")
     @NotBlank
     private String name;
-    @Schema(example = "john.doe@example.com")
+    @Schema(description = "User email", example = "john.doe@example.com")
     @NotBlank
     @Email
     private String email;

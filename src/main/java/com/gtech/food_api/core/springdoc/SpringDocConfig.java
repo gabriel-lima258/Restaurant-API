@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -13,8 +14,11 @@ import com.gtech.food_api.api.V2.controller.exceptions.ExceptionsDTO;
 
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MapSchema;
 import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.tags.Tag;
@@ -49,6 +53,19 @@ public class SpringDocConfig {
     
     @Bean
     public OpenAPI customOpenAPI() {
+
+        // Replace Spring HATEOAS Links class with a custom schema for proper OpenAPI documentation
+        // This creates a Map-like structure for links: { "self": { "href": "...", "templated": false } }
+        SpringDocUtils.getConfig().replaceWithSchema(
+            org.springframework.hateoas.Links.class, 
+            new MapSchema()
+                .additionalProperties(new ObjectSchema()
+                    .addProperty("href", new StringSchema().example("http://api.foodapi.com.br/v2/resource/1"))
+                    .addProperty("templated", new Schema<Boolean>().type("boolean").example(false))
+                )
+                .description("HATEOAS links for resource navigation")
+        );
+
         return new OpenAPI()
             .info(new Info()
                 .title("Delivery Food API")
@@ -83,7 +100,7 @@ public class SpringDocConfig {
             .components(new Components()
                 .schemas(generateSchemas())
                 .responses(generateResponses())
-            );
+            );  
     }
 
     // customização global de http methods da API para adicionar respostas padrão para erros
@@ -120,6 +137,7 @@ public class SpringDocConfig {
     }
 
     // geração de schemas para as exceções e objetos
+    @SuppressWarnings("rawtypes")
     private Map<String, Schema> generateSchemas() {
         final Map<String, Schema> schemas = new HashMap<>();
 

@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "GroupInput", description = "Group input data")
 @Getter
 @Setter
 public class GroupInput {
-    @Schema(example = "Managers")
+    @Schema(description = "Group name", example = "Managers")
     @NotBlank
     private String name;
     

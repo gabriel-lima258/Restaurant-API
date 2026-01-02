@@ -5,6 +5,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
 import com.gtech.food_api.api.V2.dto.input.KitchenInput;
+import com.gtech.food_api.core.springdoc.PageableParameters;
 import com.gtech.food_api.api.V2.dto.KitchenDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Tag(name = "Kitchens")
 public interface KitchenControllerOpenAi {
     
+    @PageableParameters
     @Operation(summary = "List all kitchens", description = "Retrieves a paginated list of all kitchen types. Supports pagination with page and size parameters. Example: Get first page with 10 kitchens (Italian, Brazilian, Japanese, etc.).",
     responses = {
         @ApiResponse(responseCode = "200", description = "Paginated list of kitchens retrieved successfully")

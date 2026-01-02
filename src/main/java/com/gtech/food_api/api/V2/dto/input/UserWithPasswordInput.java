@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "UserWithPasswordInput", description = "User registration input data with password")
 @Getter
 @Setter
 public class UserWithPasswordInput extends UserInput {
-    @Schema(example = "SecurePassword123!")
+    @Schema(description = "User password", example = "SecurePassword123!")
     @NotBlank
     private String password;
 }

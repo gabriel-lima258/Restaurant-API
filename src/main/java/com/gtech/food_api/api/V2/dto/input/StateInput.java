@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "StateInput", description = "State input data")
 @Getter
 @Setter
 public class StateInput {
-    @Schema(example = "São Paulo")
+    @Schema(description = "State name", example = "São Paulo")
     @NotBlank
     private String name;
 }

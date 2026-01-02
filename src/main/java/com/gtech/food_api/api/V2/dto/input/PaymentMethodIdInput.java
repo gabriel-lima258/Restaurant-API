@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "PaymentMethodIdInput", description = "Payment method ID input")
 @Getter
 @Setter
 public class PaymentMethodIdInput {
-    @Schema(example = "1")
+    @Schema(description = "Payment method ID", example = "1")
     @NotNull
     private Long id;
     

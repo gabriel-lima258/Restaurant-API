@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
+@Schema(name = "ProductFileInput", description = "Product photo file input data")
 @Getter
 @Setter
 public class ProductFileInput {
@@ -19,7 +20,7 @@ public class ProductFileInput {
     @FileSize(max = "1MB")
     @FileContentType(allowed = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     private MultipartFile file;
-    @Schema(example = "Delicious pizza photo")
+    @Schema(description = "Photo description", example = "Delicious pizza photo")
     @NotBlank
     private String description;
     

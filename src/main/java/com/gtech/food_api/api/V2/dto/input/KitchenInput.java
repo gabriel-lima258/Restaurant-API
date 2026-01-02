@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(name = "KitchenInput", description = "Kitchen input data")
 @Getter
 @Setter
 public class KitchenInput {
-    @Schema(example = "Italian")
+    @Schema(description = "Kitchen name", example = "Italian")
     @NotBlank
     private String name;
     

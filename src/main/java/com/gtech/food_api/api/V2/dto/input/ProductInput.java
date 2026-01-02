@@ -9,20 +9,21 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+@Schema(name = "ProductInput", description = "Product input data")
 @Getter
 @Setter
 public class ProductInput {
-    @Schema(example = "Pizza Margherita")
+    @Schema(description = "Product name", example = "Pizza Margherita")
     @NotBlank
     private String name;
-    @Schema(example = "Delicious pizza with tomato, mozzarella and basil")
+    @Schema(description = "Product description", example = "Delicious pizza with tomato, mozzarella and basil")
     @NotBlank
     private String description;
-    @Schema(example = "35.00")
+    @Schema(description = "Product price", example = "35.00")
     @NotNull
     @PositiveOrZero
     private BigDecimal price;   
-    @Schema(example = "true")
+    @Schema(description = "Product active status", example = "true")
     @NotNull
     private Boolean active;
 }
