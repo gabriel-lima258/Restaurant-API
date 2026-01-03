@@ -137,7 +137,7 @@ insert into restaurant (
     '01310-100', 'Avenida Paulista', '1578', 
     'Loja 45', 'Bela Vista', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    true, false
 );
 
 insert into restaurant (
@@ -167,7 +167,7 @@ insert into restaurant (
     '13083-000', 'Rua Barão de Jaguara', '500', 
     null, 'Centro', 4, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    true, false
 );
 
 insert into restaurant (
@@ -197,7 +197,7 @@ insert into restaurant (
     '01310-200', 'Rua Augusta', '2345', 
     'Sala 3', 'Consolação', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    true, false
 );
 
 insert into restaurant (
@@ -257,7 +257,7 @@ insert into restaurant (
     '01310-100', 'Avenida Paulista', '2000', 
     'Sala 15', 'Bela Vista', 3, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    true, false
 );
 
 insert into restaurant (
@@ -287,7 +287,7 @@ insert into restaurant (
     '30130-010', 'Rua da Bahia', '500', 
     'Térreo', 'Centro', 2, 
     UTC_TIMESTAMP, UTC_TIMESTAMP,
-    true, true
+    true, false
 );
 
 insert into restaurant (
@@ -459,7 +459,7 @@ insert into group_permission (group_id, permission_id)
 select 4, id from permission where name like '%_RESTAURANTES';
 
 -- group user
-insert into group_user (user_id, group_id) values (1, 1), (2, 2), (3, 3);
+insert into group_user (user_id, group_id) values (1, 1), (2, 2), (3, 3), (7, 2);
 
 -- restaurant user responsible
 insert into restaurant_user_responsible (user_id, restaurant_id) values (1, 1), (2, 2), (3, 3), (7, 3), (6, 4);

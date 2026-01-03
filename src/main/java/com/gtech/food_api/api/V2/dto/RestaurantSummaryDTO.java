@@ -22,4 +22,8 @@ public class RestaurantSummaryDTO extends RepresentationModel<RestaurantSummaryD
     private BigDecimal shippingFee;
     @Schema(description = "Kitchen type")
     private KitchenDTO kitchen;
+    @Schema(description = "Restaurant active status", example = "true")
+    private Boolean active;
+    @Schema(description = "Restaurant open status", example = "true")
+    private Boolean open;
 }

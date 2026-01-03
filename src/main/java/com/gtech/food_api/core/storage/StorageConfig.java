@@ -8,7 +8,6 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.gtech.food_api.core.storage.StorageProperties.StorageType;
 import com.gtech.food_api.domain.service.storage.PhotoStorageService;
 import com.gtech.food_api.infra.service.storage.PhotoLocalStorageService;
 import com.gtech.food_api.infra.service.storage.S3StorageService;
