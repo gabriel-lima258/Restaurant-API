@@ -68,6 +68,13 @@
             <scope>runtime</scope>
         </dependency>
 
+		<!-- H2 Database é um banco em memória para testes -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 		<!-- Lombok é um framework para gerar getters, setters, constructors, etc. -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -194,15 +201,15 @@
 		</dependency>
 		
 		<!-- Redis é o spring boot para redis -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
+		</dependency> -->
 		<!-- Spring Session Data Redis é o spring boot para session data redis -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-redis</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<!-- Thymeleaf é um template engine para gerar HTML com backend de forma segura. -->
 		<dependency>
