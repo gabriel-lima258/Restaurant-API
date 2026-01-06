@@ -1,0 +1,43 @@
+networks:
+  food-api-network:
+    driver: bridge
+
+services:
+  food-api-mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 9081
+      MYSQL_DATABASE: food_api
+    networks:
+      - food-api-network
+
+  food-api-redis:
+    image: redis:6.2.1-alpine
+    networks:
+      - food-api-network
+    
+  food-api:
+    image: food-api
+    # comando para executar a aplicação com o wait-for-it.sh para aguardar o mysql estar disponível
+    command: ["/wait-for-it.sh", "-t", "30", "food-api-mysql:3306", "--", "java", "-jar", "api.jar"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: food-api-mysql
+    networks:
+      - food-api-network
+    depends_on:
+      - food-api-mysql
+
+  nginx:
+    build: ./nginx
+    image: food-api-proxy
+    ports: 
+      - 80:80
+    networks:
+      - food-api-network
+    depends_on:
+      - food-api

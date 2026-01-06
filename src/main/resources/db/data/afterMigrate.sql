@@ -5,6 +5,9 @@
 
 set foreign_key_checks = 0;
 
+-- lock das tabelas para evitar inconsistências ao usar dois ou mais containers ao mesmo tempo
+lock tables city write, kitchen write, state write, payment_method write, `group` write, group_permission write, permission write, product write, restaurant write, restaurant_payment_method write, `user` write, group_user write, order_item write, `order` write, photo_product write, restaurant_user_responsible write, oauth2_registered_client write;
+
 delete from city;
 delete from kitchen;
 delete from state;
@@ -533,3 +536,4 @@ INSERT INTO oauth2_registered_client
 (id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, scopes, client_settings, token_settings)
 VALUES ('3','analytics-client','2025-12-31 18:18:19','$2a$10$zqF7kJhxxU.DMnYzqcauMORHHtxsHIYcwemUfEigFoDwOPdw4vrSm',NULL,'Analytics Client','client_secret_basic','refresh_token,authorization_code','http://foodanalytics.local:8082','READ,WRITE','{\"@class\":\"java.util.Collections$UnmodifiableMap\",\"settings.client.require-proof-key\":false,\"settings.client.require-authorization-consent\":false}','{\"@class\":\"java.util.Collections$UnmodifiableMap\",\"settings.token.reuse-refresh-tokens\":false,\"settings.token.id-token-signature-algorithm\":[\"org.springframework.security.oauth2.jose.jws.SignatureAlgorithm\",\"RS256\"],\"settings.token.access-token-time-to-live\":[\"java.time.Duration\",1800.000000000],\"settings.token.access-token-format\":{\"@class\":\"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat\",\"value\":\"self-contained\"},\"settings.token.refresh-token-time-to-live\":[\"java.time.Duration\",86400.000000000],\"settings.token.authorization-code-time-to-live\":[\"java.time.Duration\",300.000000000]}');
 
+unlock tables;
